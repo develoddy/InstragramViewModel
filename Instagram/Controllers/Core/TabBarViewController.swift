@@ -17,12 +17,21 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        let email = AuthManager.shared.fetchEmailLoginUser()
-        configureViewControllers(with: email)
+        //let email = AuthManager.shared.fetchEmaillLoginUser()
+        //configureViewControllers(with: user)
+        //print("debug: \(email)")
+        APICaller.shared.fetchUserLogin { [weak self] result in
+            switch result {
+            case .success(let user):
+                self?.configureViewControllers(with: user)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
         
     }
     
-    func configureViewControllers(with email: String) {
+    func configureViewControllers(with user: User) {
         let vc1 = templateNavigationController(
             unSelectedImage: UIImage(systemName: "house")!,
             selectedImage: UIImage(systemName: "house.fill")!,
@@ -45,7 +54,7 @@ class TabBarViewController: UITabBarController {
         let vc4 = templateNavigationController(
             unSelectedImage: UIImage(systemName: "person")!,
             selectedImage: UIImage(systemName: "person.fill")!,
-            rootViewController: ProfileViewController(email: email)
+            rootViewController: ProfileViewController(user: user)
         )
         
         vc1.title = "Feed"
@@ -68,7 +77,7 @@ class TabBarViewController: UITabBarController {
         vc3.navigationBar.tintColor = .label
         vc4.navigationBar.tintColor = .label
         
-        setViewControllers([vc1, vc2, vc3, vc4], animated: false)
+        setViewControllers([vc2, vc1, vc3, vc4], animated: false)
     }
     
 

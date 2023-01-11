@@ -13,6 +13,8 @@ import FirebaseStorage
 
 final class APICaller {
     
+    // MARK: - Properties
+    
     static let shared = APICaller()
     let db = Firestore.firestore()
     
@@ -21,14 +23,30 @@ final class APICaller {
     enum APIError: Error {
         case faileedToGetData
     }
+
+
+    // MARK: - Fetch UserLogin
     
-    /*
-     Obtener varios documentos de una colección
-     También puede recuperar varios documentos con una sola solicitud consultando
-     los documentos de una colección. Por ejemplo, puede usar where() para
-     consultar todos los documentos que cumplen una determinada condición y luego usar get()
-     para recuperar los resultados:
-     */
+    func fetchUserLogin(completion: @escaping (Result<User, Error>) -> Void) {
+        guard let email = Auth.auth().currentUser?.email else { return }
+        db.collection("users").whereField("email", isEqualTo: email)
+            .getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            //print("\(document.documentID) => \(document.data())")
+                            let dictionary = document.data()
+                            let user = User(dictionary: dictionary)
+                            completion(.success(user))
+                        }
+                        
+                    }
+            }
+    }
+    
+    // MARK: - Users
+    
     func fetchUser(email: String, completion: @escaping (Result<User, Error>) -> Void) {
         db.collection("users").whereField("email", isEqualTo: email)
             .getDocuments() { (querySnapshot, err) in
@@ -46,34 +64,38 @@ final class APICaller {
             }
     }
     
-    /*func completeList(completion: @escaping (Result<[User], Error>) -> ()) {
-        var users = [User]()
+    func fetchUsers(completion: @escaping (Result<[User], Error>) -> Void) {
         db.collection("users").getDocuments() { (querySnapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")
                 completion(.failure(APIError.faileedToGetData))
             } else {
-                for document in querySnapshot!.documents {
-                    //print("\(document.documentID) => \(document.data())")
+                /*for document in querySnapshot!.documents {
+                    print("\(document.documentID) => \(document.data())")
                     let user = User(dictionary: document.data())
                     users.append(user)
+                }*/
+                
+                /*querySnapshot?.documents.forEach({ document in
+                    let user = User(dictionary: document.data())
+                    users.append(user)
+                })
+                completion(.success(users))*/
+                
+                guard let users = querySnapshot?.documents.compactMap({ User(dictionary: $0.data()) }) else {
+                    return
                 }
                 completion(.success(users))
             }
         }
-    }*/
+    }
+    
+    // MARK: - Comments
     
     
-    // Recuperar el contenido de un solo documento usando get
-    /*func getOneDocumentData() {
-        let docRef = db.collection("users").document("5hylxObE98Xtry4KGVev")
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                print("Document data: \(dataDescription)")
-            } else {
-                print("Document does not exist")
-            }
-        }
-    }*/
+    // MARK: - Post
+    
+    
+    // MARK: - Follows
+
 }

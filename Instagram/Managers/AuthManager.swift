@@ -21,7 +21,9 @@ final class AuthManager {
     
     static let shared = AuthManager()
     
-    var user: User?
+    // var user: User?
+    
+    var user: Firebase.User?
     
     let db = Firestore.firestore()
     
@@ -51,13 +53,5 @@ final class AuthManager {
             print("Debug: Failed to sign out")
             completion(false)
         }
-    }
-    
-    public func fetchEmailLoginUser() -> String {
-        let user = Auth.auth().currentUser
-        guard let email = user?.email else {
-            return "nil"
-        }
-        return email
     }
 }

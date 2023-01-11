@@ -6,17 +6,15 @@
 //
 
 import UIKit
-
+import Firebase
 
 class ProfileViewController: UICollectionViewController {
     
     // MARK: - Propertie
     private var user: User?
-    private var email: String
     
-    init(email: String) {
-        self.email = email
-        print(self.email)
+    init(user: User) {
+        self.user = user
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
@@ -29,29 +27,15 @@ class ProfileViewController: UICollectionViewController {
         super.viewDidLoad()
         configureUI()
         configureCollections()
-        fetchUser()
     }
     
     // MARK: - API
-    func fetchUser() {
-        APICaller.shared.fetchUser(email: self.email) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let user):
-                    self?.user = user
-                    self?.navigationItem.title = user.fullname
-                    self?.collectionView.reloadData()
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
-    }
+
     
     // MARK: - Helpers
     
     private func configureUI() {
-        //title = "Profile"
+        title = user?.username
         collectionView.backgroundColor = .systemBackground
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
@@ -69,7 +53,6 @@ class ProfileViewController: UICollectionViewController {
             withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier
         )
     }
-    
 }
 
 extension ProfileViewController {
