@@ -7,9 +7,15 @@
 
 import UIKit
 
+enum FeedSectionType {
+    case stories(viewModels: String) // 1
+    case feeds(viewModels: String) // 2
+}
+
+
 class HomeViewController: UIViewController {
 
-    // MARK: - Helpers
+    // MARK: - Properties
     
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -17,6 +23,8 @@ class HomeViewController: UIViewController {
             return HomeViewController.createSectionLayout(section: sectionIndex)
         }
     )
+    
+    private var sections = [FeedSectionType]()
 
     // MARK: - Lifecycle
     
@@ -25,6 +33,7 @@ class HomeViewController: UIViewController {
         title = "Browse"
         view.backgroundColor = .systemBackground
         configureCollectionView()
+        configureModels()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "gear"),
@@ -39,15 +48,27 @@ class HomeViewController: UIViewController {
         collectionView.frame = view.bounds
     }
 
+    
+    // MARK: - Helpers
+    
     func configureCollectionView() {
         view.addSubview(collectionView)
         // collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.identifier)
+        collectionView.register(StoriesCollectionViewCell.self, forCellWithReuseIdentifier: StoriesCollectionViewCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
         collectionView.reloadData()
     }
+    
+    private func configureModels() {
+        sections.append(.stories(viewModels: "-"))
+        sections.append(.feeds(viewModels: "x"))
+    }
+    
+    
+    // MARK: - Actions
     
     @objc func didTapSettings() {
         let vc = SettingsViewController()
@@ -57,31 +78,49 @@ class HomeViewController: UIViewController {
     }
 }
 
+
 // MARK: - CollectionView
+
 extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-       return 10
+       let type = sections[section]
+        switch type {
+        case .feeds(_):
+            return 5
+        case .stories(_):
+            return 5
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: FeedCollectionViewCell.identifier,
-            for: indexPath
-        ) as? FeedCollectionViewCell else {
-            return UICollectionViewCell()
-        }
         
-        if indexPath.section == 0 {
-            cell.backgroundColor = .systemRed
-        } else if indexPath.section == 1 {
-            cell.backgroundColor = .white
+        let type = sections[indexPath.section]
+        switch type {
+        case .stories(_):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: StoriesCollectionViewCell.identifier,
+                for: indexPath
+            ) as? StoriesCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.backgroundColor = .lightGray
+            return cell
+            
+        case .feeds(_):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: FeedCollectionViewCell.identifier,
+                for: indexPath
+            ) as? FeedCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.backgroundColor = .systemBackground
+            return cell
         }
-        return cell
     }
     
     private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
@@ -136,7 +175,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 )
             )
             
-            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0)
             
             // Group
             let group = NSCollectionLayoutGroup.vertical(
