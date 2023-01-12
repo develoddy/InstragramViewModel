@@ -7,9 +7,8 @@
 
 
 import Firebase
-import FirebaseFirestore
-import FirebaseAuth
-import FirebaseStorage
+//import FirebaseAuth
+
 
 final class APICaller {
     

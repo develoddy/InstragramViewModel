@@ -77,7 +77,7 @@ class TabBarViewController: UITabBarController {
         vc3.navigationBar.tintColor = .label
         vc4.navigationBar.tintColor = .label
         
-        setViewControllers([vc2, vc1, vc3, vc4], animated: false)
+        setViewControllers([vc3, vc1, vc2, vc4], animated: false)
     }
     
 

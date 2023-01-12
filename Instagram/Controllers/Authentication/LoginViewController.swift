@@ -83,16 +83,15 @@ class LoginViewController: UIViewController {
         print("handle Login...")
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
-        AuthManager.shared.logUserIn(withEmail: email, password: password) { [weak self] result, error in
-            print("Entrar autmanager login")
-            if let error = error {
-                print("Debug: Failed to Login user: \(error.localizedDescription)")
-                return
+        AuthManager.shared.logUserIn(withEmail: email, password: password) { [weak self] success in
+            if !success {
+                // Login error credenciales
+                print("Error credenciales login")
+            } else {
+                let vc = TabBarViewController()
+                vc.modalPresentationStyle = .fullScreen
+                self?.present(vc, animated: true, completion: nil)
             }
-            //self?.dismiss(animated: true, completion: nil)
-            let vc = TabBarViewController()
-            vc.modalPresentationStyle = .fullScreen
-            self?.present(vc, animated: true, completion: nil)
         }
     }
     

@@ -3,7 +3,8 @@
 //  Instagram
 //
 //  Created by Eddy Donald Chinchay Lujan on 4/1/23.
-//
+// https://github.com/firebase/firebase-ios-sdk
+
 
 import UIKit
 
@@ -34,13 +35,7 @@ class HomeViewController: UIViewController {
         view.backgroundColor = .systemBackground
         configureCollectionView()
         configureModels()
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "gear"),
-            style: .done,
-            target: self,
-            action: #selector(didTapSettings)
-        )
+        configureNavigationItem()
     }
     
     override func viewDidLayoutSubviews() {
@@ -67,6 +62,42 @@ class HomeViewController: UIViewController {
         sections.append(.feeds(viewModels: "x"))
     }
     
+    func configureNavigationItem() {
+        confireColorNavigation()
+        //setupLeftNavItems()
+        setupRightNavItems()
+    }
+    
+    func confireColorNavigation() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        navigationController?.navigationBar.tintColor = .black
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+    }
+    
+    func setupRightNavItems() {
+        let buttonGear = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .done,
+            target: self,
+            action: #selector(didTapSettings)
+        )
+        
+        let buttonAdd = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(didTapAdd)
+        )
+        navigationItem.rightBarButtonItems = [
+            buttonGear,
+            buttonAdd
+        ]
+    }
+    
     
     // MARK: - Actions
     
@@ -75,6 +106,10 @@ class HomeViewController: UIViewController {
         vc.title = "Setting"
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
+    }
+            
+    @objc private func didTapAdd() {
+        // Add post
     }
 }
 
@@ -89,7 +124,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
         case .feeds(_):
             return 5
         case .stories(_):
-            return 5
+            return 15
         }
     }
     
@@ -108,7 +143,8 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             ) as? StoriesCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .lightGray
+            cell.configure()
+            //cell.backgroundColor = .lightGray
             return cell
             
         case .feeds(_):
@@ -139,8 +175,8 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             // Item
             let item = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .absolute(120),
-                    heightDimension: .absolute(120)
+                    widthDimension: .absolute(80),
+                    heightDimension: .absolute(80)
                 )
             )
             
@@ -148,15 +184,15 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             
             let verticalGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .absolute(120),
-                    heightDimension: .absolute(200)),
+                    widthDimension: .absolute(80),
+                    heightDimension: .absolute(100)),
                 subitem: item,
                 count: 1)
             
             let horizontalGroup = NSCollectionLayoutGroup.horizontal(
                 layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .absolute(120),
-                    heightDimension: .absolute(200)),
+                    widthDimension: .absolute(80),
+                    heightDimension: .absolute(100)),
                 subitem: verticalGroup,
                 count: 1)
             
@@ -185,16 +221,11 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 subitem: item,
                 count: 1)
             
-            
             // Section
             let section = NSCollectionLayoutSection(group: group)
             section.boundarySupplementaryItems = supplementaryViews
             
-         
-            
             return section
-            
-            
             
         default:
             // Item
@@ -218,7 +249,6 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             let section = NSCollectionLayoutSection(group: group)
             section.orthogonalScrollingBehavior = .groupPaging
             return section
-            
         }
     }
 }

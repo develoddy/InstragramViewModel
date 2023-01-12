@@ -19,11 +19,9 @@ struct AuthCredentials {
 
 final class AuthManager {
     
+    // MARK: - Properties
+    
     static let shared = AuthManager()
-    
-    // var user: User?
-    
-    var user: Firebase.User?
     
     let db = Firestore.firestore()
     
@@ -35,14 +33,13 @@ final class AuthManager {
         return Auth.auth().currentUser
     }
     
-    public func logUserIn(
-        withEmail email: String,
-        password: String,
-        completion: @escaping ((AuthDataResult?, Error?) -> Void)
-    ) {
-        DispatchQueue.main.async {
-            Auth.auth().signIn(withEmail: email, password: password, completion: completion)
-        }
+    
+    // MARK: - Login Logout
+    
+    func logUserIn(withEmail email: String, password: String, completionBlock: @escaping (_ success: Bool) -> Void) {
+        Auth.auth().signIn(withEmail: email, password: password, completion: { (firebaseUser, error) in
+            completionBlock(error == nil)
+        })
     }
     
     public func signOut(completion: (Bool) -> Void) {
