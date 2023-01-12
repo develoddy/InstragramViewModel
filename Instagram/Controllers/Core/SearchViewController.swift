@@ -54,7 +54,9 @@ class SearchViewController: UIViewController {
         })
     )
     
+    
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -66,6 +68,7 @@ class SearchViewController: UIViewController {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
+    
     
     // MARK: - Helpers
     
@@ -116,9 +119,11 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     }
     
     func updateSearchResults(for searchController: UISearchController) {
-        
     }
 }
+
+
+// MARK: - Search Delegate
 
 extension SearchViewController: SearchResultsViewControllerDelegate {
     func didTapResult(_ result: User) {
@@ -128,7 +133,9 @@ extension SearchViewController: SearchResultsViewControllerDelegate {
     }
 }
 
-// MARK: UiCollection Delegate & Datasource
+
+// MARK: - UiCollection Delegate & Datasource
+
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -148,5 +155,12 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         cell.configure()
         cell.backgroundColor = .systemYellow
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let vc = PostsSettingViewController()
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
