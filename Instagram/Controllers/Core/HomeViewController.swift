@@ -155,6 +155,8 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 return UICollectionViewCell()
             }
             cell.backgroundColor = .systemBackground
+            // Delegate
+            cell.delegate = self
             return cell
         }
     }
@@ -264,5 +266,23 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             section.orthogonalScrollingBehavior = .groupPaging
             return section
         }
+    }
+}
+
+
+// MARK: - Delegates buttons
+extension HomeViewController: FeedCollectionViewCellDelegate {
+    func feedCollectionDidTapLike(_ user: String) {
+        // Like
+    }
+    
+    func feedCollectionDidTapComment(_ user: String) {
+        let vc = CommentsViewController()
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func feedCollectionDidTapShare(_ user: String) {
+        // Share
     }
 }

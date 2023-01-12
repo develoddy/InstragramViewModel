@@ -1,23 +1,19 @@
 //
-//  PostsCollectionViewCell.swift
+//  CommentsHeaderCollectionReusableView.swift
 //  Instagram
 //
-//  Created by Eddy Donald Chinchay Lujan on 4/1/23.
+//  Created by Eddy Donald Chinchay Lujan on 12/1/23.
 //
 
 import UIKit
 
-protocol FeedCollectionViewCellDelegate: AnyObject {
-    func feedCollectionDidTapLike(_ user: String)
-    func feedCollectionDidTapComment(_ user: String)
-    func feedCollectionDidTapShare(_ user: String)
-}
-
-class FeedCollectionViewCell: UICollectionViewCell {
+class CommentsHeaderCollectionReusableView: UICollectionReusableView {
     
-    static let identifier = "FeedCollectionViewCell"
+    // MARK: - Properties
     
-    weak var delegate: FeedCollectionViewCellDelegate?
+    static let identifier = "CommentsHeaderCollectionReusableView"
+    
+    //weak var delegate: PlaylistHeaderCollectionReusableViewDelegate?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -34,10 +30,16 @@ class FeedCollectionViewCell: UICollectionViewCell {
         button.setTitle("User", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
-        button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
+        //button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
         return button
     }()
     
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 22, weight: .semibold)
+        return label
+    }()
+
     private let postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -91,36 +93,41 @@ class FeedCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private var stackView = UIStackView()
+    
+    
+    
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        backgroundColor = .systemYellow
-        
+        backgroundColor = .systemBackground
         addSubview(profileImageView)
         addSubview(usernameButton)
         
         addSubview(postImageView)
         
-        addSubview(likeButton)
-        addSubview(commentButton)
-        addSubview(sharedButton)
-        
         addSubview(likesLabel)
         addSubview(captionLabel)
         addSubview(postTimeLabel)
         
-        likeButton.addTarget(self, action: #selector(didTapLike), for: .touchUpInside)
-        commentButton.addTarget(self, action: #selector(didTapComment), for: .touchUpInside)
-        sharedButton.addTarget(self, action: #selector(didTapShare), for: .touchUpInside)
+        
+        /*addSubview(nameLabel)
+        addSubview(descriptionLabel)
+        addSubview(ownerLabel)
+        addSubview(playAllButton)*/
+        //playAllButton.addTarget(self, action: #selector(didTapPlayAll), for: .touchUpInside)
     }
+    
+    /*@objc private func didTapPlayAll() {
+        delegate?.PlaylistHeaderCollectionReusableViewDidTapPlayAll(self)
+    }*/
     
     required init?(coder: NSCoder) {
         fatalError()
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
         
         profileImageView.anchor(
             top: topAnchor,
@@ -144,6 +151,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
             paddingTop: 8
         )
         postImageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 1).isActive = true
+        
         configureActionButtons()
         
         likesLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, paddingTop: -4, paddingLeft: 8)
@@ -151,17 +159,13 @@ class FeedCollectionViewCell: UICollectionViewCell {
         captionLabel.anchor(top: likesLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
         
         postTimeLabel.anchor(top: captionLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
-    }
-    
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
+        
     }
     
     
     // MARK: - Helpers
     func configureActionButtons() {
-        stackView = UIStackView(arrangedSubviews: [likeButton, commentButton, sharedButton])
+        let stackView = UIStackView(arrangedSubviews: [likeButton, commentButton, sharedButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         
@@ -169,21 +173,10 @@ class FeedCollectionViewCell: UICollectionViewCell {
         stackView.anchor(top: postImageView.bottomAnchor, width: 120, height: 50)
     }
     
-    
-    // MARK: - Actions
-    @objc func didTapUsername() {
-        //
-    }
-    
-    @objc func didTapLike() {
-        delegate?.feedCollectionDidTapLike("user")
-    }
-    
-    @objc func didTapComment() {
-        delegate?.feedCollectionDidTapComment("user")
-    }
-    
-    @objc func didTapShare() {
-        delegate?.feedCollectionDidTapShare("user")
-    }
+    /*public func configure(with viewModel: PlaylistHeaderViewViewModel) {
+        nameLabel.text = viewModel.name
+        ownerLabel.text = viewModel.ownerName
+        descriptionLabel.text = viewModel.description
+        imageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "photo"), completed: nil)
+    }*/
 }
