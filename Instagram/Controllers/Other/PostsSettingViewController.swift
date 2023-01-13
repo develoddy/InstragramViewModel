@@ -71,7 +71,7 @@ class PostsSettingViewController: UIViewController {
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(400+170)),
+                heightDimension: .absolute(400+200)),
             subitem: item,
             count: 1)
         
@@ -105,6 +105,28 @@ extension PostsSettingViewController: UICollectionViewDelegate, UICollectionView
             return UICollectionViewCell()
         }
         cell.backgroundColor = .systemBackground
+        cell.delegate = self
         return cell
     }
+}
+
+extension PostsSettingViewController: FeedCollectionViewCellDelegate {
+    
+    func feedCollectionDidTapLike(_ user: String) {
+        // Like
+    }
+    
+    func feedCollectionDidTapComment(_ user: String) {
+        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
+    }
+    
+    func feedCollectionDidTapShare(_ user: String) {
+        // Shared
+    }
+    
+    func feedCollectionDidTapMoreComments(_ user: String) {
+        // Ver más comentarios
+        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
+    }
+    
 }

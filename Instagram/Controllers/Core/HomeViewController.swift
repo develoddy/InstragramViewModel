@@ -233,7 +233,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(400+170)),
+                    heightDimension: .absolute(400+200)),
                 subitem: item,
                 count: 1)
             
@@ -272,17 +272,24 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
 
 // MARK: - Delegates buttons
 extension HomeViewController: FeedCollectionViewCellDelegate {
+    
+    
     func feedCollectionDidTapLike(_ user: String) {
         // Like
     }
     
     func feedCollectionDidTapComment(_ user: String) {
-        let vc = CommentsViewController()
+        /*let vc = CommentsViewController()
         vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)*/
+        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
     }
     
     func feedCollectionDidTapShare(_ user: String) {
         // Share
+    }
+    
+    func feedCollectionDidTapMoreComments(_ user: String) {
+        // More Comment
     }
 }

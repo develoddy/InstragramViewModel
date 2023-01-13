@@ -11,6 +11,7 @@ protocol FeedCollectionViewCellDelegate: AnyObject {
     func feedCollectionDidTapLike(_ user: String)
     func feedCollectionDidTapComment(_ user: String)
     func feedCollectionDidTapShare(_ user: String)
+    func feedCollectionDidTapMoreComments(_ user: String)
 }
 
 class FeedCollectionViewCell: UICollectionViewCell {
@@ -83,6 +84,14 @@ class FeedCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    private let moreCommentsLabel: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Ver más comentarios", for: .normal)
+        button.setTitleColor(UIColor.lightGray, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+        return button
+    }()
+    
     private let postTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "2 days ago"
@@ -109,11 +118,14 @@ class FeedCollectionViewCell: UICollectionViewCell {
         
         addSubview(likesLabel)
         addSubview(captionLabel)
+        addSubview(moreCommentsLabel)
         addSubview(postTimeLabel)
         
         likeButton.addTarget(self, action: #selector(didTapLike), for: .touchUpInside)
         commentButton.addTarget(self, action: #selector(didTapComment), for: .touchUpInside)
         sharedButton.addTarget(self, action: #selector(didTapShare), for: .touchUpInside)
+        
+        moreCommentsLabel.addTarget(self, action: #selector(didTapMoreComments), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -150,7 +162,9 @@ class FeedCollectionViewCell: UICollectionViewCell {
         
         captionLabel.anchor(top: likesLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
         
-        postTimeLabel.anchor(top: captionLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
+        moreCommentsLabel.anchor(top: captionLabel.bottomAnchor, left: leftAnchor, paddingTop: 4, paddingLeft: 8)
+        
+        postTimeLabel.anchor(top: moreCommentsLabel.bottomAnchor, left: leftAnchor, paddingTop: 4, paddingLeft: 8)
     }
     
 
@@ -185,5 +199,10 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     @objc func didTapShare() {
         delegate?.feedCollectionDidTapShare("user")
+    }
+    
+    @objc func didTapMoreComments() {
+        print("debug: comment")
+        delegate?.feedCollectionDidTapMoreComments("user")
     }
 }
