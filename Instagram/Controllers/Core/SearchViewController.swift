@@ -54,6 +54,10 @@ class SearchViewController: UIViewController {
         })
     )
     
+    private var inSearchMode: Bool {
+        searchController.isActive && !searchController.searchBar.text!.isEmpty
+    }
+    
     
     // MARK: - Lifecycle
     
@@ -153,6 +157,9 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         ) as? PhotoCollectionViewCell else {
             return UICollectionViewCell()
         }
+        
+       
+        
         cell.configure()
         cell.backgroundColor = .systemYellow
         return cell

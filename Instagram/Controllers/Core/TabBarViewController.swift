@@ -17,9 +17,6 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        //let email = AuthManager.shared.fetchEmaillLoginUser()
-        //configureViewControllers(with: user)
-        //print("debug: \(email)")
         APICaller.shared.fetchUserLogin { [weak self] result in
             switch result {
             case .success(let user):
@@ -28,7 +25,6 @@ class TabBarViewController: UITabBarController {
                 print(error.localizedDescription)
             }
         }
-        
     }
     
     func configureViewControllers(with user: User) {
@@ -77,7 +73,7 @@ class TabBarViewController: UITabBarController {
         vc3.navigationBar.tintColor = .label
         vc4.navigationBar.tintColor = .label
         
-        setViewControllers([vc4, vc1, vc2, vc3], animated: false)
+        setViewControllers([vc1, vc2, vc3, vc4], animated: false)
     }
     
 

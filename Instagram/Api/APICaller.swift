@@ -7,9 +7,8 @@
 
 
 import Firebase
-//import FirebaseAuth
 
-
+/// Final APICaller
 final class APICaller {
     
     // MARK: - Properties
@@ -29,19 +28,20 @@ final class APICaller {
     func fetchUserLogin(completion: @escaping (Result<User, Error>) -> Void) {
         guard let email = Auth.auth().currentUser?.email else { return }
         db.collection("users").whereField("email", isEqualTo: email)
-            .getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        for document in querySnapshot!.documents {
-                            //print("\(document.documentID) => \(document.data())")
-                            let dictionary = document.data()
-                            let user = User(dictionary: dictionary)
-                            completion(.success(user))
-                        }
-                        
+        .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                    completion(.failure(APIError.faileedToGetData))
+                } else {
+                    for document in querySnapshot!.documents {
+                        //print("\(document.documentID) => \(document.data())")
+                        let dictionary = document.data()
+                        let user = User(dictionary: dictionary)
+                        completion(.success(user))
                     }
-            }
+                    
+                }
+        }
     }
     
     // MARK: - Users
@@ -51,6 +51,7 @@ final class APICaller {
             .getDocuments() { (querySnapshot, err) in
                     if let err = err {
                         print("Error getting documents: \(err)")
+                        completion(.failure(APIError.faileedToGetData))
                     } else {
                         for document in querySnapshot!.documents {
                             //print("\(document.documentID) => \(document.data())")

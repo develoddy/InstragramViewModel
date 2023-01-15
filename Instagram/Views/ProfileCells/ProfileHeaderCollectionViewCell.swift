@@ -40,7 +40,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     private lazy var editProfilefollowButton : UIButton = {
         let button = UIButton()
-        button.setTitle("Edit Profile", for: .normal)
+        //button.setTitle("Edit Profile", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
@@ -160,6 +160,11 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         super.prepareForReuse()
     }
     
+    func configure(with viewModel: ProfileHeaderViewModel) {
+        nameLabel.text = viewModel.user.username
+        profileImageView.sd_setImage(with: viewModel.profileImageURL)
+        editProfilefollowButton.setTitle(viewModel.followButtonText, for: .normal)
+    }
 
     // MARK: - Helpers
 
@@ -188,11 +193,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         button.setAttributedTitle(attrString1, for: [])
     }
     
-    //func configure(with viewModel: User ) {
-    func configure(with viewModel: ProfileHeaderViewModel) {
-        nameLabel.text = viewModel.user.username
-        profileImageView.sd_setImage(with: viewModel.profileImageURL)
-    }
+   
     
     // MARK: - Actions
     

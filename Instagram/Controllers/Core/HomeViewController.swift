@@ -36,6 +36,7 @@ class HomeViewController: UIViewController {
         configureCollectionView()
         configureModels()
         configureNavigationItem()
+        AuthManager.shared.getUser()
     }
     
     override func viewDidLayoutSubviews() {

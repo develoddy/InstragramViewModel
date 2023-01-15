@@ -21,6 +21,8 @@ final class AuthManager {
     
     // MARK: - Properties
     
+    var handle: AuthStateDidChangeListenerHandle?
+    
     static let shared = AuthManager()
     
     let db = Firestore.firestore()
@@ -29,8 +31,20 @@ final class AuthManager {
         return accessToken != nil
     }
     
-    var accessToken: Any? {
-        return Auth.auth().currentUser
+    private var accessToken: User? {
+        return self.getUser()
+    }
+        
+    func getUser() -> User? {
+        var userDic: User? = nil
+        let user = Auth.auth().currentUser
+        if user != nil {
+            let dic:[String:Any] = ["email":user?.email ?? "", "fullname": "", "profileImageURL": "", "username": "", "uid":user?.uid ?? ""]
+            userDic = User(dictionary: dic)
+        } else {
+            print("Document does not exist")
+        }
+        return userDic
     }
     
     

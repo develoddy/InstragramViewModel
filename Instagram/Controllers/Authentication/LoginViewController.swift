@@ -74,6 +74,7 @@ class LoginViewController: UIViewController {
         title = "Login"
         configureUI()
         configureNotificationObservers()
+        
     }
     
     // MARK: - Actions
