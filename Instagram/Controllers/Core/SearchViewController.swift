@@ -99,6 +99,7 @@ class SearchViewController: UIViewController {
     // MARK: - Actions
 }
 
+// MARK: - Search Result
 extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let resultsController = searchController.searchResultsController as? SearchResultsViewController,

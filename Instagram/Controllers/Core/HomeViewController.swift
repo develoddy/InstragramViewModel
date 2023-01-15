@@ -166,7 +166,10 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
         let section = sections[indexPath.section]
         switch section {
         case .stories(_):
-            break
+            let vc = SettingStorieViewController()
+            vc.navigationItem.largeTitleDisplayMode = .never
+            //vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
         case .feeds(_):
             let vc = ProfileViewController(user: User(dictionary: [:]))
             vc.title = "name"

@@ -8,16 +8,20 @@
 import UIKit
 import SDWebImage
 
+protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
+    func ProfileHeaderCollectionReusableViewDidTapPosts(_ posts: String)
+    func ProfileHeaderCollectionReusableViewDidTapFollowers(_ followers: String)
+    func ProfileHeaderCollectionReusableViewDidTapFollowings(_ followings: String)
+    func ProfileHeaderCollectionReusableViewDidTapEditProfile(_ editProfile: String)
+}
+
 class ProfileHeaderCollectionReusableView: UICollectionReusableView {
+    
+    // MARK: - Properties
     
     static let identifier = "ProfileHeaderCollectionReusableView"
     
-    //var viewModel : ProfileHeaderViewModel
-    /*var viewModel: ProfileHeaderViewModel? {
-        didSet {
-            configure()
-        }
-    }*/
+    weak var delegate: ProfileHeaderCollectionReusableViewDelegate?
     
     private let profileImageView: UIImageView = {
        let imageView = UIImageView()
@@ -42,34 +46,33 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
         button.layer.cornerRadius = 3
         button.layer.borderWidth = 0.5
-        button.addTarget(self, action: #selector(handleEditProfileFollowTapped), for: .touchUpInside)
         return button
     }()
     
-    lazy private var postsLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.attributedText = attributedStartText(value: 5, label: "Post")
-        return label
+    lazy private var postsButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .thin)
+        return button
     }()
     
-    lazy private var followersLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.attributedText = attributedStartText(value: 3, label: "Follower")
-        return label
+    lazy private var followersButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .thin)
+        return button
     }()
     
-    lazy private var followingsLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.attributedText = attributedStartText(value: 1, label: "Following")
-        return label
+    lazy private var followingsButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .thin)
+        return button
     }()
-    
+  
     private let gridButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "square.grid.3x3"), for: .normal)
@@ -98,7 +101,19 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         addSubview(profileImageView)
         addSubview(nameLabel)
         addSubview(editProfilefollowButton)
+        
+        attributedStartText(value: 3, button: followersButton, label: "Followers")
+        attributedStartText(value: 10, button: followingsButton, label: "Followings")
+        attributedStartText(value: 5, button: postsButton, label: "Posts")
+        
+        postsButton.addTarget(self, action: #selector(didTapPosts), for: .touchUpInside)
+        followersButton.addTarget(self, action: #selector(didTapFollowers), for: .touchUpInside)
+        followingsButton.addTarget(self, action: #selector(didTapFollowings), for: .touchUpInside)
+        editProfilefollowButton.addTarget(self, action: #selector(didTapEditProfile), for: .touchUpInside)
     }
+    
+    
+    // MARK: - Init
     
     required init?(coder: NSCoder) {
         fatalError()
@@ -115,7 +130,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         
         editProfilefollowButton.anchor(top: nameLabel.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 16, paddingLeft: 24, paddingRight: 24)
         
-        let stack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingsLabel])
+        let stack = UIStackView(arrangedSubviews: [postsButton, followersButton, followingsButton])
         stack.distribution = .fillEqually
         addSubview(stack)
         stack.centerY(inView: profileImageView)
@@ -139,37 +154,61 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         topDivider.anchor(top: buttonStack.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
         
         bottomDivider.anchor(top: buttonStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
-        
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
     }
     
-    
-    // MARK: - Actions
-    
-    @objc func handleEditProfileFollowTapped() {
-        print("Edit Profile...")
-    }
-    
-    
+
     // MARK: - Helpers
-    
-    func attributedStartText(value: Int, label: String) -> NSAttributedString {
-        let attributedText = NSMutableAttributedString(
-            string: "\(value)\n",
-            attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+
+    private func attributedStartText(value: Int, button: UIButton, label: String) {
+        button.titleLabel?.lineBreakMode = NSLineBreakMode.byCharWrapping
+        let buttonText: NSString = "\(value) \n \(label)" as NSString
+        let newlineRange: NSRange = buttonText.range(of: "\n")
         
-        attributedText.append(NSAttributedString(
-            string: label,
-            attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray]))
-        return attributedText
+        var substring1 = ""
+        var substring2 = ""
+        
+        if(newlineRange.location != NSNotFound) {
+            substring1 = buttonText.substring(to: newlineRange.location)
+            substring2 = buttonText.substring(from: newlineRange.location)
+        }
+        
+        let font1: UIFont = .systemFont(ofSize: 14, weight: .semibold)
+        let attributes1 = [NSMutableAttributedString.Key.font: font1]
+        let attrString1 = NSMutableAttributedString(string: substring1, attributes: attributes1)
+        
+        let font2: UIFont = .systemFont(ofSize: 14, weight: .thin)
+        let attributes2 = [NSMutableAttributedString.Key.font: font2]
+        let attrString2 = NSMutableAttributedString(string: substring2, attributes: attributes2)
+        
+        attrString1.append(attrString2)
+        button.setAttributedTitle(attrString1, for: [])
     }
     
     //func configure(with viewModel: User ) {
     func configure(with viewModel: ProfileHeaderViewModel) {
         nameLabel.text = viewModel.user.username
         profileImageView.sd_setImage(with: viewModel.profileImageURL)
+    }
+    
+    // MARK: - Actions
+    
+    @objc func didTapPosts() {
+        delegate?.ProfileHeaderCollectionReusableViewDidTapPosts("Posts")
+    }
+    
+    @objc func didTapFollowers() {
+        delegate?.ProfileHeaderCollectionReusableViewDidTapFollowers("followers")
+    }
+    
+    @objc func didTapFollowings() {
+        delegate?.ProfileHeaderCollectionReusableViewDidTapFollowings("Followings")
+    }
+    
+    @objc func didTapEditProfile() {
+        delegate?.ProfileHeaderCollectionReusableViewDidTapEditProfile("Edit Profile")
     }
 }
