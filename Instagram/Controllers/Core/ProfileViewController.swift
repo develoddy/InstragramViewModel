@@ -27,10 +27,17 @@ class ProfileViewController: UICollectionViewController {
         super.viewDidLoad()
         configureUI()
         configureCollections()
+        checkIfUserIsFollowed()
     }
     
     // MARK: - API
-
+    func checkIfUserIsFollowed() {
+        guard let uid = user?.uid else { return }
+        APICaller.shared.checkIfUserIsFollowed(uid: uid) { isFollowed in
+            self.user?.isFollwed = isFollowed
+            self.collectionView.reloadData()
+        }
+    }
     
     // MARK: - Helpers
     
@@ -118,16 +125,33 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Profile header
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     
-    func ProfileHeaderCollectionReusableViewDidTapPosts(_ posts: String) {
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User) {
+        if user.isCurrentUser {
+            debugPrint("Debug: Show edit profile here")
+        } else if user.isFollwed {
+            APICaller.shared.unfollow(uid: user.uid) { error in
+                self.user?.isFollwed = false
+                self.collectionView.reloadData()
+            }
+        } else {
+            APICaller.shared.follow(uid: user.uid) { error in
+                self.user?.isFollwed = true
+                self.collectionView.reloadData()
+            }
+        }
+    }
+    
+    
+    /*func ProfileHeaderCollectionReusableViewDidTapPosts(_ posts: String) {
         self.collectionView.scrollToItem(
             at: IndexPath(row: 0,section: 0),
             at: .top,
             animated: true
         )
-    }
+    }*/
     
     // Followers
-    func ProfileHeaderCollectionReusableViewDidTapFollowers(_ followers: String) {
+    /*func ProfileHeaderCollectionReusableViewDidTapFollowers(_ followers: String) {
         
         var mockData = [UserRelationship]()
         for x in 0..<10 {
@@ -141,11 +165,10 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         vc.title = "Followers"
         vc.navigationItem.largeTitleDisplayMode = .never
         self.navigationController?.pushViewController(vc, animated: true)
-        
-    }
+    }*/
     
     // Followings
-    func ProfileHeaderCollectionReusableViewDidTapFollowings(_ followings: String) {
+    /*func ProfileHeaderCollectionReusableViewDidTapFollowings(_ followings: String) {
         var mockData = [UserRelationship]()
         for x in 0..<10 {
             mockData.append(UserRelationship(
@@ -161,5 +184,5 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     
     func ProfileHeaderCollectionReusableViewDidTapEditProfile(_ editProfile: String) {
         print(editProfile)
-    }
+    }*/
 }

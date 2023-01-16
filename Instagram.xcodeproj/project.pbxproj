@@ -32,6 +32,7 @@
 		B335AFFD2970461800AE9999 /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFFC2970461700AE9999 /* NotificationCategory.swift */; };
 		B335AFFF29704AE900AE9999 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFFE29704AE900AE9999 /* Notifications.swift */; };
 		B34F9D1F297465BB002956BE /* SettingStorieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */; };
+		B34F9D2129753AB1002956BE /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2029753AB1002956BE /* HapticsManager.swift */; };
 		B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */; };
 		B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC72965650B00606150 /* AppDelegate.swift */; };
 		B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC92965650B00606150 /* SceneDelegate.swift */; };
@@ -84,6 +85,7 @@
 		B335AFFC2970461700AE9999 /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
 		B335AFFE29704AE900AE9999 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStorieViewController.swift; sourceTree = "<group>"; };
+		B34F9D2029753AB1002956BE /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
 		B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersCollectionViewCell.swift; sourceTree = "<group>"; };
 		B3BD8CC42965650B00606150 /* Instagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3BD8CC72965650B00606150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -211,7 +213,6 @@
 				B3BD8CDF2965668700606150 /* Views */,
 				B3BD8CDE2965668400606150 /* ViewModels */,
 				B3BD8CDD2965668200606150 /* Controllers */,
-				B3BD8CDC2965667F00606150 /* Api */,
 				B3BD8CDB2965665300606150 /* Utils */,
 				B3BD8CD52965650E00606150 /* Info.plist */,
 				B3BD8CF92966E77E00606150 /* GoogleService-Info.plist */,
@@ -225,14 +226,6 @@
 				B335AFEA296C15E200AE9999 /* Constants.swift */,
 			);
 			path = Utils;
-			sourceTree = "<group>";
-		};
-		B3BD8CDC2965667F00606150 /* Api */ = {
-			isa = PBXGroup;
-			children = (
-				B335AFEC296C16CF00AE9999 /* APICaller.swift */,
-			);
-			path = Api;
 			sourceTree = "<group>";
 		};
 		B3BD8CDD2965668200606150 /* Controllers */ = {
@@ -344,6 +337,8 @@
 			isa = PBXGroup;
 			children = (
 				B3BD8D0E296700A500606150 /* AuthManager.swift */,
+				B335AFEC296C16CF00AE9999 /* APICaller.swift */,
+				B34F9D2029753AB1002956BE /* HapticsManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -503,6 +498,7 @@
 				B312360729678625004ECE2E /* ProfileHeaderCollectionViewCell.swift in Sources */,
 				B335AFF1296C859100AE9999 /* ProfileHeaderViewModel.swift in Sources */,
 				B3BD8CEE2965986100606150 /* HomeViewController.swift in Sources */,
+				B34F9D2129753AB1002956BE /* HapticsManager.swift in Sources */,
 				B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */,
 				B335AFF5296DC0E800AE9999 /* PhotoCollectionViewCell.swift in Sources */,
 				B3BD8CEC29656EB100606150 /* ProfileViewController.swift in Sources */,

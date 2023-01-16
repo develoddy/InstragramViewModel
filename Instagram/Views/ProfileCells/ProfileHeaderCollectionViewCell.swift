@@ -8,11 +8,21 @@
 import UIKit
 import SDWebImage
 
-protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
+/*protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
     func ProfileHeaderCollectionReusableViewDidTapPosts(_ posts: String)
     func ProfileHeaderCollectionReusableViewDidTapFollowers(_ followers: String)
     func ProfileHeaderCollectionReusableViewDidTapFollowings(_ followings: String)
     func ProfileHeaderCollectionReusableViewDidTapEditProfile(_ editProfile: String)
+}*/
+
+/*protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollow uid: String)
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToUnFollow uid: String)
+    func headerWantsToShowEditProfile(_ profileHeaderCollectionReusableView: ProfileHeaderCollectionReusableView)
+}*/
+
+protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User )
 }
 
 class ProfileHeaderCollectionReusableView: UICollectionReusableView {
@@ -20,6 +30,8 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - Properties
     
     static let identifier = "ProfileHeaderCollectionReusableView"
+    
+    var viewModel: ProfileHeaderViewModel?
     
     weak var delegate: ProfileHeaderCollectionReusableViewDelegate?
     
@@ -40,7 +52,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     private lazy var editProfilefollowButton : UIButton = {
         let button = UIButton()
-        //button.setTitle("Edit Profile", for: .normal)
+        button.setTitle("Loading", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
@@ -160,10 +172,25 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         super.prepareForReuse()
     }
     
+    // public func setCellWithValuesOf(_ model: Userpost, liked: Bool) {
     func configure(with viewModel: ProfileHeaderViewModel) {
-        nameLabel.text = viewModel.user.username
-        profileImageView.sd_setImage(with: viewModel.profileImageURL)
-        editProfilefollowButton.setTitle(viewModel.followButtonText, for: .normal)
+        self.viewModel = viewModel
+        
+        updateUI(
+            username: viewModel.user.username,
+            profileImageURL: viewModel.profileImageURL,
+            followButtonText: viewModel.followButtonText,
+            followButtonTextBackgroundColor: viewModel.followButtonTextBackgroundColor,
+            followButtonBackgroundColor: viewModel.followButtonBackgroundColor
+        )
+    }
+    
+    private func updateUI(username: String, profileImageURL: URL?, followButtonText: String, followButtonTextBackgroundColor: UIColor, followButtonBackgroundColor: UIColor ) {
+        nameLabel.text = username
+        profileImageView.sd_setImage(with: profileImageURL)
+        editProfilefollowButton.setTitle(followButtonText, for: .normal)
+        editProfilefollowButton.setTitleColor(followButtonTextBackgroundColor, for: .normal)
+        editProfilefollowButton.backgroundColor = followButtonBackgroundColor
     }
 
     // MARK: - Helpers
@@ -198,18 +225,27 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - Actions
     
     @objc func didTapPosts() {
-        delegate?.ProfileHeaderCollectionReusableViewDidTapPosts("Posts")
+        //delegate?.ProfileHeaderCollectionReusableViewDidTapPosts("Posts")
     }
     
     @objc func didTapFollowers() {
-        delegate?.ProfileHeaderCollectionReusableViewDidTapFollowers("followers")
+        //delegate?.ProfileHeaderCollectionReusableViewDidTapFollowers("followers")
+        
+        
+        
     }
     
     @objc func didTapFollowings() {
-        delegate?.ProfileHeaderCollectionReusableViewDidTapFollowings("Followings")
+        //delegate?.ProfileHeaderCollectionReusableViewDidTapFollowings("Followings")
     }
     
     @objc func didTapEditProfile() {
-        delegate?.ProfileHeaderCollectionReusableViewDidTapEditProfile("Edit Profile")
+        //delegate?.ProfileHeaderCollectionReusableViewDidTapEditProfile("Edit Profile")
+        
+        guard let user = self.viewModel?.user else {
+            return
+        }
+      
+        delegate?.header(self, didTapActionButtonFor: user )
     }
 }

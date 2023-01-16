@@ -8,6 +8,8 @@
 
 import Firebase
 
+typealias FirestoreCompletion = (Error?) -> Void
+
 /// Final APICaller
 final class APICaller {
     
@@ -90,12 +92,43 @@ final class APICaller {
         }
     }
     
+    
+    // MARK: - Follows
+    
+    func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
+        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
+            .document(uid).setData([:]) { error in
+                
+                COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                    .document(currentUid).setData([:], completion: completion)
+        }
+    }
+    
+    func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
+        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
+            .document(uid).delete { error in
+                
+                COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                    .document(currentUid).delete(completion: completion)
+        }
+    }
+    
+    func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)  {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
+        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
+            guard let isFollowed = snapshot?.exists else { return }
+            completion(isFollowed)
+        }
+    }
+    
     // MARK: - Comments
     
     
     // MARK: - Post
     
     
-    // MARK: - Follows
+   
 
 }
