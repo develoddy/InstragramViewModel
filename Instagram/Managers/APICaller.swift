@@ -16,6 +16,7 @@ final class APICaller {
     // MARK: - Properties
     
     static let shared = APICaller()
+    
     let db = Firestore.firestore()
     
     private init() {}

@@ -33,6 +33,8 @@
 		B335AFFF29704AE900AE9999 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFFE29704AE900AE9999 /* Notifications.swift */; };
 		B34F9D1F297465BB002956BE /* SettingStorieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */; };
 		B34F9D2129753AB1002956BE /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2029753AB1002956BE /* HapticsManager.swift */; };
+		B34F9D292975995B002956BE /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D282975995A002956BE /* ProfileService.swift */; };
+		B34F9D2B29759A2E002956BE /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2A29759A2E002956BE /* ProfileViewModel.swift */; };
 		B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */; };
 		B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC72965650B00606150 /* AppDelegate.swift */; };
 		B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC92965650B00606150 /* SceneDelegate.swift */; };
@@ -86,6 +88,8 @@
 		B335AFFE29704AE900AE9999 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStorieViewController.swift; sourceTree = "<group>"; };
 		B34F9D2029753AB1002956BE /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
+		B34F9D282975995A002956BE /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		B34F9D2A29759A2E002956BE /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersCollectionViewCell.swift; sourceTree = "<group>"; };
 		B3BD8CC42965650B00606150 /* Instagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3BD8CC72965650B00606150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -163,8 +167,6 @@
 		B312360329678558004ECE2E /* ProfileCells */ = {
 			isa = PBXGroup;
 			children = (
-				B312360429678596004ECE2E /* ProfilePhotosCollectionViewCell.swift */,
-				B312360629678625004ECE2E /* ProfileHeaderCollectionViewCell.swift */,
 			);
 			path = ProfileCells;
 			sourceTree = "<group>";
@@ -175,6 +177,66 @@
 				B335AFF8296DC40300AE9999 /* SearchResultDefaultTableViewCell.swift */,
 			);
 			path = SearchResultDefaultTableViewCells;
+			sourceTree = "<group>";
+		};
+		B34F9D222975977E002956BE /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				B34F9D232975978B002956BE /* Profile */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		B34F9D232975978B002956BE /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				B34F9D27297597C1002956BE /* Service */,
+				B34F9D26297597B8002956BE /* ViewModel */,
+				B34F9D25297597A8002956BE /* Model */,
+				B34F9D24297597A1002956BE /* View */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		B34F9D24297597A1002956BE /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B34F9D2C2975FEFD002956BE /* Cell */,
+				B3BD8CEB29656EB100606150 /* ProfileViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B34F9D25297597A8002956BE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B34F9D26297597B8002956BE /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B34F9D2A29759A2E002956BE /* ProfileViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B34F9D27297597C1002956BE /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B34F9D282975995A002956BE /* ProfileService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		B34F9D2C2975FEFD002956BE /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				B312360429678596004ECE2E /* ProfilePhotosCollectionViewCell.swift */,
+				B312360629678625004ECE2E /* ProfileHeaderCollectionViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		B3874F672971FD1A004F6D17 /* FollowCells */ = {
@@ -292,12 +354,12 @@
 		B3BD8CE429656D9B00606150 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				B34F9D222975977E002956BE /* Modules */,
 				B3BD8CCB2965650B00606150 /* TabBarViewController.swift */,
 				B3BD8CE529656E6A00606150 /* FeedViewController.swift */,
 				B3BD8CED2965986000606150 /* HomeViewController.swift */,
 				B3BD8CE729656E8A00606150 /* SearchViewController.swift */,
 				B3BD8CE929656EA500606150 /* NotificationViewController.swift */,
-				B3BD8CEB29656EB100606150 /* ProfileViewController.swift */,
 				B301928C2970AE0B002A0335 /* CommentsViewController.swift */,
 			);
 			path = Core;
@@ -502,6 +564,7 @@
 				B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */,
 				B335AFF5296DC0E800AE9999 /* PhotoCollectionViewCell.swift in Sources */,
 				B3BD8CEC29656EB100606150 /* ProfileViewController.swift in Sources */,
+				B34F9D2B29759A2E002956BE /* ProfileViewModel.swift in Sources */,
 				B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */,
 				B3BD8D1229672FA500606150 /* ProfileTabsPhotosViewController.swift in Sources */,
 				B3BD8D16296734CD00606150 /* ProfileToggleView.swift in Sources */,
@@ -511,6 +574,7 @@
 				B30192912970B5A1002A0335 /* CommentsHeaderCollectionReusableView.swift in Sources */,
 				B335AFFD2970461800AE9999 /* NotificationCategory.swift in Sources */,
 				B3BD8D0A2966FF6000606150 /* SettingsViewController.swift in Sources */,
+				B34F9D292975995B002956BE /* ProfileService.swift in Sources */,
 				B301928D2970AE0B002A0335 /* CommentsViewController.swift in Sources */,
 				B3BD8D0C2966FFB900606150 /* SettingsModels.swift in Sources */,
 				B3019294297152D1002A0335 /* PostCommentPresenter.swift in Sources */,

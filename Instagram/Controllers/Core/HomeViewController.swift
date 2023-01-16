@@ -36,7 +36,6 @@ class HomeViewController: UIViewController {
         configureCollectionView()
         configureModels()
         configureNavigationItem()
-        AuthManager.shared.getUser()
     }
     
     override func viewDidLayoutSubviews() {
@@ -49,7 +48,6 @@ class HomeViewController: UIViewController {
     
     func configureCollectionView() {
         view.addSubview(collectionView)
-        // collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.identifier)
         collectionView.register(StoriesCollectionViewCell.self, forCellWithReuseIdentifier: StoriesCollectionViewCell.identifier)
         collectionView.dataSource = self

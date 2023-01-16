@@ -158,8 +158,6 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return UICollectionViewCell()
         }
         
-       
-        
         cell.configure()
         cell.backgroundColor = .systemYellow
         return cell

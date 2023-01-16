@@ -13,6 +13,8 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Propertie
     private var user: User?
     
+    private var profileViewModel = ProfileViewModel()
+    
     init(user: User) {
         self.user = user
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -41,14 +43,17 @@ class ProfileViewController: UICollectionViewController {
     }
     
     func fetchUserStats() {
-        guard let uid = user?.uid else { return }
+        /*guard let uid = user?.uid else { return }
         APICaller.shared.fetchUserStats(uid: uid) { stats in
             self.user?.stats = stats
             self.collectionView.reloadData()
-            
             print("DEBUG: Stats \(stats)")
+        }*/
+        guard let uid = user?.uid else { return }
+        profileViewModel.fetchUserStats(uid: uid) { [weak self] stats in
+            self?.user?.stats = stats
+            self?.collectionView.reloadData()
         }
-        
     }
     
     // MARK: - Helpers
@@ -72,11 +77,19 @@ class ProfileViewController: UICollectionViewController {
             withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier
         )
     }
+    
+    /*func updateUIList() {
+        profileViewModel.bindProfileViewModelToController = { [weak self] in
+            DispatchQueue.main.async  {
+                self?.collectionView.reloadData()
+            }
+        }
+    }*/
 }
 
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return profileViewModel.numberOfRowsInSection(section: section)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -101,6 +114,7 @@ extension ProfileViewController {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
+        
         if let user = user {
             header.configure(with: ProfileHeaderViewModel(user: user))
         }
@@ -108,7 +122,6 @@ extension ProfileViewController {
         header.backgroundColor = .systemBackground
         return header
     }
-    
 }
 
 
