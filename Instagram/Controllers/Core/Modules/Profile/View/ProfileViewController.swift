@@ -11,12 +11,13 @@ import Firebase
 class ProfileViewController: UICollectionViewController {
     
     // MARK: - Propertie
-    private var user: User?
+    //private var user: User?
     
     private var profileViewModel = ProfileViewModel()
     
     init(user: User) {
-        self.user = user
+        //self.user = user
+        profileViewModel.updatePropertiesUser(user: user)
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
@@ -31,15 +32,17 @@ class ProfileViewController: UICollectionViewController {
         configureCollections()
         checkIfUserIsFollowed()
         fetchUserStats()
+        updateUI()
     }
     
     // MARK: - API
     func checkIfUserIsFollowed() {
-        guard let uid = user?.uid else { return }
-        APICaller.shared.checkIfUserIsFollowed(uid: uid) { isFollowed in
-            self.user?.isFollwed = isFollowed
-            self.collectionView.reloadData()
-        }
+        //guard let uid = user?.uid else { return }
+        //let uid = profileViewModel.getUID()
+        //APICaller.shared.checkIfUserIsFollowed(uid: uid) { isFollowed in
+            //self.user?.isFollwed = isFollowed
+            //self.collectionView.reloadData()
+        //}
     }
     
     func fetchUserStats() {
@@ -49,17 +52,19 @@ class ProfileViewController: UICollectionViewController {
             self.collectionView.reloadData()
             print("DEBUG: Stats \(stats)")
         }*/
-        guard let uid = user?.uid else { return }
+        let uid = profileViewModel.getUID()
         profileViewModel.fetchUserStats(uid: uid) { [weak self] stats in
-            self?.user?.stats = stats
-            self?.collectionView.reloadData()
+            //self?.user?.stats = stats
+            self?.profileViewModel.updatePropertiStats(stats: stats)
+            //self?.collectionView.reloadData()
+            
         }
     }
     
     // MARK: - Helpers
     
     private func configureUI() {
-        title = user?.username
+        title = profileViewModel.getUsername() //user?.username
         collectionView.backgroundColor = .systemBackground
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
@@ -78,13 +83,13 @@ class ProfileViewController: UICollectionViewController {
         )
     }
     
-    /*func updateUIList() {
+    func updateUI() {
         profileViewModel.bindProfileViewModelToController = { [weak self] in
             DispatchQueue.main.async  {
                 self?.collectionView.reloadData()
             }
         }
-    }*/
+    }
 }
 
 extension ProfileViewController {
@@ -114,10 +119,11 @@ extension ProfileViewController {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
-        
-        if let user = user {
+    
+        if let user = profileViewModel.fetchUser() {
             header.configure(with: ProfileHeaderViewModel(user: user))
         }
+        
         header.delegate = self
         header.backgroundColor = .systemBackground
         return header
@@ -154,15 +160,15 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         if user.isCurrentUser {
             debugPrint("Debug: Show edit profile here")
         } else if user.isFollwed {
-            APICaller.shared.unfollow(uid: user.uid) { error in
+            /*APICaller.shared.unfollow(uid: user.uid) { error in
                 self.user?.isFollwed = false
                 self.collectionView.reloadData()
-            }
+            }*/
         } else {
-            APICaller.shared.follow(uid: user.uid) { error in
+            /*APICaller.shared.follow(uid: user.uid) { error in
                 self.user?.isFollwed = true
                 self.collectionView.reloadData()
-            }
+            }*/
         }
     }
     
