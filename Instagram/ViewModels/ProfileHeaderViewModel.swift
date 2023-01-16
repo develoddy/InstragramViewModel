@@ -35,7 +35,16 @@ struct ProfileHeaderViewModel {
         return user.isCurrentUser ? .black : .white
     }
     
+    /*var numberOfFollowers: NSAttributedString {
+        return attributedStartText(value: user.stats.followers, button: UIButton(), label: "Followers")
+    }
+    
+    var numberOfFollowings: NSAttributedString {
+        return attributedStartText(value: user.stats.following, button: UIButton(), label: "Followings")
+    }*/
+    
     init(user: User) {
         self.user = user
     }
+
 }

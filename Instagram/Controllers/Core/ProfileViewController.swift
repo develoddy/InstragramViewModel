@@ -28,6 +28,7 @@ class ProfileViewController: UICollectionViewController {
         configureUI()
         configureCollections()
         checkIfUserIsFollowed()
+        fetchUserStats()
     }
     
     // MARK: - API
@@ -37,6 +38,17 @@ class ProfileViewController: UICollectionViewController {
             self.user?.isFollwed = isFollowed
             self.collectionView.reloadData()
         }
+    }
+    
+    func fetchUserStats() {
+        guard let uid = user?.uid else { return }
+        APICaller.shared.fetchUserStats(uid: uid) { stats in
+            self.user?.stats = stats
+            self.collectionView.reloadData()
+            
+            print("DEBUG: Stats \(stats)")
+        }
+        
     }
     
     // MARK: - Helpers

@@ -114,9 +114,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         addSubview(nameLabel)
         addSubview(editProfilefollowButton)
         
-        attributedStartText(value: 3, button: followersButton, label: "Followers")
-        attributedStartText(value: 10, button: followingsButton, label: "Followings")
-        attributedStartText(value: 5, button: postsButton, label: "Posts")
+        
         
         postsButton.addTarget(self, action: #selector(didTapPosts), for: .touchUpInside)
         followersButton.addTarget(self, action: #selector(didTapFollowers), for: .touchUpInside)
@@ -181,16 +179,32 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             profileImageURL: viewModel.profileImageURL,
             followButtonText: viewModel.followButtonText,
             followButtonTextBackgroundColor: viewModel.followButtonTextBackgroundColor,
-            followButtonBackgroundColor: viewModel.followButtonBackgroundColor
+            followButtonBackgroundColor: viewModel.followButtonBackgroundColor,
+            followers: viewModel.user.stats.followers,
+            followings: viewModel.user.stats.following,
+            posts: 0
         )
     }
     
-    private func updateUI(username: String, profileImageURL: URL?, followButtonText: String, followButtonTextBackgroundColor: UIColor, followButtonBackgroundColor: UIColor ) {
+    private func updateUI(
+        username: String,
+        profileImageURL: URL?,
+        followButtonText: String,
+        followButtonTextBackgroundColor: UIColor,
+        followButtonBackgroundColor: UIColor,
+        followers: Int,
+        followings: Int,
+        posts: Int
+    ) {
         nameLabel.text = username
         profileImageView.sd_setImage(with: profileImageURL)
         editProfilefollowButton.setTitle(followButtonText, for: .normal)
         editProfilefollowButton.setTitleColor(followButtonTextBackgroundColor, for: .normal)
         editProfilefollowButton.backgroundColor = followButtonBackgroundColor
+        
+        attributedStartText(value: followers, button: followersButton, label: "Followers")
+        attributedStartText(value: followings, button: followingsButton, label: "Followings")
+        attributedStartText(value: posts, button: postsButton, label: "Posts")
     }
 
     // MARK: - Helpers
