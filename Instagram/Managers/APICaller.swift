@@ -10,8 +10,23 @@ import Firebase
 
 typealias FirestoreCompletion = (Error?) -> Void
 
+
+protocol APICallerDelegate: AnyObject {
+    func fetchUserLogin(completion: @escaping (Result<User, Error>) -> Void)
+    func registerUser()
+    func fetchUser(email: String, completion: @escaping (Result<User, Error>) -> Void)
+    func fetchUsers(completion: @escaping (Result<[User], Error>) -> Void)
+    func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)
+    func follow(uid: String, completion: @escaping(FirestoreCompletion))
+    func unfollow(uid: String, completion: @escaping(FirestoreCompletion))
+    func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void)
+    func uploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion))
+    func fetchPosts() 
+    
+}
+
 /// Final APICaller
-final class APICaller {
+final class APICaller: APICallerDelegate {
     
     // MARK: - Properties
     
@@ -19,14 +34,14 @@ final class APICaller {
     
     let db = Firestore.firestore()
     
-    private init() {}
+    //private init() {}
         
     enum APIError: Error {
         case faileedToGetData
     }
 
 
-    // MARK: - Fetch UserLogin
+    // MARK: - Login && Register
     
     func fetchUserLogin(completion: @escaping (Result<User, Error>) -> Void) {
         guard let email = Auth.auth().currentUser?.email else { return }
@@ -45,6 +60,10 @@ final class APICaller {
                     
                 }
         }
+    }
+    
+    func registerUser() {
+        //
     }
     
     // MARK: - Users
@@ -96,7 +115,15 @@ final class APICaller {
     
     // MARK: - Follows
     
-    /*func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
+    func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)  {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
+        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
+            guard let isFollowed = snapshot?.exists else { return }
+            completion(isFollowed)
+        }
+    }
+    
+    func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).setData([:]) { error in
@@ -104,9 +131,9 @@ final class APICaller {
                 COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).setData([:], completion: completion)
         }
-    }*/
+    }
     
-    /*func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
+    func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).delete { error in
@@ -114,17 +141,10 @@ final class APICaller {
                 COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).delete(completion: completion)
         }
-    }*/
+    }
     
-    /*func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)  {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
-            guard let isFollowed = snapshot?.exists else { return }
-            completion(isFollowed)
-        }
-    }*/
-    
-    /*func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {
+
+    func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {
         COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { (snapshot, _) in
             let followers = snapshot?.documents.count ?? 0
             
@@ -134,14 +154,38 @@ final class APICaller {
                 completion(UserStats(followers: followers, following: followings))
             }
         }
-    }*/
+    }
     
     // MARK: - Comments
     
     
-    // MARK: - Post
     
+    // MARK: - Posts
     
-   
-
+    func uploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion)) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        ImageUploader.uploadImage(image: image) { imageURL in
+            let data = [
+                "caption": caption,
+                "timestamp": Timestamp(date: Date()),
+                "likes": 0,
+                "imageURL": imageURL,
+                "ownerUid": uid
+            ] as [String: Any]
+            
+            COLLECTION_POSTS.addDocument(data: data, completion: completion)
+        }
+    }
+    
+    func fetchPosts() {
+        COLLECTION_POSTS.getDocuments { (snapshot, error) in
+            
+            guard let documents = snapshot?.documents else { return }
+            
+            documents.forEach { doc in
+                print("DEBUG: Doc data is \(doc.data())")
+            }
+            
+        }
+    }
 }

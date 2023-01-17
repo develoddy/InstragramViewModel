@@ -34,7 +34,7 @@ class TabBarViewController: UITabBarController {
         let vc1 = templateNavigationController(
             unSelectedImage: UIImage(systemName: "house")!,
             selectedImage: UIImage(systemName: "house.fill")!,
-            rootViewController: HomeViewController()
+            rootViewController: FeedViewController()
         )
         
         let vc2 = templateNavigationController(

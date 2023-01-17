@@ -3,193 +3,304 @@
 //  Instagram
 //
 //  Created by Eddy Donald Chinchay Lujan on 4/1/23.
-//
+// https://github.com/firebase/firebase-ios-sdk
 
-
-/*
- 
- //
- //  ProfileViewController.swift
- //  Instagram
- //
- //  Created by Eddy Donald Chinchay Lujan on 4/1/23.
- //
-
- import UIKit
-
-
- class ProfileViewController: UIViewController {
-     
-     private var collectionView: UICollectionView = UICollectionView(
-         frame: .zero,
-         collectionViewLayout: UICollectionViewCompositionalLayout { _, _ -> NSCollectionLayoutSection? in
-             
-  
-             // Item
-             let item = NSCollectionLayoutItem(
-                 layoutSize: NSCollectionLayoutSize(
-                     widthDimension: .fractionalWidth(1.0),
-                     heightDimension: .fractionalHeight(1.0)
-                 )
-             )
-             
-             item.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: 2, bottom: 1, trailing: 2)
-             
-             let verticalGroup = NSCollectionLayoutGroup.vertical(
-                 layoutSize: NSCollectionLayoutSize(
-                     widthDimension: .fractionalWidth(1),
-                     heightDimension: .absolute(150)),
-                 subitem: item,
-                 count: 1)
-             
-             let horizontalGroup = NSCollectionLayoutGroup.horizontal(
-                 layoutSize: NSCollectionLayoutSize(
-                     widthDimension: .fractionalWidth(1),
-                     heightDimension: .absolute(150)),
-                 subitem: verticalGroup,
-                 count: 3)
-             
-             // Section
-             let section = NSCollectionLayoutSection(group: horizontalGroup)
-             section.boundarySupplementaryItems = [
-                 NSCollectionLayoutBoundarySupplementaryItem(
-                     layoutSize: NSCollectionLayoutSize(
-                         widthDimension: .fractionalWidth(1),
-                         heightDimension: .fractionalWidth(1)),
-                     elementKind: UICollectionView.elementKindSectionHeader,
-                     alignment: .top)
-             ]
-             
-             return section
-         }
-     )
-     
-
-     override func viewDidLoad() {
-         super.viewDidLoad()
-         configureUI()
-         configureCollectionView()
-     }
-     
-     override func viewDidLayoutSubviews() {
-         super.viewDidLayoutSubviews()
-         collectionView.frame = view.bounds
-     }
-     
-     private func configureUI() {
-         title = "Profile"
-         view.backgroundColor = .systemBackground
-     }
-     
-     
-     private func configureCollectionView() {
-         view.addSubview(collectionView)
-         collectionView.register(
-             UICollectionViewCell.self,
-             forCellWithReuseIdentifier: "cell"
-         )
-         
-         collectionView.register(
-             UICollectionReusableView.self,
-             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-             withReuseIdentifier: "UICollectionReusableView"
-         )
-         
-         collectionView.backgroundColor = .systemBackground
-         collectionView.delegate = self
-         collectionView.dataSource = self
-     }
- }
-
-
-
-
-
- extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-     
-     func numberOfSections(in collectionView: UICollectionView) -> Int {
-         //return 1
-         return 2
-     }
-     
-     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-         //return 16
-         if section == 0 { return 0 }
-         //if section == 1 { return 0 }
-         return 7
-     }
-     
-     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-         cell.backgroundColor = .systemBlue
-         return cell
-     }
-     
-     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-         
-         guard kind == UICollectionView.elementKindSectionHeader else {
-             return UICollectionReusableView()
-         }
-         
-         let header = collectionView.dequeueReusableSupplementaryView(
-             ofKind: kind,
-             withReuseIdentifier: "UICollectionReusableView",
-             for: indexPath
-         )
-         
-         
-         if indexPath.section == 0 {
-             header.backgroundColor = .red
-         } else if indexPath.section == 1 {
-             header.backgroundColor = .yellow
-         }
-         return header
-     }
- }
-
- 
- */
 
 import UIKit
 
-class FeedViewController: UICollectionViewController {
+enum FeedSectionType {
+    case stories(viewModels: String) // 1
+    case feeds(viewModels: String) // 2
+}
+
+
+class FeedViewController: UIViewController {
+
+    // MARK: - Properties
     
+    var viewModel = FeedViewModel()
+    
+    private var collectionView: UICollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewCompositionalLayout { sectionIndex, _ -> NSCollectionLayoutSection? in
+            return FeedViewController.createSectionLayout(section: sectionIndex)
+        }
+    )
+    
+    private var sections = [FeedSectionType]()
 
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        title = "Browse"
+        view.backgroundColor = .systemBackground
+        configureCollectionView()
+        configureModels()
+        configureNavigationItem()
+        fetchPosts()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        collectionView.frame = view.bounds
+    }
+
+    
+    // MARK: - ViewModels
+    
+    private func fetchPosts() {
+        viewModel.fetchPosts()
     }
     
     // MARK: - Helpers
     
-    private func configureUI() {
-        title = "Feed"
-        collectionView.backgroundColor = .white
+    func configureCollectionView() {
+        view.addSubview(collectionView)
+        collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.identifier)
+        collectionView.register(StoriesCollectionViewCell.self, forCellWithReuseIdentifier: StoriesCollectionViewCell.identifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = .systemBackground
+        collectionView.reloadData()
+    }
+    
+    private func configureModels() {
+        sections.append(.stories(viewModels: "-"))
+        sections.append(.feeds(viewModels: "x"))
+    }
+    
+    func configureNavigationItem() {
+        confireColorNavigation()
+        //setupLeftNavItems()
+        setupRightNavItems()
+    }
+    
+    func confireColorNavigation() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        navigationController?.navigationBar.tintColor = .black
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+    }
+    
+    func setupRightNavItems() {
+        let buttonGear = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .done,
+            target: self,
+            action: #selector(didTapSettings)
+        )
         
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        let buttonAdd = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(didTapAdd)
+        )
+        navigationItem.rightBarButtonItems = [
+            buttonGear,
+            buttonAdd
+        ]
     }
     
+    
+    // MARK: - Actions
+    
+    @objc func didTapSettings() {
+        let vc = SettingsViewController()
+        vc.title = "Setting"
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
+            
+    @objc private func didTapAdd() {
+        // Add post
+    }
 }
 
 
-// MARK: - UICollectionViewDataSource
+// MARK: - CollectionView
 
-extension FeedViewController {
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+       let type = sections[section]
+        switch type {
+        case .feeds(_):
+            return 5
+        case .stories(_):
+            return 15
+        }
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .red
-        return cell
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return sections.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let type = sections[indexPath.section]
+        switch type {
+        case .stories(_):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: StoriesCollectionViewCell.identifier,
+                for: indexPath
+            ) as? StoriesCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.configure()
+            //cell.backgroundColor = .lightGray
+            return cell
+            
+        case .feeds(_):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: FeedCollectionViewCell.identifier,
+                for: indexPath
+            ) as? FeedCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.backgroundColor = .systemBackground
+            // Delegate
+            cell.delegate = self
+            return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        switch section {
+        case .stories(_):
+            let vc = SettingStorieViewController()
+            vc.navigationItem.largeTitleDisplayMode = .never
+            //vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
+        case .feeds(_):
+            let vc = ProfileViewController(user: User(dictionary: [:]))
+            vc.title = "name"
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
+        let supplementaryViews = [
+            NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(10)
+                ),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top)
+        ]
+        
+        switch section {
+        case 0:
+            // Item
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .absolute(80),
+                    heightDimension: .absolute(80)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+            
+            let verticalGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .absolute(80),
+                    heightDimension: .absolute(100)),
+                subitem: item,
+                count: 1)
+            
+            let horizontalGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .absolute(80),
+                    heightDimension: .absolute(100)),
+                subitem: verticalGroup,
+                count: 1)
+            
+            // Section
+            let section = NSCollectionLayoutSection(group: horizontalGroup)
+            section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = supplementaryViews
+            return section
+            
+        case 1:
+            // Item
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0)
+            
+            // Group
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(400+200)),
+                subitem: item,
+                count: 1)
+            
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = supplementaryViews
+            
+            return section
+            
+        default:
+            // Item
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+            
+            // Group
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(390)),
+                subitem: item,
+                count: 1)
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            section.orthogonalScrollingBehavior = .groupPaging
+            return section
+        }
     }
 }
 
-extension FeedViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 200)
+
+// MARK: - Delegates buttons
+extension FeedViewController: FeedCollectionViewCellDelegate {
+    
+    
+    func feedCollectionDidTapLike(_ user: String) {
+        // Like
+    }
+    
+    func feedCollectionDidTapComment(_ user: String) {
+        /*let vc = CommentsViewController()
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)*/
+        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
+    }
+    
+    func feedCollectionDidTapShare(_ user: String) {
+        // Share
+    }
+    
+    func feedCollectionDidTapMoreComments(_ user: String) {
+        // More Comment
     }
 }

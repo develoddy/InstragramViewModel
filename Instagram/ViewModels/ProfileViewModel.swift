@@ -11,7 +11,7 @@ import Firebase
 class ProfileViewModel {
     
     // MARK: - Porperties
-    let profileService: ProfileServiceDelegate
+    let api: APICallerDelegate
     
     private var user: User? {
         didSet {
@@ -24,8 +24,9 @@ class ProfileViewModel {
     var bindProfileViewModelToController  : (() -> () )?
     
     // MARK: - Init
-    init(profileService: ProfileServiceDelegate = ProfileService()) {
-        self.profileService = profileService
+    
+    init(api: APICallerDelegate = APICaller()) {
+        self.api = api
     }
     
     // MARK: - Helpers
@@ -36,27 +37,27 @@ class ProfileViewModel {
     
     func checkIfUserIsFollowed(completion: @escaping(Bool) -> Void) {
         guard let uid = self.user?.uid else { return }
-        profileService.checkIfUserIsFollowed(uid: uid) { isFollowed in
+        api.checkIfUserIsFollowed(uid: uid) { isFollowed in
             completion(isFollowed)
         }
     }
 
     func follow(completion: @escaping(Error?)->Void) {
         guard let uid = self.user?.uid else { return }
-        profileService.follow(uid: uid) { error in
+        api.follow(uid: uid) { error in
             completion(error)
         }
     }
     
     func unfollow(completion: @escaping(Error?)->Void) {
         guard let uid = self.user?.uid else { return }
-        profileService.unfollow(uid: uid, completion: { error in
+        api.unfollow(uid: uid, completion: { error in
             completion(error)
         })
     }
     
     func fetchUserStats(uid: String, completion: @escaping (UserStats) ->Void ) {
-        profileService.fetchUserStats(uid: uid) { stats in
+        api.fetchUserStats(uid: uid) { stats in
             completion(stats)
         }
     }

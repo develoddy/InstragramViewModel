@@ -12,19 +12,20 @@ class UploadPostViewModel {
     
     // MARK: - Porperties
     
-    let uploadPostService : UploadPostServiceDelegate
+    //let uploadPostService : UploadPostServiceDelegate
+    let api: APICallerDelegate
     
     
     // MARK: - Lifecycle
     
-    init(uploadPostService: UploadPostServiceDelegate = UploadPostService()) {
-        self.uploadPostService = uploadPostService
+    init(api: APICallerDelegate = APICaller()) {
+        self.api = api
     }
     
     // MARK: - Helper
     
     func uploadPost(caption: String, image: UIImage, completion: @escaping (Error?) -> Void) {
-        uploadPostService.uploadPost(caption: caption, image: image) { error in
+        api.uploadPost(caption: caption, image: image) { error in
             completion(error)
         }
     }
