@@ -6,17 +6,14 @@
 //
 
 import UIKit
-import Firebase
 
 class ProfileViewController: UICollectionViewController {
     
-    // MARK: - Propertie
-    //private var user: User?
+    // MARK: - Properties
     
     private var profileViewModel = ProfileViewModel()
     
     init(user: User) {
-        //self.user = user
         profileViewModel.updatePropertiesUser(user: user)
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
@@ -35,28 +32,19 @@ class ProfileViewController: UICollectionViewController {
         updateUI()
     }
     
+    
     // MARK: - API
+    
     func checkIfUserIsFollowed() {
-        //guard let uid = user?.uid else { return }
-        //let uid = profileViewModel.getUID()
-        //APICaller.shared.checkIfUserIsFollowed(uid: uid) { isFollowed in
-            //self.user?.isFollwed = isFollowed
-            //self.collectionView.reloadData()
-        //}
+        profileViewModel.checkIfUserIsFollowed { [weak self] isFollowed in
+            self?.profileViewModel.updatePropertiesIsFollwed(isFollowed: isFollowed)
+        }
     }
     
     func fetchUserStats() {
-        /*guard let uid = user?.uid else { return }
-        APICaller.shared.fetchUserStats(uid: uid) { stats in
-            self.user?.stats = stats
-            self.collectionView.reloadData()
-            print("DEBUG: Stats \(stats)")
-        }*/
         let uid = profileViewModel.getUID()
         profileViewModel.fetchUserStats(uid: uid) { [weak self] stats in
-            //self?.user?.stats = stats
             self?.profileViewModel.updatePropertiStats(stats: stats)
-            //self?.collectionView.reloadData()
             
         }
     }
@@ -64,7 +52,7 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Helpers
     
     private func configureUI() {
-        title = profileViewModel.getUsername() //user?.username
+        title = profileViewModel.getUsername()
         collectionView.backgroundColor = .systemBackground
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
@@ -90,6 +78,9 @@ class ProfileViewController: UICollectionViewController {
             }
         }
     }
+    
+    
+    // MARK: - Action
 }
 
 extension ProfileViewController {
@@ -160,15 +151,13 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         if user.isCurrentUser {
             debugPrint("Debug: Show edit profile here")
         } else if user.isFollwed {
-            /*APICaller.shared.unfollow(uid: user.uid) { error in
-                self.user?.isFollwed = false
-                self.collectionView.reloadData()
-            }*/
+            profileViewModel.unfollow { [weak self] error in
+                self?.profileViewModel.updatePropertiesIsFollwed(isFollowed: false)
+            }
         } else {
-            /*APICaller.shared.follow(uid: user.uid) { error in
-                self.user?.isFollwed = true
-                self.collectionView.reloadData()
-            }*/
+            profileViewModel.follow { [weak self] error in
+                self?.profileViewModel.updatePropertiesIsFollwed(isFollowed: true)
+            }
         }
     }
     

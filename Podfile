@@ -16,5 +16,6 @@ target 'Instagram' do
   pod 'Firebase/Messaging'
   pod 'Firebase/Auth'
   pod 'ActiveLabel'
+  pod 'YPImagePicker'
 
 end
