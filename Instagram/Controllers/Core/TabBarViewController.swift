@@ -110,12 +110,15 @@ class TabBarViewController: UITabBarController {
                 return
             }
             let vc = UploadPostViewController()
+            vc.selectedimage = selectedImage
+            vc.delegate = self
             let navVC = UINavigationController(rootViewController: vc)
             navVC.modalPresentationStyle = .fullScreen
             self.present(navVC, animated: true, completion: nil)
         }
     }
 }
+
 
 // MARK: - UITabBarControllerDelegate
 
@@ -138,6 +141,16 @@ extension TabBarViewController: UITabBarControllerDelegate {
             self.didFinishPickingMedia(picker)
         }
         return true
+    }
+}
+
+
+// MARK: - UploadPostViewControllerDelegate
+
+extension TabBarViewController: UploadPostViewControllerDelegate {
+    func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
+        selectedIndex = 0
+        controller.dismiss(animated: true, completion: nil)
     }
 }
 

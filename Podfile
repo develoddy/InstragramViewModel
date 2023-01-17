@@ -17,5 +17,6 @@ target 'Instagram' do
   pod 'Firebase/Auth'
   pod 'ActiveLabel'
   pod 'YPImagePicker'
+  pod 'JGProgressHUD'
 
 end

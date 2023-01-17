@@ -38,6 +38,10 @@
 		B34F9D2E2976AE57002956BE /* ImageSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2D2976AE56002956BE /* ImageSelectorViewController.swift */; };
 		B34F9D302976C60F002956BE /* UploadPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2F2976C60F002956BE /* UploadPostViewController.swift */; };
 		B34F9D322976CA08002956BE /* InputTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D312976CA08002956BE /* InputTextView.swift */; };
+		B34F9D342976DAD3002956BE /* UploadPostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D332976DAD3002956BE /* UploadPostService.swift */; };
+		B34F9D372976DC60002956BE /* UploadPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D362976DC5F002956BE /* UploadPostViewModel.swift */; };
+		B34F9D392976DC9F002956BE /* UploadPostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D382976DC9F002956BE /* UploadPostModel.swift */; };
+		B34F9D3B2976DFB0002956BE /* ImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D3A2976DFB0002956BE /* ImageUploader.swift */; };
 		B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */; };
 		B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC72965650B00606150 /* AppDelegate.swift */; };
 		B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC92965650B00606150 /* SceneDelegate.swift */; };
@@ -96,6 +100,10 @@
 		B34F9D2D2976AE56002956BE /* ImageSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelectorViewController.swift; sourceTree = "<group>"; };
 		B34F9D2F2976C60F002956BE /* UploadPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostViewController.swift; sourceTree = "<group>"; };
 		B34F9D312976CA08002956BE /* InputTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputTextView.swift; sourceTree = "<group>"; };
+		B34F9D332976DAD3002956BE /* UploadPostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostService.swift; sourceTree = "<group>"; };
+		B34F9D362976DC5F002956BE /* UploadPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostViewModel.swift; sourceTree = "<group>"; };
+		B34F9D382976DC9F002956BE /* UploadPostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostModel.swift; sourceTree = "<group>"; };
+		B34F9D3A2976DFB0002956BE /* ImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploader.swift; sourceTree = "<group>"; };
 		B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersCollectionViewCell.swift; sourceTree = "<group>"; };
 		B3BD8CC42965650B00606150 /* Instagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3BD8CC72965650B00606150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -246,6 +254,18 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		B34F9D352976DC31002956BE /* UploadPost */ = {
+			isa = PBXGroup;
+			children = (
+				B34F9D382976DC9F002956BE /* UploadPostModel.swift */,
+				B34F9D332976DAD3002956BE /* UploadPostService.swift */,
+				B34F9D362976DC5F002956BE /* UploadPostViewModel.swift */,
+				B34F9D2F2976C60F002956BE /* UploadPostViewController.swift */,
+				B34F9D3A2976DFB0002956BE /* ImageUploader.swift */,
+			);
+			path = UploadPost;
+			sourceTree = "<group>";
+		};
 		B3874F672971FD1A004F6D17 /* FollowCells */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,13 +413,13 @@
 		B3BD8D082966FF3900606150 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				B34F9D352976DC31002956BE /* UploadPost */,
 				B301929529717330002A0335 /* Follows */,
 				B3BD8D1029672F7900606150 /* ProfileTabs */,
 				B3BD8D092966FF6000606150 /* SettingsViewController.swift */,
 				B335AFF2296D9AD700AE9999 /* SearchResultsViewController.swift */,
 				B301928A2970A851002A0335 /* PostsSettingViewController.swift */,
 				B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */,
-				B34F9D2F2976C60F002956BE /* UploadPostViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -574,8 +594,10 @@
 				B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */,
 				B335AFF5296DC0E800AE9999 /* PhotoCollectionViewCell.swift in Sources */,
 				B3BD8CEC29656EB100606150 /* ProfileViewController.swift in Sources */,
+				B34F9D3B2976DFB0002956BE /* ImageUploader.swift in Sources */,
 				B34F9D2B29759A2E002956BE /* ProfileViewModel.swift in Sources */,
 				B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */,
+				B34F9D342976DAD3002956BE /* UploadPostService.swift in Sources */,
 				B3BD8D1229672FA500606150 /* ProfileTabsPhotosViewController.swift in Sources */,
 				B3BD8D16296734CD00606150 /* ProfileToggleView.swift in Sources */,
 				B335AFF9296DC40300AE9999 /* SearchResultDefaultTableViewCell.swift in Sources */,
@@ -594,6 +616,7 @@
 				B3BD8D1429672FC100606150 /* ProfileTabsTagViewController.swift in Sources */,
 				B3BD8CF62965E7AF00606150 /* CustomTextField.swift in Sources */,
 				B335AFEF296C269300AE9999 /* User.swift in Sources */,
+				B34F9D392976DC9F002956BE /* UploadPostModel.swift in Sources */,
 				B3BD8CF12965A59800606150 /* FeedCollectionViewCell.swift in Sources */,
 				B335AFFF29704AE900AE9999 /* Notifications.swift in Sources */,
 				B3BD8CE329656D8700606150 /* Extensions.swift in Sources */,
@@ -601,6 +624,7 @@
 				B3BD8CF42965D9E500606150 /* LoginViewController.swift in Sources */,
 				B301928B2970A852002A0335 /* PostsSettingViewController.swift in Sources */,
 				B301928629706942002A0335 /* NotificationsResponse.swift in Sources */,
+				B34F9D372976DC60002956BE /* UploadPostViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
