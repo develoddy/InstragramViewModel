@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 protocol FeedCollectionViewCellDelegate: AnyObject {
     func feedCollectionDidTapLike(_ user: String)
@@ -26,7 +27,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .systemPurple
-        imageView.image = UIImage(named: "feed01")
+        //imageView.image = UIImage(named: "feed01")
         return imageView
     }()
     
@@ -45,7 +46,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .systemPurple
-        imageView.image = UIImage(named: "feed02")
+        //imageView.image = UIImage(named: "feed02")
         return imageView
     }()
     
@@ -72,7 +73,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     private let likesLabel: UILabel = {
         let label = UILabel()
-        label.text = "10 likes"
+        //label.text = "10 likes"
         label.font = .systemFont(ofSize: 13, weight: .regular)
         return label
     }()
@@ -170,6 +171,8 @@ class FeedCollectionViewCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
+        captionLabel.text = nil
+        postImageView.image = nil
     }
     
     
@@ -183,6 +186,24 @@ class FeedCollectionViewCell: UICollectionViewCell {
         stackView.anchor(top: postImageView.bottomAnchor, width: 120, height: 50)
     }
     
+    
+    func configure(with viewModel: FeedCollectionViewCellViewModel) {
+        updateUI(
+            caption: viewModel.caption,
+            imageURL: viewModel.imageURL,
+            likes: "\(viewModel.likes) likes"
+        )
+    }
+    
+    private func updateUI(
+        caption: String,
+        imageURL: URL?,
+        likes: String
+    ) {
+        captionLabel.text = caption
+        postImageView.sd_setImage(with: imageURL)
+        likesLabel.text = likes
+    }
     
     // MARK: - Actions
     @objc func didTapUsername() {

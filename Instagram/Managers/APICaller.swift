@@ -21,7 +21,7 @@ protocol APICallerDelegate: AnyObject {
     func unfollow(uid: String, completion: @escaping(FirestoreCompletion))
     func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void)
     func uploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion))
-    func fetchPosts() 
+    func fetchPosts(completion: @escaping([Post]) -> Void)
     
 }
 
@@ -117,7 +117,7 @@ final class APICaller: APICallerDelegate {
     
     func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)  {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
+        Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
             guard let isFollowed = snapshot?.exists else { return }
             completion(isFollowed)
         }
@@ -125,30 +125,30 @@ final class APICaller: APICallerDelegate {
     
     func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
+        Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).setData([:]) { error in
                 
-                COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).setData([:], completion: completion)
         }
     }
     
     func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
+        Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).delete { error in
                 
-                COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).delete(completion: completion)
         }
     }
     
 
     func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {
-        COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { (snapshot, _) in
+        Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { (snapshot, _) in
             let followers = snapshot?.documents.count ?? 0
             
-            COLLECTION_FOLLOWINGS.document(uid).collection("user-followings").getDocuments { (snapshot, _) in
+            Constants.Collections.COLLECTION_FOLLOWINGS.document(uid).collection("user-followings").getDocuments { (snapshot, _) in
                 let followings = snapshot?.documents.count ?? 0
                 
                 completion(UserStats(followers: followers, following: followings))
@@ -173,19 +173,15 @@ final class APICaller: APICallerDelegate {
                 "ownerUid": uid
             ] as [String: Any]
             
-            COLLECTION_POSTS.addDocument(data: data, completion: completion)
+            Constants.Collections.COLLECTION_POSTS.addDocument(data: data, completion: completion)
         }
     }
     
-    func fetchPosts() {
-        COLLECTION_POSTS.getDocuments { (snapshot, error) in
-            
+    func fetchPosts(completion: @escaping([Post]) -> Void) {
+        Constants.Collections.COLLECTION_POSTS.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { return }
-            
-            documents.forEach { doc in
-                print("DEBUG: Doc data is \(doc.data())")
-            }
-            
+            let posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
+            completion(posts)
         }
     }
 }

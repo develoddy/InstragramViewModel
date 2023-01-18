@@ -10,7 +10,7 @@ import UIKit
 
 enum FeedSectionType {
     case stories(viewModels: String) // 1
-    case feeds(viewModels: String) // 2
+    case feeds(viewModels: [FeedCollectionViewCellViewModel]) // 2
 }
 
 
@@ -27,7 +27,6 @@ class FeedViewController: UIViewController {
         }
     )
     
-    private var sections = [FeedSectionType]()
 
     // MARK: - Lifecycle
     
@@ -36,9 +35,9 @@ class FeedViewController: UIViewController {
         title = "Browse"
         view.backgroundColor = .systemBackground
         configureCollectionView()
-        configureModels()
         configureNavigationItem()
         fetchPosts()
+        bind()
     }
     
     override func viewDidLayoutSubviews() {
@@ -62,17 +61,19 @@ class FeedViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
-        collectionView.reloadData()
     }
     
-    private func configureModels() {
-        sections.append(.stories(viewModels: "-"))
-        sections.append(.feeds(viewModels: "x"))
+    private func bind() {
+        viewModel.refreshData = { [weak self] () in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+                // self.activity.stopAnimating
+            }
+        }
     }
     
     func configureNavigationItem() {
         confireColorNavigation()
-        //setupLeftNavItems()
         setupRightNavItems()
     }
     
@@ -126,23 +127,16 @@ class FeedViewController: UIViewController {
 
 extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-       let type = sections[section]
-        switch type {
-        case .feeds(_):
-            return 5
-        case .stories(_):
-            return 15
-        }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return viewModel.numberOfSections()
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel.numberOfRowsInSection(section: section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let type = sections[indexPath.section]
+        let type = viewModel.cellForRowAt(indexPath: indexPath)
         switch type {
         case .stories(_):
             guard let cell = collectionView.dequeueReusableCell(
@@ -152,26 +146,29 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 return UICollectionViewCell()
             }
             cell.configure()
-            //cell.backgroundColor = .lightGray
             return cell
             
-        case .feeds(_):
+        case .feeds(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: FeedCollectionViewCell.identifier,
                 for: indexPath
             ) as? FeedCollectionViewCell else {
                 return UICollectionViewCell()
             }
+            
             cell.backgroundColor = .systemBackground
-            // Delegate
             cell.delegate = self
+            
+            let viewModel = viewModels[indexPath.row]
+            cell.configure(with: viewModel)
+            
             return cell
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        let section = sections[indexPath.section]
+        let section = viewModel.cellForRowAt(indexPath: indexPath)
         switch section {
         case .stories(_):
             let vc = SettingStorieViewController()
