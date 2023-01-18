@@ -24,8 +24,8 @@ class UploadPostViewModel {
     
     // MARK: - Helper
     
-    func uploadPost(caption: String, image: UIImage, completion: @escaping (Error?) -> Void) {
-        api.uploadPost(caption: caption, image: image) { error in
+    func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping (Error?) -> Void) {
+        api.uploadPost(caption: caption, image: image, user: user) { error in
             completion(error)
         }
     }

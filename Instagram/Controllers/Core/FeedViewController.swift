@@ -32,7 +32,7 @@ class FeedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Browse"
+        title = "Feed"
         view.backgroundColor = .systemBackground
         configureCollectionView()
         configureNavigationItem()
@@ -50,6 +50,8 @@ class FeedViewController: UIViewController {
     
     private func fetchPosts() {
         viewModel.fetchPosts()
+        self.collectionView.refreshControl?.endRefreshing()
+        print("DEBUG: Did fetch posts..")
     }
     
     // MARK: - Helpers
@@ -61,6 +63,10 @@ class FeedViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
+        
+        let refresher = UIRefreshControl()
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refresher
     }
     
     private func bind() {
@@ -120,6 +126,14 @@ class FeedViewController: UIViewController {
     @objc private func didTapAdd() {
         // Add post
     }
+    
+    @objc func handleRefresh() {
+        //viewModel.refreshData
+        // removeAll
+        // FetchModel
+        viewModel.sections.removeAll()
+        fetchPosts()
+    }
 }
 
 
@@ -175,7 +189,10 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
             vc.navigationItem.largeTitleDisplayMode = .never
             //vc.modalPresentationStyle = .fullScreen
             present(vc, animated: true)
-        case .feeds(_):
+        case .feeds(let viewModel):
+            print("DEBUG: DidSelectItem: ")
+            print(viewModel)
+            
             let vc = ProfileViewController(user: User(dictionary: [:]))
             vc.title = "name"
             vc.navigationItem.largeTitleDisplayMode = .never

@@ -16,7 +16,7 @@ class FeedViewModel {
     // MECANISMO PARA ENLAZAR LO QUE SERIA CON ESTE MODELO DE LA VISTA
     var refreshData: ( () -> () )?
     
-    private var sections: [FeedSectionType] = [FeedSectionType]() {
+    var sections: [FeedSectionType] = [FeedSectionType]() {
         didSet {
             refreshData?()
         }

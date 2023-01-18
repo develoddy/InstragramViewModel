@@ -20,7 +20,7 @@ protocol APICallerDelegate: AnyObject {
     func follow(uid: String, completion: @escaping(FirestoreCompletion))
     func unfollow(uid: String, completion: @escaping(FirestoreCompletion))
     func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void)
-    func uploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion))
+    func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping(FirestoreCompletion))
     func fetchPosts(completion: @escaping([Post]) -> Void)
     
 }
@@ -118,6 +118,9 @@ final class APICaller: APICallerDelegate {
     func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)  {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
+            print("DEBG: checkIfUserIsFollowed: ")
+            print(error as Any)
+            
             guard let isFollowed = snapshot?.exists else { return }
             completion(isFollowed)
         }
@@ -127,7 +130,8 @@ final class APICaller: APICallerDelegate {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).setData([:]) { error in
-                
+                print("DEBG: follow: ")
+                print(error as Any)
                 Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).setData([:], completion: completion)
         }
@@ -137,7 +141,8 @@ final class APICaller: APICallerDelegate {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).delete { error in
-                
+                print("DEBG: unfollow: ")
+                print(error as Any)
                 Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).delete(completion: completion)
         }
@@ -162,7 +167,7 @@ final class APICaller: APICallerDelegate {
     
     // MARK: - Posts
     
-    func uploadPost(caption: String, image: UIImage, completion: @escaping(FirestoreCompletion)) {
+    func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping(FirestoreCompletion)) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         ImageUploader.uploadImage(image: image) { imageURL in
             let data = [
@@ -170,7 +175,9 @@ final class APICaller: APICallerDelegate {
                 "timestamp": Timestamp(date: Date()),
                 "likes": 0,
                 "imageURL": imageURL,
-                "ownerUid": uid
+                "ownerUid": uid,
+                "ownerImageURL": user.profileImageURL,
+                "ownerUsername": user.username,
             ] as [String: Any]
             
             Constants.Collections.COLLECTION_POSTS.addDocument(data: data, completion: completion)
@@ -178,7 +185,7 @@ final class APICaller: APICallerDelegate {
     }
     
     func fetchPosts(completion: @escaping([Post]) -> Void) {
-        Constants.Collections.COLLECTION_POSTS.getDocuments { (snapshot, error) in
+        Constants.Collections.COLLECTION_POSTS.order(by: "timestamp").getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { return }
             let posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
             completion(posts)

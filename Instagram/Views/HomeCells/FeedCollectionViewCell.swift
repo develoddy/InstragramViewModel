@@ -26,7 +26,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
-        imageView.backgroundColor = .systemPurple
+        imageView.backgroundColor = .lightGray
         //imageView.image = UIImage(named: "feed01")
         return imageView
     }()
@@ -191,18 +191,24 @@ class FeedCollectionViewCell: UICollectionViewCell {
         updateUI(
             caption: viewModel.caption,
             imageURL: viewModel.imageURL,
-            likes: "\(viewModel.likes) likes"
+            likes: viewModel.likesLabelText, //"\(viewModel.likes) likes",
+            userProfileImageURL: viewModel.userProfileImageURL,
+            username: viewModel.username
         )
     }
     
     private func updateUI(
         caption: String,
         imageURL: URL?,
-        likes: String
+        likes: String,
+        userProfileImageURL: URL?,
+        username: String
     ) {
         captionLabel.text = caption
         postImageView.sd_setImage(with: imageURL)
         likesLabel.text = likes
+        profileImageView.sd_setImage(with: userProfileImageURL)
+        usernameButton.setTitle(username, for: .normal)
     }
     
     // MARK: - Actions

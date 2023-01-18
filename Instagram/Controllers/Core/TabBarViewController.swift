@@ -12,6 +12,13 @@ import YPImagePicker
 class TabBarViewController: UITabBarController {
     
     var handle: AuthStateDidChangeListenerHandle?
+    
+    private var user: User? {
+        didSet {
+            guard let user = user else { return }
+            self.configureViewControllers(with: user)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +27,7 @@ class TabBarViewController: UITabBarController {
         APICaller.shared.fetchUserLogin { [weak self] result in
             switch result {
             case .success(let user):
-                self?.configureViewControllers(with: user)
+                self?.user = user
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -112,6 +119,7 @@ class TabBarViewController: UITabBarController {
             let vc = UploadPostViewController()
             vc.selectedimage = selectedImage
             vc.delegate = self
+            vc.currentUser = self.user
             let navVC = UINavigationController(rootViewController: vc)
             navVC.modalPresentationStyle = .fullScreen
             self.present(navVC, animated: true, completion: nil)

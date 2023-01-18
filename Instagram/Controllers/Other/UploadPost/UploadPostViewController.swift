@@ -15,10 +15,11 @@ class UploadPostViewController: UIViewController {
     
     // MARK: - Properties
     
-    // GET IMAGE FROM TabBarViewController
-    var selectedimage: UIImage? {
-        didSet { photoImageView.image = selectedimage }
-    }
+    // GET DATA FROM TabBarViewController
+    
+    var currentUser: User?
+    
+    var selectedimage: UIImage? { didSet { photoImageView.image = selectedimage } }
     
     private var uploadPostViewModel = UploadPostViewModel()
     
@@ -109,12 +110,13 @@ class UploadPostViewController: UIViewController {
     @objc func didTapDone() {
         guard let caption = captionTextView.text else { return }
         guard let image = selectedimage else { return }
+        guard let user = currentUser else { return }
         
         // START LOADER
         showLoader(true)
         
         // CALL VIEWMODEL
-        uploadPostViewModel.uploadPost(caption: caption, image: image) { [weak self] error in
+        uploadPostViewModel.uploadPost(caption: caption, image: image, user: user) { [weak self] error in
             // FINISH LOADER
             self?.showLoader(false)
             guard let strongSelf = self else { return }
