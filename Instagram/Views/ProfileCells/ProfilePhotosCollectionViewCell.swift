@@ -6,6 +6,11 @@
 //
 
 import UIKit
+import SDWebImage
+
+struct ProfilePhotosCollectionViewCellViewModel {
+    
+}
 
 class ProfilePhotosCollectionViewCell: UICollectionViewCell {
     
@@ -53,5 +58,13 @@ class ProfilePhotosCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+    }
+    
+    func configure(with viewModel: FeedCollectionViewCellViewModel) {
+        updateUI(imageURL: viewModel.imageURL)
+    }
+    
+    func updateUI(imageURL: URL?) {
+        postImageView.sd_setImage(with: imageURL)
     }
 }

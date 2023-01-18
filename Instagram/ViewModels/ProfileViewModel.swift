@@ -19,6 +19,12 @@ class ProfileViewModel {
         }
     }
     
+    private var posts: [Post] = [Post]() {
+        didSet {
+            self.bindProfileViewModelToController?()
+        }
+    }
+    
     var userStats: UserStats?
     
     var bindProfileViewModelToController  : (() -> () )?
@@ -62,7 +68,15 @@ class ProfileViewModel {
         }
     }
     
+    func fetchPosts(uid: String) {
+        api.fetchPosts(forUser: uid) { [weak self] posts in
+            self?.posts = posts
+        }
+    }
+    
     func updatePropertiStats(stats: UserStats) {
+        print("DEBUF: VIEWMODEL STATS: ")
+        print(stats)
         self.user?.stats = stats
     }
     
@@ -78,16 +92,25 @@ class ProfileViewModel {
     func getUsername() -> String {
         return self.user?.username ?? "-"
     }
-    
-    func numberOfSections() -> Int {
-        return 1
-    }
-    
-    func numberOfRowsInSection(section: Int) -> Int {
-        return 10
-    }
-    
+        
     func fetchUser() -> User? {
         return self.user
     }
+    
+    
+    func numberOfSections() -> Int {
+        return posts.count
+    }
+    
+    func numberOfRowsInSection(section: Int) -> Int {
+        if posts.count != 0 {
+            return posts.count
+        }
+        return 0
+    }
+    
+    func cellForRowAt(indexPath: IndexPath) -> Post {
+        return posts[indexPath.row]
+    }
+
 }

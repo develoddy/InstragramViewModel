@@ -180,9 +180,9 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             followButtonText: viewModel.followButtonText,
             followButtonTextBackgroundColor: viewModel.followButtonTextBackgroundColor,
             followButtonBackgroundColor: viewModel.followButtonBackgroundColor,
-            followers: viewModel.user.stats.followers,
-            followings: viewModel.user.stats.following,
-            posts: 0
+            followers: viewModel.numberOfFollowers,
+            followings: viewModel.numberOfFollowings,
+            posts: viewModel.numberOfPosts
         )
     }
     

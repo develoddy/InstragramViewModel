@@ -96,8 +96,6 @@ class TabBarViewController: UITabBarController {
         setViewControllers([vc1, vc2, vc3, vc4, vc5], animated: false)
     }
     
-
-
     // MARK: - Helpers
     
     func templateNavigationController(unSelectedImage: UIImage, selectedImage: UIImage, rootViewController: UIViewController) -> UINavigationController  {
@@ -159,6 +157,10 @@ extension TabBarViewController: UploadPostViewControllerDelegate {
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
         selectedIndex = 0
         controller.dismiss(animated: true, completion: nil)
+        
+        guard let feedNav = viewControllers?.first as? UINavigationController else { return }
+        guard let feed = feedNav.viewControllers.first as? FeedViewController else { return }
+        feed.handleRefresh()
     }
 }
 

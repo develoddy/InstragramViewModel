@@ -22,7 +22,7 @@ protocol APICallerDelegate: AnyObject {
     func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void)
     func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping(FirestoreCompletion))
     func fetchPosts(completion: @escaping([Post]) -> Void)
-    
+    func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void)
 }
 
 /// Final APICaller
@@ -156,13 +156,13 @@ final class APICaller: APICallerDelegate {
             Constants.Collections.COLLECTION_FOLLOWINGS.document(uid).collection("user-followings").getDocuments { (snapshot, _) in
                 let followings = snapshot?.documents.count ?? 0
                 
-                completion(UserStats(followers: followers, following: followings))
+                Constants.Collections.COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid).getDocuments { (snapshot, _) in
+                    let posts = snapshot?.documents.count ?? 0
+                    completion(UserStats(followers: followers, following: followings, posts: posts))
+                }
             }
         }
     }
-    
-    // MARK: - Comments
-    
     
     
     // MARK: - Posts
@@ -185,10 +185,23 @@ final class APICaller: APICallerDelegate {
     }
     
     func fetchPosts(completion: @escaping([Post]) -> Void) {
-        Constants.Collections.COLLECTION_POSTS.order(by: "timestamp").getDocuments { (snapshot, error) in
+        Constants.Collections.COLLECTION_POSTS.order(by: "timestamp", descending: true).getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { return }
             let posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
             completion(posts)
         }
     }
+    
+    func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void) {
+        let query = Constants.Collections.COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid)
+        query.getDocuments { (snapshot, error) in
+            guard let documents = snapshot?.documents else { return }
+            let posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
+            print(posts)
+            completion(posts)
+        }
+    }
+    
+    
+    // MARK: - Comments
 }

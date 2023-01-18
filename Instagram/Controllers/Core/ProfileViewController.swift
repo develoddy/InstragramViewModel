@@ -30,6 +30,7 @@ class ProfileViewController: UICollectionViewController {
         checkIfUserIsFollowed()
         fetchUserStats()
         updateUI()
+        fetchPosts()
     }
     
     
@@ -45,8 +46,12 @@ class ProfileViewController: UICollectionViewController {
         let uid = profileViewModel.getUID()
         profileViewModel.fetchUserStats(uid: uid) { [weak self] stats in
             self?.profileViewModel.updatePropertiStats(stats: stats)
-            
         }
+    }
+    
+    func fetchPosts() {
+        let uid = profileViewModel.getUID()
+        profileViewModel.fetchPosts(uid: uid)
     }
     
     // MARK: - Helpers
@@ -96,6 +101,8 @@ extension ProfileViewController {
             return UICollectionViewCell()
         }
         cell.backgroundColor = .red
+        let post = profileViewModel.cellForRowAt(indexPath: indexPath)
+        cell.configure(with: FeedCollectionViewCellViewModel(post: post))
         return cell
     }
     
@@ -110,7 +117,6 @@ extension ProfileViewController {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
-    
         if let user = profileViewModel.fetchUser() {
             header.configure(with: ProfileHeaderViewModel(user: user))
         }
@@ -121,6 +127,11 @@ extension ProfileViewController {
     }
 }
 
+// MARK: UIColletionViewDelegate
+
+extension ProfileViewController {
+   
+}
 
 // MARK: - Profile Collection Delegate Flow Layout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {

@@ -35,6 +35,18 @@ struct ProfileHeaderViewModel {
         return user.isCurrentUser ? .black : .white
     }
     
+    var numberOfFollowings: Int {
+        return user.stats.following
+    }
+    
+    var numberOfFollowers: Int {
+        return user.stats.followers
+    }
+    
+    var numberOfPosts: Int {
+        return user.stats.posts
+    }
+    
     init(user: User) {
         self.user = user
     }
