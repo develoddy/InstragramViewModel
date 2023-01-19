@@ -188,14 +188,15 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
             vc.navigationItem.largeTitleDisplayMode = .never
             //vc.modalPresentationStyle = .fullScreen
             present(vc, animated: true)
-        case .feeds(let viewModel):
-            print("DEBUG: DidSelectItem: ")
+        case .feeds(_):
+            break
+            /*print("DEBUG: DidSelectItem: ")
             print(viewModel)
             
             let vc = ProfileViewController(user: User(dictionary: [:]))
             vc.title = "name"
             vc.navigationItem.largeTitleDisplayMode = .never
-            navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: true)*/
         }
     }
     
@@ -303,8 +304,8 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
     }
     
     func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post) {
-        let vc = CommentsViewController()
-        vc.navigationItem.largeTitleDisplayMode = .never
+        //let vc = CommentsViewController()
+        
         PostCommentPresenter.shared.startComment(from: self, post: post)
         
        

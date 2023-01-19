@@ -21,8 +21,9 @@ final class PostCommentPresenter {
         from viewController: UIViewController,
         post: Post
     ) {
-        let vc = CommentsViewController()
+        let vc = CommentsViewController(post: post)
         vc.title = "xxComm"
+        vc.navigationItem.largeTitleDisplayMode = .never
         viewController.navigationController?.pushViewController(vc, animated: true)
     }
 

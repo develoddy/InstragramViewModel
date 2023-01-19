@@ -13,7 +13,7 @@ class TabBarViewController: UITabBarController {
     
     var handle: AuthStateDidChangeListenerHandle?
     
-    private var user: User? {
+    var user: User? {
         didSet {
             guard let user = user else { return }
             self.configureViewControllers(with: user)

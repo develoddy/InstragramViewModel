@@ -46,6 +46,8 @@
 		B34F9D4629781B26002956BE /* FeedCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D4529781B26002956BE /* FeedCollectionViewCellViewModel.swift */; };
 		B34F9D4829786366002956BE /* PostsSettingViewControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D4729786365002956BE /* PostsSettingViewControllerViewModel.swift */; };
 		B385C1202979ADB4005158E0 /* CommentInputAccesoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C11F2979ADB4005158E0 /* CommentInputAccesoryView.swift */; };
+		B385C1232979EAA4005158E0 /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C1222979EAA4005158E0 /* CommentService.swift */; };
+		B385C1252979EC6A005158E0 /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C1242979EC6A005158E0 /* CommentViewModel.swift */; };
 		B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */; };
 		B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC72965650B00606150 /* AppDelegate.swift */; };
 		B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC92965650B00606150 /* SceneDelegate.swift */; };
@@ -111,6 +113,8 @@
 		B34F9D4529781B26002956BE /* FeedCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B34F9D4729786365002956BE /* PostsSettingViewControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsSettingViewControllerViewModel.swift; sourceTree = "<group>"; };
 		B385C11F2979ADB4005158E0 /* CommentInputAccesoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputAccesoryView.swift; sourceTree = "<group>"; };
+		B385C1222979EAA4005158E0 /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
+		B385C1242979EC6A005158E0 /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersCollectionViewCell.swift; sourceTree = "<group>"; };
 		B3BD8CC42965650B00606150 /* Instagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3BD8CC72965650B00606150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -210,6 +214,14 @@
 			path = UploadPost;
 			sourceTree = "<group>";
 		};
+		B385C1212979EA81005158E0 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				B385C1222979EAA4005158E0 /* CommentService.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
 		B3874F672971FD1A004F6D17 /* FollowCells */ = {
 			isa = PBXGroup;
 			children = (
@@ -239,6 +251,7 @@
 		B3BD8CC62965650B00606150 /* Instagram */ = {
 			isa = PBXGroup;
 			children = (
+				B385C1212979EA81005158E0 /* API */,
 				B3BD8CDB2965665300606150 /* Utils */,
 				B30192922971523F002A0335 /* Presenter */,
 				B3BD8D0D2967008C00606150 /* Managers */,
@@ -282,6 +295,7 @@
 				B34F9D362976DC5F002956BE /* UploadPostViewModel.swift */,
 				B34F9D4529781B26002956BE /* FeedCollectionViewCellViewModel.swift */,
 				B34F9D4729786365002956BE /* PostsSettingViewControllerViewModel.swift */,
+				B385C1242979EC6A005158E0 /* CommentViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -532,6 +546,7 @@
 				B34F9D1F297465BB002956BE /* SettingStorieViewController.swift in Sources */,
 				B3BD8CE829656E8A00606150 /* SearchViewController.swift in Sources */,
 				B3019297297174E5002A0335 /* FollowSettingViewController.swift in Sources */,
+				B385C1252979EC6A005158E0 /* CommentViewModel.swift in Sources */,
 				B3BD8CCC2965650B00606150 /* TabBarViewController.swift in Sources */,
 				B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */,
 				B3BD8CEA29656EA500606150 /* NotificationViewController.swift in Sources */,
@@ -555,6 +570,7 @@
 				B335AFF9296DC40300AE9999 /* SearchResultDefaultTableViewCell.swift in Sources */,
 				B301929D2971781A002A0335 /* FollowToggleView.swift in Sources */,
 				B3BD8D0F296700A500606150 /* AuthManager.swift in Sources */,
+				B385C1232979EAA4005158E0 /* CommentService.swift in Sources */,
 				B34F9D2E2976AE57002956BE /* ImageSelectorViewController.swift in Sources */,
 				B34F9D4629781B26002956BE /* FeedCollectionViewCellViewModel.swift in Sources */,
 				B30192912970B5A1002A0335 /* CommentsHeaderCollectionReusableView.swift in Sources */,

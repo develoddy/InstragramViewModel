@@ -11,6 +11,8 @@ class CommentsViewController: UIViewController {
 
     // MARK: - Properties
     
+    var viewModel = CommentViewModel()
+    
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout { _, _ -> NSCollectionLayoutSection? in
@@ -49,10 +51,20 @@ class CommentsViewController: UIViewController {
     private lazy var commentInputView: CommentInputAccesoryView = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         let cv = CommentInputAccesoryView(frame: frame)
+        cv.delegate = self
         return cv
     }()
     
     // MARK: - Lifecycle
+    
+    init(post: Post) {
+        viewModel.post = post
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,7 +100,7 @@ class CommentsViewController: UIViewController {
     
     private func configureUI() {
         navigationItem.title = "Comments"
-        view.backgroundColor = .orange
+        view.backgroundColor = .systemBackground
     }
     
     private func configureCollections() {
@@ -108,6 +120,9 @@ class CommentsViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        collectionView.alwaysBounceVertical = true
+        collectionView.keyboardDismissMode = .interactive
     }
     
     // MARK: - Actions
@@ -132,7 +147,8 @@ extension CommentsViewController: UICollectionViewDelegate, UICollectionViewData
         ) as? ListCommentsCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.backgroundColor = .orange
+        cell.backgroundColor = .systemBackground
+        
         //cell.configure(with: viewModels[indexPath.row])
         return cell
     }
@@ -157,5 +173,24 @@ extension CommentsViewController: UICollectionViewDelegate, UICollectionViewData
         header.backgroundColor = .systemBackground
         return header
     }
+}
+
+
+// MARK: - CommentInputAccesoryViewDelegate
+
+extension CommentsViewController: CommentInputAccesoryViewDelegate {
+    func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {
+        
+        guard let tab = self.tabBarController as? TabBarViewController else { return }
+        guard let user = tab.user  else { return }
+        
+        self.showLoader(true)
+        
+        viewModel.uploadComment(comment: comment, postID: viewModel.post?.postId ?? "", user: user) { error in
+            self.showLoader(false)
+            inputView.clearCommentTextView()
+        }
+    }
+    
     
 }
