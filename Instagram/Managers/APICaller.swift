@@ -193,7 +193,12 @@ final class APICaller: APICallerDelegate {
         let query = Constants.Collections.COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid)
         query.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { return }
-            let posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
+            
+            var posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
+            posts.sort { (post1, post2) -> Bool in
+                return post1.timestamp.seconds > post2.timestamp.seconds
+            }
+            
             completion(posts)
         }
     }

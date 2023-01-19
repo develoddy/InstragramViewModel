@@ -11,7 +11,7 @@ class ListCommentsCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "ListCommentsCollectionViewCell"
     
-    private let albumCoverImageView: UIImageView = {
+    private let postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "feed01")
@@ -39,7 +39,7 @@ class ListCommentsCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = .secondarySystemBackground
         contentView.backgroundColor = .secondarySystemBackground
-        contentView.addSubview(albumCoverImageView)
+        contentView.addSubview(postImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(commentTextLabel)
         contentView.clipsToBounds = true
@@ -52,15 +52,14 @@ class ListCommentsCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        //albumCoverImageView.frame = CGRect(x: 5, y: 2, width: contentView.height-4, height: contentView.height-4)
-        albumCoverImageView.anchor(
+        postImageView.anchor(
             top: topAnchor,
             left: leftAnchor,
             paddingTop: 5,
             paddingLeft: 10
         )
-        albumCoverImageView.setDimensions(height: 40, width: 40)
-        albumCoverImageView.layer.cornerRadius = 40 / 2
+        postImageView.setDimensions(height: 40, width: 40)
+        postImageView.layer.cornerRadius = 40 / 2
         
         
         let stack = UIStackView(arrangedSubviews: [usernameLabel, commentTextLabel])
@@ -69,29 +68,14 @@ class ListCommentsCollectionViewCell: UICollectionViewCell {
         stack.alignment = .leading
         
         contentView.addSubview(stack)
-        stack.centerY(inView: albumCoverImageView, leftAnchor: albumCoverImageView.rightAnchor, paddingLeft: 6)
+        stack.centerY(inView: postImageView, leftAnchor: postImageView.rightAnchor, paddingLeft: 6)
         
         
-        
-        
-        /*trackNameLabel.frame = CGRect(
-            x: albumCoverImageView.right+10,
-            y: 0,
-            width: contentView.width-albumCoverImageView.right-15,
-            height: contentView.height/2
-        )
-        
-        artistsNameLabel.frame = CGRect(
-            x: albumCoverImageView.right+10,
-            y: contentView.height/2,
-            width: contentView.width-albumCoverImageView.right-15,
-            height: contentView.height/2
-        )*/
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        albumCoverImageView.image = nil
+        postImageView.image = nil
         usernameLabel.text = nil
         commentTextLabel.text = nil
     }

@@ -302,13 +302,16 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
         // Like
     }
     
-    func feedCollectionDidTapComment(_ user: String) {
-        /*let vc = CommentsViewController()
+    func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post) {
+        let vc = CommentsViewController()
         vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)*/
-        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
+        PostCommentPresenter.shared.startComment(from: self, post: post)
+        
+       
+        
+        
     }
-    
+       
     func feedCollectionDidTapShare(_ user: String) {
         // Share
     }

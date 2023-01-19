@@ -19,7 +19,7 @@ final class PostCommentPresenter {
     
     func startComment(
         from viewController: UIViewController,
-        user: String
+        post: Post
     ) {
         let vc = CommentsViewController()
         vc.title = "xxComm"

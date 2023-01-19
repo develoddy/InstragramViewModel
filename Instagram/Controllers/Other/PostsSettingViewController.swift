@@ -14,10 +14,11 @@ class PostsSettingViewController: UIViewController {
     
     private var viewModel = PostsSettingViewControllerViewModel()
     
-    //var posts: [Post] = []
-    var indice: Int = 0
+    var indice = 0
     
-    private var collectionView: UICollectionView = UICollectionView(
+    var uid: String = ""
+    
+    var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout { sectionIndex, _ -> NSCollectionLayoutSection? in
             return PostsSettingViewController.createSectionLayout(section: sectionIndex)
@@ -33,7 +34,6 @@ class PostsSettingViewController: UIViewController {
         configureCollections()
         fetchPosts()
         bind()
-        
     }
     
     override func viewDidLayoutSubviews() {
@@ -45,8 +45,8 @@ class PostsSettingViewController: UIViewController {
     // MARK: - Helpers
     
     private func fetchPosts() {
-        let uid = Auth.auth().currentUser?.uid
-        viewModel.fetchPosts(uid: uid ?? "")
+        let uid = self.uid
+        viewModel.fetchPosts(uid: uid)
     }
  
     
@@ -79,12 +79,8 @@ class PostsSettingViewController: UIViewController {
 // MARK: - UICollectionViewDelegate && UICollectionViewDataSource
 
 extension PostsSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.numberOfSections()
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection(section: section)
+        return self.viewModel.numberOfRowsInSection(section: section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -95,86 +91,98 @@ extension PostsSettingViewController: UICollectionViewDelegate, UICollectionView
             return UICollectionViewCell()
         }
         cell.backgroundColor = .systemBackground
+        let post = self.viewModel.cellForRowAt(indexPath: indexPath)
         
+        cell.configure(with: FeedCollectionViewCellViewModel(post: post))
         cell.delegate = self
         
-        //print("DEBUG: CELL indice de ProfileView")
-        //print(self.indice)
+        print("DEBUG : EXTERNO :\(self.indice)")
+        print("DEBUG : INTERNO :\(indexPath.row)")
         
-        //print("DEBUG: CELL indice de PostSetting")
-        //print(viewModel.posts[indexPath.section])
-        
-        /*print(indexPath.section)
-        if indexPath.section == self.indice {
-            print("DEBUG: IF ")
-            self.collectionView.scrollToItem(at: IndexPath(row: 0,section: indexPath.section),at: .top,animated: true)
-            print(viewModel.posts[indexPath.section])
-            let post = viewModel.posts[indexPath.section]
-            cell.configure(with: FeedCollectionViewCellViewModel(post: post))
-        }*/
-        
-        self.collectionView.scrollToItem(at: IndexPath(row: 0 ,section: self.indice ),at: .top,animated: true)
-        //print(viewModel.posts[indexPath.section])
-        let post = viewModel.cellForRowAt(indexPath: indexPath)
-        cell.configure(with: FeedCollectionViewCellViewModel(post: post))
-        
-        
-        
-        
-        // Comparar el indice que viene de profileView con data[index.row]
+        collectionView.scrollToItem(at: IndexPath(row: self.indice, section: 0), at: .top, animated: true)
+        collectionView.isPagingEnabled = false
         
         return cell
     }
     
     private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
-        
         let supplementaryViews = [
-            NSCollectionLayoutBoundarySupplementaryItem(
+             NSCollectionLayoutBoundarySupplementaryItem(
+                 layoutSize: NSCollectionLayoutSize(
+                     widthDimension: .fractionalWidth(1),
+                     heightDimension: .absolute(10)
+                 ),
+                 elementKind: UICollectionView.elementKindSectionHeader,
+                 alignment: .top)
+         ]
+        switch section {
+        case 0:
+            // Item
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+            
+            // Group
+            let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(10)
-                ),
-                elementKind: UICollectionView.elementKindSectionHeader,
-                alignment: .top)
-        ]
-        
-        // Item
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
+                    heightDimension: .absolute(400+200)),
+                subitem: item,
+                count: 1)
+            
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            //section.orthogonalScrollingBehavior = .groupPaging
+            section.boundarySupplementaryItems = supplementaryViews
+            return section
+            
+        default:
+            // Item
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
             )
-        )
-        
-        item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0)
-        
-        // Group
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(400+200)),
-            subitem: item,
-            count: 1)
-        
-        // Section
-        let section = NSCollectionLayoutSection(group: group)
-        //section.orthogonalScrollingBehavior = .groupPaging
-        section.orthogonalScrollingBehavior = .none
-        section.boundarySupplementaryItems = supplementaryViews
-        
-        return section
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+            
+            // Group
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(400+200)),
+                subitem: item,
+                count: 1)
+            
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            //section.orthogonalScrollingBehavior = .groupPaging
+            section.boundarySupplementaryItems = supplementaryViews
+            return section
+        }
     }
 }
 
 extension PostsSettingViewController: FeedCollectionViewCellDelegate {
     
+    
+    
     func feedCollectionDidTapLike(_ user: String) {
         // Like
     }
     
-    func feedCollectionDidTapComment(_ user: String) {
-        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
+    func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post) {
+        //PostCommentPresenter.shared.startComment(from: self, post: )
+        //print("DEBUG POST")
+        //print(viewModel.posts)
     }
+    
     
     func feedCollectionDidTapShare(_ user: String) {
         // Shared
@@ -182,7 +190,7 @@ extension PostsSettingViewController: FeedCollectionViewCellDelegate {
     
     func feedCollectionDidTapMoreComments(_ user: String) {
         // Ver más comentarios
-        PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
+        //PostCommentPresenter.shared.startComment(from: self, user: "vvvcomm")
     }
     
 }

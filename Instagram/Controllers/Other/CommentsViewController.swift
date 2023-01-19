@@ -10,6 +10,7 @@ import UIKit
 class CommentsViewController: UIViewController {
 
     // MARK: - Properties
+    
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout { _, _ -> NSCollectionLayoutSection? in
@@ -45,11 +46,36 @@ class CommentsViewController: UIViewController {
         }
     )
     
+    private lazy var commentInputView: CommentInputAccesoryView = {
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        let cv = CommentInputAccesoryView(frame: frame)
+        return cv
+    }()
+    
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configureCollections()
+    }
+    
+    override var inputAccessoryView: UIView? {
+        get { return commentInputView }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.tabBar.isHidden = false
     }
     
     override func viewDidLayoutSubviews() {
@@ -61,7 +87,7 @@ class CommentsViewController: UIViewController {
     // MARK: - Helpers
     
     private func configureUI() {
-        title = "Comments"
+        navigationItem.title = "Comments"
         view.backgroundColor = .orange
     }
     

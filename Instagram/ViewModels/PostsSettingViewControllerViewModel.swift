@@ -46,7 +46,7 @@ class PostsSettingViewControllerViewModel {
     }
     
     func cellForRowAt(indexPath: IndexPath) -> Post {
-        return self.posts[indexPath.section]
+        return self.posts[indexPath.row]
     }
     
 }

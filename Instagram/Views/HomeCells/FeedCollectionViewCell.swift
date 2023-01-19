@@ -10,12 +10,15 @@ import SDWebImage
 
 protocol FeedCollectionViewCellDelegate: AnyObject {
     func feedCollectionDidTapLike(_ user: String)
-    func feedCollectionDidTapComment(_ user: String)
+    func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post)
     func feedCollectionDidTapShare(_ user: String)
     func feedCollectionDidTapMoreComments(_ user: String)
 }
 
 class FeedCollectionViewCell: UICollectionViewCell {
+    
+    
+    var viewModel: FeedCollectionViewCellViewModel?
     
     static let identifier = "FeedCollectionViewCell"
     
@@ -188,10 +191,11 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     
     func configure(with viewModel: FeedCollectionViewCellViewModel) {
+        self.viewModel = viewModel
         updateUI(
             caption: viewModel.caption,
             imageURL: viewModel.imageURL,
-            likes: viewModel.likesLabelText, //"\(viewModel.likes) likes",
+            likes: viewModel.likesLabelText,
             userProfileImageURL: viewModel.userProfileImageURL,
             username: viewModel.username
         )
@@ -221,7 +225,8 @@ class FeedCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func didTapComment() {
-        delegate?.feedCollectionDidTapComment("user")
+        guard let viewModel = self.viewModel else { return }
+        delegate?.feedCollectionDidTapComment(self, wantsShowCommentFor: viewModel.post)
     }
     
     @objc func didTapShare() {
