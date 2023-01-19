@@ -51,7 +51,6 @@ class FeedViewController: UIViewController {
     private func fetchPosts() {
         viewModel.fetchPosts()
         self.collectionView.refreshControl?.endRefreshing()
-        print("DEBUG: Did fetch posts..")
     }
     
     // MARK: - Helpers

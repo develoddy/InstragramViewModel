@@ -19,7 +19,7 @@ class ProfileViewModel {
         }
     }
     
-    private var posts: [Post] = [Post]() {
+    var posts: [Post] = [Post]() {
         didSet {
             self.bindProfileViewModelToController?()
         }
@@ -75,8 +75,6 @@ class ProfileViewModel {
     }
     
     func updatePropertiStats(stats: UserStats) {
-        print("DEBUF: VIEWMODEL STATS: ")
-        print(stats)
         self.user?.stats = stats
     }
     

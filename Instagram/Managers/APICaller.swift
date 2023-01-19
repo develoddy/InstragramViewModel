@@ -118,9 +118,6 @@ final class APICaller: APICallerDelegate {
     func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)  {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings").document(uid).getDocument { (snapshot, error) in
-            print("DEBG: checkIfUserIsFollowed: ")
-            print(error as Any)
-            
             guard let isFollowed = snapshot?.exists else { return }
             completion(isFollowed)
         }
@@ -197,7 +194,6 @@ final class APICaller: APICallerDelegate {
         query.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { return }
             let posts = documents.compactMap({ Post(postId: $0.documentID, dictionary: $0.data() )})
-            print(posts)
             completion(posts)
         }
     }
