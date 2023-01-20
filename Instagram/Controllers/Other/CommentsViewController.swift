@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentsViewController2: UICollectionViewController {
+class CommentsViewController: UICollectionViewController {
 
     // MARK: - Properties
     
@@ -114,8 +114,9 @@ class CommentsViewController2: UICollectionViewController {
     
 }
 
-// MARK: - UICollectionViewDelegate && UICollectionViewDataSource
-extension CommentsViewController2 {
+// MARK: - UICollectionViewDataSource
+extension CommentsViewController {
+
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.numberOfRowsInSection(section: section)
     }
@@ -131,9 +132,41 @@ extension CommentsViewController2 {
         cell.configure(with: ListCommentsCollectionViewCellViewModel(comment: viewModel.cellForRowAt(indexPath: indexPath)))
         return cell
     }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension CommentsViewController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let uid = viewModel.cellForRowAt(indexPath: indexPath).uid
+        viewModel.fetchUser(uid: uid) { [weak self] result in
+            switch result {
+            case .success(let user):
+                let vc = ProfileViewController(user: user)
+                self?.navigationItem.largeTitleDisplayMode = .never
+                self?.navigationController?.pushViewController(vc, animated: true)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+        
+    }
+}
+
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension CommentsViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let viewModel = ListCommentsCollectionViewCellViewModel(comment: viewModel.cellForRowAt(indexPath: indexPath))
+        let height = viewModel.size(forWidth: view.frame.width).height + 32
+        return CGSize(width: view.frame.width, height: height)
+    }
     
-    
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    /**override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: CommentsHeaderCollectionReusableView.identifier,
@@ -143,23 +176,13 @@ extension CommentsViewController2 {
         }
         header.backgroundColor = .systemBackground
         return header
-    }
-}
-
-
-// MARK: - UICollectionViewDelegateFlowLayout
-extension CommentsViewController2: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let viewModel = ListCommentsCollectionViewCellViewModel(comment: viewModel.cellForRowAt(indexPath: indexPath))
-        let height = viewModel.size(forWidth: view.frame.width).height + 32
-        return CGSize(width: view.frame.width, height: height)
-    }
+    }*/
 }
 
 
 // MARK: - CommentInputAccesoryViewDelegate
 
-extension CommentsViewController2: CommentInputAccesoryViewDelegate {
+extension CommentsViewController: CommentInputAccesoryViewDelegate {
     func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {
         
         guard let tab = self.tabBarController as? TabBarViewController else { return }

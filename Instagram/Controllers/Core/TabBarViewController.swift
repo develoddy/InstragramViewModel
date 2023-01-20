@@ -24,11 +24,15 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        APICaller.shared.fetchUserLogin { [weak self] result in
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        APICaller.shared.fetchUser(uid: uid) { [weak self] result in
             switch result {
             case .success(let user):
+                print(user)
                 self?.user = user
             case .failure(let error):
+                print("DEBUG: TabBAR \(error.localizedDescription)")
                 print(error.localizedDescription)
             }
         }
@@ -163,4 +167,3 @@ extension TabBarViewController: UploadPostViewControllerDelegate {
         feed.handleRefresh()
     }
 }
-

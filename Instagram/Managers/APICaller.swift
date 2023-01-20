@@ -14,7 +14,7 @@ typealias FirestoreCompletion = (Error?) -> Void
 protocol APICallerDelegate: AnyObject {
     func fetchUserLogin(completion: @escaping (Result<User, Error>) -> Void)
     func registerUser()
-    func fetchUser(email: String, completion: @escaping (Result<User, Error>) -> Void)
+    func fetchUser(uid: String, completion: @escaping (Result<User, Error>) -> Void)
     func fetchUsers(completion: @escaping (Result<[User], Error>) -> Void)
     func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)
     func follow(uid: String, completion: @escaping(FirestoreCompletion))
@@ -67,23 +67,18 @@ final class APICaller: APICallerDelegate {
     }
     
     // MARK: - Users
-    
-    func fetchUser(email: String, completion: @escaping (Result<User, Error>) -> Void) {
-        db.collection("users").whereField("email", isEqualTo: email)
-            .getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                        completion(.failure(APIError.faileedToGetData))
-                    } else {
-                        for document in querySnapshot!.documents {
-                            //print("\(document.documentID) => \(document.data())")
-                            let dictionary = document.data()
-                            let user = User(dictionary: dictionary)
-                            completion(.success(user))
-                        }
-                        
-                    }
+
+    func fetchUser(uid: String, completion: @escaping (Result<User, Error>) -> Void) {
+        Constants.Collections.COLLECTION_USERS.document(uid).getDocument { snapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                completion(.failure(APIError.faileedToGetData))
+            } else {
+                guard let dictionary = snapshot?.data() else { return }
+                let user = User(dictionary: dictionary)
+                completion(.success(user))
             }
+        }
     }
     
     func fetchUsers(completion: @escaping (Result<[User], Error>) -> Void) {
@@ -92,18 +87,6 @@ final class APICaller: APICallerDelegate {
                 print("Error getting documents: \(err)")
                 completion(.failure(APIError.faileedToGetData))
             } else {
-                /*for document in querySnapshot!.documents {
-                    print("\(document.documentID) => \(document.data())")
-                    let user = User(dictionary: document.data())
-                    users.append(user)
-                }*/
-                
-                /*querySnapshot?.documents.forEach({ document in
-                    let user = User(dictionary: document.data())
-                    users.append(user)
-                })
-                completion(.success(users))*/
-                
                 guard let users = querySnapshot?.documents.compactMap({ User(dictionary: $0.data()) }) else {
                     return
                 }
