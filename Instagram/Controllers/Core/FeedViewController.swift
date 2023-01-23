@@ -1,3 +1,4 @@
+
 //
 //  FeedViewController.swift
 //  Instagram
@@ -7,21 +8,19 @@
 
 import UIKit
 
-/*enum FeedSectionType {
-    case stories(viewModels: String) // 1
-    case feeds(viewModels: [FeedCollectionViewCellViewModel]) // 2
+/**enum FeedSectionType {
+    case feeds(viewModels: [FeedCollectionViewCellViewModel]) // 1
+    case stories(viewModels: [String]) // 2
 }*/
 
-
+/// Fee View Controller
 class FeedViewController: UIViewController {
 
     // MARK: - Properties
     
     var viewModel = FeedViewModel()
     
-    var posts: [Post] = []
-    
-    //var sections =  [FeedSectionType]()
+    ///var sections =  [FeedSectionType]()
     
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -41,15 +40,13 @@ class FeedViewController: UIViewController {
         configureNavigationItem()
         bind()
         fetchData()
+        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
-    
-    
-
     
     // MARK: - ViewModels
     
@@ -65,11 +62,12 @@ class FeedViewController: UIViewController {
     func fetchData() {
         viewModel.fetchPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
-            self?.checkIfUserLiked()
+            self?.checkIfUserLikedPosts()
+            self?.collectionView.reloadData()
         }
     }
     
-    private func checkIfUserLiked() {
+    private func checkIfUserLikedPosts() {
         self.viewModel.posts.forEach { post in
             viewModel.checkIfUserLikePost(post: post) { didLiked in
                 if let index = self.viewModel.posts.firstIndex(where: { $0.postId == post.postId }) {
@@ -77,9 +75,9 @@ class FeedViewController: UIViewController {
                     ///print("DEBUG: Post is [\(post.caption)] and user liked is  [\(didLiked)] ")
                 }
             }
-            
         }
     }
+
     
    
     // MARK: - Helpers
@@ -147,7 +145,7 @@ class FeedViewController: UIViewController {
     }
     
     @objc func handleRefresh() {
-        self.posts.removeAll()
+        self.viewModel.posts.removeAll()
         fetchData()
     }
 }
@@ -171,7 +169,9 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
         cell.backgroundColor = .systemBackground
         
         let post = viewModel.cellForRowAt(indexPath: indexPath)
-        cell.configure(with: FeedCollectionViewCellViewModel(post: post))
+        /**cell.configure(with: FeedCollectionViewCellViewModel(post: post))*/
+        
+        cell.viewModel = FeedCollectionViewCellViewModel(post: post)
         cell.delegate = self
         return cell
        
@@ -251,16 +251,16 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
     func feedCollectionDidTapLike(_ cell: FeedCollectionViewCell, didLike post: Post) {
         cell.viewModel?.post.didLike.toggle()
         if post.didLike {
-            print("DEBUG: Unlike post here..")
             viewModel.unlikePost(post: post) { _ in
                 cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
                 cell.likeButton.tintColor = .black
+                cell.viewModel?.post.likes = post.likes - 1
             }
         } else {
-            print("DEBUG: Like post here..")
             viewModel.likePost(post: post) { _ in
                 cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
                 cell.likeButton.tintColor = .red
+                cell.viewModel?.post.likes = post.likes + 1
             }
         }
     }

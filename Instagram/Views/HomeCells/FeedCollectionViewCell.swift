@@ -18,7 +18,11 @@ protocol FeedCollectionViewCellDelegate: AnyObject {
 class FeedCollectionViewCell: UICollectionViewCell {
     
     
-    var viewModel: FeedCollectionViewCellViewModel?
+    var viewModel: FeedCollectionViewCellViewModel? {
+        didSet {
+            configure()
+        }
+    }
     
     static let identifier = "FeedCollectionViewCell"
     
@@ -106,7 +110,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .systemYellow
+        backgroundColor = .systemBackground
         
         addSubview(profileImageView)
         addSubview(usernameButton)
@@ -188,10 +192,12 @@ class FeedCollectionViewCell: UICollectionViewCell {
     }
     
     
-    func configure(with viewModel: FeedCollectionViewCellViewModel) {
-        self.viewModel = viewModel
-    
-        //print("DEBUG: CELL Post caption is \(viewModel.post.caption) & Post didLike is \(viewModel.post.didLike)")
+    //func configure(with viewModel: FeedCollectionViewCellViewModel) {
+    func configure() {
+        
+        guard let viewModel = viewModel else {
+            return
+        }
         
         guard let likeButtonImage = viewModel.likeButtonImage else {return}
         updateUI(

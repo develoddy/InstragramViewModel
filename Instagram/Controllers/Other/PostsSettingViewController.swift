@@ -93,7 +93,8 @@ extension PostsSettingViewController: UICollectionViewDelegate, UICollectionView
         cell.backgroundColor = .systemBackground
         let post = self.viewModel.cellForRowAt(indexPath: indexPath)
         
-        cell.configure(with: FeedCollectionViewCellViewModel(post: post))
+        ///cell.configure(with: FeedCollectionViewCellViewModel(post: post))
+        cell.viewModel = FeedCollectionViewCellViewModel(post: post)
         cell.delegate = self
         
         print("DEBUG : EXTERNO :\(self.indice)")

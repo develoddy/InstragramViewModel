@@ -56,6 +56,21 @@ class FeedViewModel {
             completion(didLike)
         }
     }
+    
+    //increase
+    //decrease
+    
+    func updateIncreaseLike(post: Post) {
+        if let index = self.posts.firstIndex(where: { $0.postId == post.postId }) {
+            self.posts[index].likes = post.likes + 1
+        }
+    }
+    
+    func updateDecreaseLike(post: Post) {
+        if let index = self.posts.firstIndex(where: { $0.postId == post.postId }) {
+            self.posts[index].likes = post.likes - 1
+        }
+    }
  
     func numberOfSections() -> Int {
         return self.posts.count

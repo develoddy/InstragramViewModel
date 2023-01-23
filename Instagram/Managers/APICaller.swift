@@ -202,7 +202,8 @@ final class APICaller: APICallerDelegate {
     
     func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        //guard post.likes > 0 else { return }
+        
+        guard post.likes > 0 else { return }
         
         Constants.Collections.COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes - 1])
         
