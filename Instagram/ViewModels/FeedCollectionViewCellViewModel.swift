@@ -1,8 +1,8 @@
 
-import Foundation
+import UIKit
 
 struct FeedCollectionViewCellViewModel {
-    let post: Post
+    var post: Post
     
     var imageURL: URL? { return URL(string: post.imageURL)}
     
@@ -14,11 +14,20 @@ struct FeedCollectionViewCellViewModel {
     
     var likes: Int { return post.likes }
     
+    var likeButtonTintColor: UIColor {
+        return post.didLike ? .red : .black
+    }
+    
+    var likeButtonImage: UIImage? {
+        let imageName = post.didLike ? "heart.fill" : "heart"
+        return UIImage(systemName: imageName)
+    }
+    
     var likesLabelText : String {
         if post.likes != 1 {
             return "\(post.likes) likes"
         } else {
-            return "\(post.likes) likes"
+            return "\(post.likes) like"
         }
     }
     

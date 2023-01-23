@@ -170,11 +170,8 @@ extension PostsSettingViewController: UICollectionViewDelegate, UICollectionView
 }
 
 extension PostsSettingViewController: FeedCollectionViewCellDelegate {
-    
-    
-    
-    func feedCollectionDidTapLike(_ user: String) {
-        // Like
+    func feedCollectionDidTapLike(_ cell: FeedCollectionViewCell, didLike post: Post) {
+        
     }
     
     func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post) {

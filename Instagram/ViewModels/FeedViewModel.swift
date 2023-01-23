@@ -6,22 +6,22 @@
 //
 
 import Foundation
+import UIKit
 
 
 class FeedViewModel {
     
     // MARK: - Properties
+    
     let api: APICallerDelegate
     
-    // MECANISMO PARA ENLAZAR LO QUE SERIA CON ESTE MODELO DE LA VISTA
     var refreshData: ( () -> () )?
     
-    var sections: [FeedSectionType] = [FeedSectionType]() {
+    var posts: [Post] = [Post]() {
         didSet {
             refreshData?()
         }
     }
-    
     
     // MARK: - Lifecycle
     
@@ -31,35 +31,44 @@ class FeedViewModel {
     
     // MARK: - Helpers
     
-    func fetchPosts() {
-        // feed
-        api.fetchPosts { [weak self] posts in
-            self?.sections.append(.feeds(viewModels: posts.compactMap({
-                //return FeedCollectionViewCellViewModel(caption: $0.caption, imageURL: $0.imageURL)
-                return FeedCollectionViewCellViewModel(post: $0)
-            })))
+    
+    func fetchPosts(completion: @escaping() -> ()) {
+        api.fetchPosts { posts in
+            self.posts = posts
+            completion()
         }
-        
-        // call api
-        // storie
-        sections.append(.stories(viewModels: "-"))
     }
     
+    func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {
+        api.likePost(post: post) { error in
+            completion(error)
+        }
+    }
+    
+    func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
+        api.unlikePost(post: post) { error in
+            completion(error)
+        }
+    }
+    
+    func checkIfUserLikePost(post: Post, completion: @escaping(Bool) -> Void) {
+        api.checkIfUserLikePost(post: post) { didLike in
+            completion(didLike)
+        }
+    }
+ 
     func numberOfSections() -> Int {
-        return self.sections.count
+        return self.posts.count
     }
     
     func numberOfRowsInSection(section: Int) -> Int {
-        let type = sections[section]
-        switch type {
-        case .feeds(let viewModels):
-            return viewModels.count
-        case .stories(_):
-            return 10
+        if self.posts.count != 0 {
+            return self.posts.count
         }
+        return 0
     }
     
-    func cellForRowAt(indexPath: IndexPath) -> FeedSectionType {
-        return sections[indexPath.section]
+    func cellForRowAt(indexPath: IndexPath) -> Post {
+        return posts[indexPath.row]
     }
 }

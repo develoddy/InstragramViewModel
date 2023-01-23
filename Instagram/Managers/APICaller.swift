@@ -23,6 +23,9 @@ protocol APICallerDelegate: AnyObject {
     func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping(FirestoreCompletion))
     func fetchPosts(completion: @escaping([Post]) -> Void)
     func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void)
+    func likePost(post: Post, completion: @escaping(FirestoreCompletion))
+    func unlikePost(post: Post, completion: @escaping(FirestoreCompletion))
+    func checkIfUserLikePost(post: Post, completion: @escaping(Bool) -> Void)
 }
 
 /// Final APICaller
@@ -183,6 +186,40 @@ final class APICaller: APICallerDelegate {
             }
             
             completion(posts)
+        }
+    }
+    
+    func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        Constants.Collections.COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes + 1])
+        
+        Constants.Collections.COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).setData([:]) { _ in
+            
+                Constants.Collections.COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId).setData([:], completion: completion)
+        }
+    }
+    
+    func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        //guard post.likes > 0 else { return }
+        
+        Constants.Collections.COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes - 1])
+        
+        Constants.Collections.COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).delete { _ in
+            
+                Constants.Collections.COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId).delete(completion: completion)
+        }
+    }
+    
+    func checkIfUserLikePost(post: Post, completion: @escaping(Bool) -> Void) {
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        Constants.Collections.COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId).getDocument {
+            (snapshot, _) in
+            guard let didLike = snapshot?.exists else { return }
+            completion(didLike)
         }
     }
     

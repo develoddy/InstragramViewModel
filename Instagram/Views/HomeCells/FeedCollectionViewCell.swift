@@ -9,7 +9,7 @@ import UIKit
 import SDWebImage
 
 protocol FeedCollectionViewCellDelegate: AnyObject {
-    func feedCollectionDidTapLike(_ user: String)
+    func feedCollectionDidTapLike(_ cell: FeedCollectionViewCell, didLike post: Post)
     func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post)
     func feedCollectionDidTapShare(_ user: String)
     func feedCollectionDidTapMoreComments(_ user: String)
@@ -30,7 +30,6 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .lightGray
-        //imageView.image = UIImage(named: "feed01")
         return imageView
     }()
     
@@ -49,14 +48,13 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .systemPurple
-        //imageView.image = UIImage(named: "feed02")
         return imageView
     }()
     
-    private lazy var likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "heart"), for: .normal)
-        button.tintColor = .black
+        //button.setImage(UIImage(systemName: "heart"), for: .normal)
+        //button.tintColor = .black
         return button
     }()
     
@@ -76,7 +74,6 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     private let likesLabel: UILabel = {
         let label = UILabel()
-        //label.text = "10 likes"
         label.font = .systemFont(ofSize: 13, weight: .regular)
         return label
     }()
@@ -176,6 +173,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         captionLabel.text = nil
         postImageView.image = nil
+        likeButton.setImage(nil, for: .normal)
     }
     
     
@@ -192,12 +190,18 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     func configure(with viewModel: FeedCollectionViewCellViewModel) {
         self.viewModel = viewModel
+    
+        //print("DEBUG: CELL Post caption is \(viewModel.post.caption) & Post didLike is \(viewModel.post.didLike)")
+        
+        guard let likeButtonImage = viewModel.likeButtonImage else {return}
         updateUI(
             caption: viewModel.caption,
             imageURL: viewModel.imageURL,
             likes: viewModel.likesLabelText,
             userProfileImageURL: viewModel.userProfileImageURL,
-            username: viewModel.username
+            username: viewModel.username,
+            likeButtonTintColor: viewModel.likeButtonTintColor,
+            likeButtonImage: likeButtonImage
         )
     }
     
@@ -206,13 +210,17 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageURL: URL?,
         likes: String,
         userProfileImageURL: URL?,
-        username: String
+        username: String,
+        likeButtonTintColor: UIColor,
+        likeButtonImage: UIImage
     ) {
         captionLabel.text = caption
         postImageView.sd_setImage(with: imageURL)
         likesLabel.text = likes
         profileImageView.sd_setImage(with: userProfileImageURL)
         usernameButton.setTitle(username, for: .normal)
+        likeButton.tintColor = likeButtonTintColor
+        likeButton.setImage(likeButtonImage, for: .normal)
     }
     
     // MARK: - Actions
@@ -221,7 +229,8 @@ class FeedCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func didTapLike() {
-        delegate?.feedCollectionDidTapLike("user")
+        guard let viewModel = self.viewModel else { return }
+        delegate?.feedCollectionDidTapLike(self, didLike: viewModel.post)
     }
     
     @objc func didTapComment() {
