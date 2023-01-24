@@ -63,7 +63,7 @@ class FeedViewModel {
         }
     }
     
-    func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post?) {
+    func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post? = nil) {
         notificationService.uploadNotification(
             toUid: uid,
             fromUser: fromUser,

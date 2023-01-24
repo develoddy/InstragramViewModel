@@ -13,6 +13,8 @@ class CommentViewModel {
     
     let api: CommentServiceDelegate
     
+    let notificationService: NotificationServiceDelegate
+    
     var refreshData: ( () -> () )?
         
     var post: Post? {
@@ -29,8 +31,12 @@ class CommentViewModel {
     
     // MARK: - Init
     
-    init(api: CommentServiceDelegate = CommentService()) {
+    init(
+        api: CommentServiceDelegate = CommentService(),
+        notificationService: NotificationServiceDelegate = NotificationService()
+    ) {
         self.api = api
+        self.notificationService = notificationService
     }
     
     // MARK: - Helpers
@@ -67,6 +73,14 @@ class CommentViewModel {
                 completion(.failure(error))
             }
         }
+    }
+    
+    func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post? = nil) {
+        notificationService.uploadNotification(
+            toUid: uid,
+            fromUser: fromUser,
+            type: type,
+            post: post)
     }
     
     func numberOfSections() -> Int {

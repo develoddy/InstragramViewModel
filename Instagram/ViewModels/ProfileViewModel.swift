@@ -19,6 +19,8 @@ class ProfileViewModel {
     
     let postService: PostServiceDelegate
     
+    let notificationService: NotificationServiceDelegate
+    
     var userStats: UserStats?
     
     private var user: User? {
@@ -38,10 +40,12 @@ class ProfileViewModel {
     
     init(
         profileService: ProfileServiceDelegate = ProfileService(),
-        postService: PostServiceDelegate = PostService()
+        postService: PostServiceDelegate = PostService(),
+        notificationService: NotificationServiceDelegate = NotificationService()
     ) {
         self.profileService = profileService
         self.postService = postService
+        self.notificationService = notificationService
     }
     
     // MARK: - Helpers
@@ -81,6 +85,14 @@ class ProfileViewModel {
         postService.fetchPosts(forUser: uid) { [weak self] posts in
             self?.posts = posts
         }
+    }
+    
+    func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post? = nil) {
+        notificationService.uploadNotification(
+            toUid: uid,
+            fromUser: fromUser,
+            type: type,
+            post: post)
     }
     
     func updatePropertiStats(stats: UserStats) {

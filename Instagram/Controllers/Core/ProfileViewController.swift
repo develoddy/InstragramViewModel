@@ -183,7 +183,12 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     
+    
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User) {
+        
+        guard let tab = tabBarController as? TabBarViewController  else { return }
+        guard let currentUser = tab.user else { return }
+        
         if user.isCurrentUser {
             debugPrint("Debug: Show edit profile here")
         } else if user.isFollwed {
@@ -193,6 +198,12 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         } else {
             viewModel.follow { [weak self] error in
                 self?.viewModel.updatePropertiesIsFollwed(isFollowed: true)
+                
+                // Uploader Notification
+                self?.viewModel.uploadNotification(
+                    toUid: user.uid,
+                    fromUser: currentUser,
+                    type: .follow)
             }
         }
     }

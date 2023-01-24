@@ -22,7 +22,7 @@ struct NotificationsDefaultTableViewCellViewModel {
         let username = notification.username
         let message = notification.type.notificationMessage
         
-        let attributedTex = NSMutableAttributedString(string: "A \(username)" , attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold) ])
+        let attributedTex = NSMutableAttributedString(string: username, attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold) ])
         
         attributedTex.append(NSAttributedString(string: message, attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular) ]))
         
@@ -30,4 +30,8 @@ struct NotificationsDefaultTableViewCellViewModel {
         
         return attributedTex
     }
+    
+    var shouldHidePostImage: Bool { return self.notification.type == .follow }
+    
+    //var shouldHideFollowButton: Bool { return self.notification.type != .follow }
 }

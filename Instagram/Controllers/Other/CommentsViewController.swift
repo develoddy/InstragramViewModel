@@ -186,14 +186,21 @@ extension CommentsViewController: CommentInputAccesoryViewDelegate {
     func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {
         
         guard let tab = self.tabBarController as? TabBarViewController else { return }
-        guard let user = tab.user  else { return }
+        guard let currentUser = tab.user  else { return }
         
         self.showLoader(true)
         
-        viewModel.uploadComment(comment: comment, postID: viewModel.post?.postId ?? "", user: user) { error in
+        viewModel.uploadComment(comment: comment, postID: viewModel.post?.postId ?? "", user: currentUser) { error in
             self.showLoader(false)
             inputView.clearCommentTextView()
         }
+        
+        // Uploader Notification
+        self.viewModel.uploadNotification(
+            toUid: viewModel.post?.ownerUid ?? "",
+            fromUser: currentUser,
+            type: .comment,
+            post: viewModel.post)
     }
     
     

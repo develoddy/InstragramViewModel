@@ -7,9 +7,6 @@
 
 import UIKit
 
-
-
-
 class NotificationsDefaultTableViewCell: UITableViewCell {
 
     // MARK: - Properties
@@ -27,14 +24,13 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.backgroundColor = .lightGray
-        ///imageView.image = UIImage(named: "person.circle")
         return imageView
     }()
     
     private let infoLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         return label
     }()
     
@@ -77,8 +73,10 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         contentView.addSubview(infoLabel)
         contentView.addSubview(profileImageView)
         contentView.addSubview(subTextLabel)
-        //contentView.clipsToBounds = true
-        //accessoryType = .disclosureIndicator
+        contentView.addSubview(followButton)
+        contentView.addSubview(postImageView)
+        
+        followButton.isHidden = true
     }
     
     required init?(coder: NSCoder) {
@@ -88,30 +86,24 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // let imageSize: CGFloat = contentView.height-10
         profileImageView.setDimensions(height: 40, width: 40)
         profileImageView.layer.cornerRadius = 40 / 2
         profileImageView.centerY(inView: self, leftAnchor: leftAnchor, paddingLeft: 12)
         
-        /*let stack = UIStackView(arrangedSubviews: [label, subTextLabel])
-        stack.axis = .vertical
-        stack.spacing = 4
-        stack.alignment = .leading
-        contentView.addSubview(stack)
-        stack.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)*/
         
-        infoLabel.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
+    
         
-
-        addSubview(followButton)
         followButton.centerY(inView: self)
-        followButton.anchor(right: rightAnchor, paddingRight: 12, width: 100, height: 32)
+        followButton.anchor(right: rightAnchor, paddingRight: 12, width: 88, height: 32)
         
-        addSubview(postImageView)
+        
         postImageView.centerY(inView: self)
         postImageView.anchor(right: rightAnchor, paddingRight: 12, width: 40, height: 40)
         
-        followButton.isHidden = true
+        infoLabel.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
+        infoLabel.anchor(right: followButton.leftAnchor, paddingRight: 4)
+        
+       
     }
     
     
@@ -124,7 +116,6 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         subTextLabel.text = nil
     }
     
-    //func configure(with viewModel: NotificationsDefaultTableViewCellViewModel) {
     func configure() {
         guard let viewModel = self.viewModel else { return }
         
@@ -132,13 +123,9 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         postImageView.sd_setImage(with: viewModel.postImageURL, completed: nil)
         infoLabel.attributedText = viewModel.notificationMessage
         
-        
-        ///label.text = "user"
-        ///subTextLabel.text = "3 h"
-        //profileImageView.image = UIImage(systemName: "person.circle")
-        
+        followButton.isHidden = !viewModel.shouldHidePostImage
+        postImageView.isHidden = viewModel.shouldHidePostImage
     }
-    
     
     // MARK: - Actions
     @objc func handleFollowTapped() {
