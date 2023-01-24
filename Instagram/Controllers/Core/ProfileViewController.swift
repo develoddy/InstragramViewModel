@@ -137,21 +137,8 @@ extension ProfileViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        let vc = PostsSettingViewController()
-        vc.indice = indexPath.row
-        vc.uid = viewModel.getUID()
-        navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
         
-        /*
-         let tran : CATransition = CATransition()
-         tran.duration = 0.5
-         tran.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-         tran.type = CATransitionType.fade
-         tran.subtype = CATransitionSubtype.fromTop
-         viewController.view.window?.layer.add(tran, forKey: nil)
-         viewController.dismiss(animated: true)
-         */
+        FeedPresenter.shared.startFeed(from: self, post: viewModel.cellForRowAt(indexPath: indexPath))
     }
 }
 

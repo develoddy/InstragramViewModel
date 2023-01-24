@@ -13,6 +13,10 @@ class NotificationViewModel {
     
     let notificationService : NotificationServiceDelegate
     
+    let profileService: ProfileServiceDelegate
+    
+    let postService: PostServiceDelegate
+    
     var refreshData: ( () -> () )?
     
     var notifications: [Notification] = [Notification]() {
@@ -21,19 +25,43 @@ class NotificationViewModel {
         }
     }
     
+    var post: Post? {
+        didSet {
+            self.refreshData?()
+        }
+    }
+    
     // MARK: - Lifecycle
     
-    init(notificationService: NotificationServiceDelegate = NotificationService()) {
+    init(
+        notificationService: NotificationServiceDelegate = NotificationService(),
+        profileService: ProfileServiceDelegate = ProfileService(),
+        postService: PostServiceDelegate = PostService()
+    ) {
         self.notificationService = notificationService
+        self.profileService = profileService
+        self.postService = postService
     }
     
     // MARK: - Helpers
-    ///func fetchNotifications(completion: @escaping([Notification]) -> Void) {
     func fetchNotifications(completion: @escaping() -> () ) {
         notificationService.fetchNotifications { notifications in
             print("DEBUG: ViewModel Notification")
             print(notifications)
             self.notifications = notifications
+            completion()
+        }
+    }
+    
+    func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void) {
+        profileService.checkIfUserIsFollowed(uid: uid) { isFollowed in
+            completion(isFollowed)
+        }
+    }
+    
+    func fetchPosts(withPostId postId: String, completion: @escaping() -> () ) {
+        postService.fetchPosts(withPostId: postId) { post in
+            self.post = post
             completion()
         }
     }

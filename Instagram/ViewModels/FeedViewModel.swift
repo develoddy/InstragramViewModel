@@ -19,6 +19,8 @@ class FeedViewModel {
     
     var refreshData: ( () -> () )?
     
+    var post: Post?
+    
     var posts: [Post] = [Post]() {
         didSet {
             refreshData?()

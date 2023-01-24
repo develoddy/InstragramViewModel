@@ -57,6 +57,18 @@ class NotificationViewController: UIViewController {
         self.viewModel.fetchNotifications { [weak self] in
             // Refresh
             print("DEBUG: Notification \(String(describing: self?.viewModel.notifications)) ")
+            self?.checkIfUserIsFollowed()
+        }
+    }
+    
+    private func checkIfUserIsFollowed() {
+        viewModel.notifications.forEach { notification in
+            guard notification.type == .follow else { return }
+            viewModel.checkIfUserIsFollowed(uid: notification.uid) { isFollowed in
+                if let index = self.viewModel.notifications.firstIndex(where: { $0.id == notification.id }) {
+                    self.viewModel.notifications[index].userIsFollowed = isFollowed
+                }
+            }
         }
     }
 
@@ -81,7 +93,7 @@ class NotificationViewController: UIViewController {
 
 //MARK: - UITableViewDataSource
 
-extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
+extension NotificationViewController: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -99,11 +111,38 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         
         let notification = self.viewModel.cellForRowAt(indexPath: indexPath)
         cell.viewModel = NotificationsDefaultTableViewCellViewModel(notification: notification)
+        cell.delegate = self
         return cell
+    }
+}
+
+
+//MARK: - UITableViewDelegate
+
+extension NotificationViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("DEBUG: Tapped..")
+    }
+}
+
+
+//MARK: - NotificationsDefaultTableViewCellDelegate
+
+extension NotificationViewController: NotificationsDefaultTableViewCellDelegate {
+    func cell(_ cell: NotificationsDefaultTableViewCell, wantsToFollow uid: String) {
         
     }
     
-    /**func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
-    }*/
+    func cell(_ cell: NotificationsDefaultTableViewCell, wantsTounFollow uid: String) {
+        
+    }
+    
+    func cell(_ cell: NotificationsDefaultTableViewCell, wantsToViewPost postId: String) {
+        viewModel.fetchPosts(withPostId: postId) { [weak self] in
+            guard let stronSelf = self else { return }
+            guard let post = stronSelf.viewModel.post else { return }
+            FeedPresenter.shared.startFeed(from: stronSelf, post: post)
+            
+        }
+    }
 }

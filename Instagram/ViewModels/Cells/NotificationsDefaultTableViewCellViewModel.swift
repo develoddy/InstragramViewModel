@@ -8,7 +8,7 @@
 import UIKit
 
 struct NotificationsDefaultTableViewCellViewModel {
-    private let notification: Notification
+    let notification: Notification
     
     init(notification: Notification) {
         self.notification = notification
@@ -33,5 +33,15 @@ struct NotificationsDefaultTableViewCellViewModel {
     
     var shouldHidePostImage: Bool { return self.notification.type == .follow }
     
-    //var shouldHideFollowButton: Bool { return self.notification.type != .follow }
+    var followButtonText : String {
+        return self.notification.userIsFollowed ? "Following" : "Follow"
+    }
+    
+    var followButtonBackgroundColor: UIColor {
+        return notification.userIsFollowed ? .white: .systemBlue
+    }
+    
+    var followButtonTextColor: UIColor {
+        return notification.userIsFollowed ? .black : .white
+    }
 }

@@ -8,10 +8,6 @@
 
 import UIKit
 
-/**enum FeedSectionType {
-    case feeds(viewModels: [FeedCollectionViewCellViewModel]) // 1
-    case stories(viewModels: [String]) // 2
-}*/
 
 /// Fee View Controller
 class FeedViewController: UIViewController {
@@ -20,7 +16,7 @@ class FeedViewController: UIViewController {
     
     var viewModel = FeedViewModel()
     
-    ///var sections =  [FeedSectionType]()
+    var post: Post?
     
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -29,12 +25,12 @@ class FeedViewController: UIViewController {
         }
     )
     
-
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        sendDataPost()
         configureCollectionView()
         configureNavigationItem()
         bind()
@@ -56,7 +52,13 @@ class FeedViewController: UIViewController {
         }
     }
     
+    func sendDataPost() {
+        viewModel.post = self.post
+    }
+    
     func fetchData() {
+        guard self.viewModel.post == nil else { return }
+        
         viewModel.fetchPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
             self?.checkIfUserLikedPosts()
@@ -95,8 +97,10 @@ class FeedViewController: UIViewController {
     }
     
     private func configureNavigationItem() {
-        confireColorNavigation()
-        setupRightNavItems()
+        if viewModel.post == nil {
+            confireColorNavigation()
+            setupRightNavItems()
+        }
     }
     
     private func confireColorNavigation() {
@@ -145,8 +149,15 @@ class FeedViewController: UIViewController {
     }
     
     @objc func handleRefresh() {
+        
         self.viewModel.posts.removeAll()
         fetchData()
+    
+        if viewModel.post != nil {
+            print("DEBUG: if refresh")
+            self.collectionView.refreshControl?.endRefreshing()
+            sendDataPost()
+        }
     }
 }
 
@@ -156,7 +167,8 @@ class FeedViewController: UIViewController {
 extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection(section: section)
+        //return viewModel.numberOfRowsInSection(section: section)
+        return viewModel.post == nil ? viewModel.numberOfRowsInSection(section: section) : 1
     }
    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -166,14 +178,19 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
         ) as? FeedCollectionViewCell else {
             return UICollectionViewCell()
         }
+        
+        if let post = viewModel.post {
+            cell.viewModel = FeedCollectionViewCellViewModel(post: post)
+            cell.delegate = self
+            return cell
+        } else {
+            cell.viewModel = FeedCollectionViewCellViewModel(post: viewModel.cellForRowAt(indexPath: indexPath))
+            cell.delegate = self
+        }
+        
         cell.backgroundColor = .systemBackground
         
-        let post = viewModel.cellForRowAt(indexPath: indexPath)
-        ///cell.configure(with: FeedCollectionViewCellViewModel(post: post))
-        cell.viewModel = FeedCollectionViewCellViewModel(post: post)
-        cell.delegate = self
         return cell
-       
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
