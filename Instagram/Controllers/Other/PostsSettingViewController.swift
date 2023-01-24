@@ -171,6 +171,10 @@ extension PostsSettingViewController: UICollectionViewDelegate, UICollectionView
 }
 
 extension PostsSettingViewController: FeedCollectionViewCellDelegate {
+    func cell(_ cell: FeedCollectionViewCell, wantsToShowProfileFor uid: String) {
+        
+    }
+    
     func feedCollectionDidTapLike(_ cell: FeedCollectionViewCell, didLike post: Post) {
         
     }

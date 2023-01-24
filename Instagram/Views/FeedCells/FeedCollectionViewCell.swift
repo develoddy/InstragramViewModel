@@ -13,10 +13,12 @@ protocol FeedCollectionViewCellDelegate: AnyObject {
     func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell, wantsShowCommentFor post: Post)
     func feedCollectionDidTapShare(_ user: String)
     func feedCollectionDidTapMoreComments(_ user: String)
+    func cell(_ cell: FeedCollectionViewCell, wantsToShowProfileFor uid: String )
 }
 
 class FeedCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - Properties
     
     var viewModel: FeedCollectionViewCellViewModel? {
         didSet {
@@ -28,12 +30,15 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: FeedCollectionViewCellDelegate?
     
-    private let profileImageView: UIImageView = {
+    private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .lightGray
+        let tap = UITapGestureRecognizer(target: self, action: #selector(showUserProfile))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tap)
         return imageView
     }()
     
@@ -42,7 +47,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         button.setTitle("User", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
-        button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
+        button.addTarget(self, action: #selector(showUserProfile), for: .touchUpInside)
         return button
     }()
     
@@ -230,8 +235,9 @@ class FeedCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Actions
-    @objc func didTapUsername() {
-        //
+    @objc func showUserProfile() {
+        guard let viewModel = self.viewModel else { return }
+        delegate?.cell(self, wantsToShowProfileFor: viewModel.post.ownerUid)
     }
     
     @objc func didTapLike() {

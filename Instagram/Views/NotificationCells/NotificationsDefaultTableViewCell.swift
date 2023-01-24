@@ -7,28 +7,33 @@
 
 import UIKit
 
-struct NotificationsDefaultTableViewCellViewModel {
-    let username: String
-    let imageURL: URL?
-}
+
 
 
 class NotificationsDefaultTableViewCell: UITableViewCell {
 
     // MARK: - Properties
     
+    var viewModel: NotificationsDefaultTableViewCellViewModel? {
+        didSet {
+            configure()
+        }
+    }
+    
     static let identifier = "NotificationsDefaultTableViewCell"
     
-    private let iconImageView: UIImageView = {
+    private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(named: "person.circle")
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = .lightGray
+        ///imageView.image = UIImage(named: "person.circle")
         return imageView
     }()
     
-    private let label: UILabel = {
+    private let infoLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 1
         return label
     }()
@@ -41,16 +46,39 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         return label
     }()
     
+    private lazy var postImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = .lightGray
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleFollowTapped))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tap)
+        return imageView
+    }()
+    
+    private lazy var followButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Loading", for: .normal)
+        button.layer.cornerRadius = 3
+        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.layer.borderWidth = 0.5
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
+        return button
+    }()
     
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(label)
-        contentView.addSubview(iconImageView)
+        selectionStyle = .none
+        contentView.addSubview(infoLabel)
+        contentView.addSubview(profileImageView)
         contentView.addSubview(subTextLabel)
-        contentView.clipsToBounds = true
-        accessoryType = .disclosureIndicator
+        //contentView.clipsToBounds = true
+        //accessoryType = .disclosureIndicator
     }
     
     required init?(coder: NSCoder) {
@@ -60,19 +88,30 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let imageSize: CGFloat = contentView.height-10
-        iconImageView.setDimensions(height: imageSize, width: imageSize)
-        iconImageView.layer.cornerRadius = imageSize/2
-        iconImageView.layer.masksToBounds = true
-        iconImageView.centerY(inView: self, leftAnchor: leftAnchor, paddingLeft: 12)
+        // let imageSize: CGFloat = contentView.height-10
+        profileImageView.setDimensions(height: 40, width: 40)
+        profileImageView.layer.cornerRadius = 40 / 2
+        profileImageView.centerY(inView: self, leftAnchor: leftAnchor, paddingLeft: 12)
         
-        let stack = UIStackView(arrangedSubviews: [label, subTextLabel])
+        /*let stack = UIStackView(arrangedSubviews: [label, subTextLabel])
         stack.axis = .vertical
-        stack.spacing = 2
+        stack.spacing = 4
         stack.alignment = .leading
-        
         contentView.addSubview(stack)
-        stack.centerY(inView: iconImageView, leftAnchor: iconImageView.rightAnchor, paddingLeft: 6)
+        stack.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)*/
+        
+        infoLabel.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
+        
+
+        addSubview(followButton)
+        followButton.centerY(inView: self)
+        followButton.anchor(right: rightAnchor, paddingRight: 12, width: 100, height: 32)
+        
+        addSubview(postImageView)
+        postImageView.centerY(inView: self)
+        postImageView.anchor(right: rightAnchor, paddingRight: 12, width: 40, height: 40)
+        
+        followButton.isHidden = true
     }
     
     
@@ -80,17 +119,29 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        iconImageView.image = nil
-        label.text = nil
+        profileImageView.image = nil
+        infoLabel.text = nil
         subTextLabel.text = nil
     }
     
-    func configure(with viewModel: NotificationsDefaultTableViewCellViewModel) {
-        label.text = viewModel.username
-        subTextLabel.text = "3 h"
-        iconImageView.sd_setImage(with: viewModel.imageURL, completed: nil)
+    //func configure(with viewModel: NotificationsDefaultTableViewCellViewModel) {
+    func configure() {
+        guard let viewModel = self.viewModel else { return }
+        
+        profileImageView.sd_setImage(with: viewModel.profileImageURL, completed: nil)
+        postImageView.sd_setImage(with: viewModel.postImageURL, completed: nil)
+        infoLabel.attributedText = viewModel.notificationMessage
+        
+        
+        ///label.text = "user"
+        ///subTextLabel.text = "3 h"
+        //profileImageView.image = UIImage(systemName: "person.circle")
+        
     }
     
     
     // MARK: - Actions
+    @objc func handleFollowTapped() {
+        
+    }
 }

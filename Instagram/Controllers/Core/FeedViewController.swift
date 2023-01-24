@@ -34,8 +34,7 @@ class FeedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Feed"
-        view.backgroundColor = .systemBackground
+        configureUI()
         configureCollectionView()
         configureNavigationItem()
         bind()
@@ -69,7 +68,6 @@ class FeedViewController: UIViewController {
             viewModel.checkIfUserLikePost(post: post) { didLiked in
                 if let index = self.viewModel.posts.firstIndex(where: { $0.postId == post.postId }) {
                     self.viewModel.posts[index].didLike = didLiked
-                    ///print("DEBUG: Post is [\(post.caption)] and user liked is  [\(didLiked)] ")
                 }
             }
         }
@@ -78,7 +76,12 @@ class FeedViewController: UIViewController {
    
     // MARK: - Helpers
     
-    func configureCollectionView() {
+    private func configureUI() {
+        title = "Feed"
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func configureCollectionView() {
         view.addSubview(collectionView)
         collectionView.register(FeedCollectionViewCell.self, forCellWithReuseIdentifier: FeedCollectionViewCell.identifier)
         collectionView.register(StoriesCollectionViewCell.self, forCellWithReuseIdentifier: StoriesCollectionViewCell.identifier)
@@ -91,12 +94,12 @@ class FeedViewController: UIViewController {
         collectionView.refreshControl = refresher
     }
     
-    func configureNavigationItem() {
+    private func configureNavigationItem() {
         confireColorNavigation()
         setupRightNavItems()
     }
     
-    func confireColorNavigation() {
+    private func confireColorNavigation() {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = .white
         appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
@@ -107,7 +110,7 @@ class FeedViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
-    func setupRightNavItems() {
+    private func setupRightNavItems() {
         let buttonGear = UIBarButtonItem(
             image: UIImage(systemName: "gear"),
             style: .done,
@@ -120,6 +123,7 @@ class FeedViewController: UIViewController {
             target: self,
             action: #selector(didTapAdd)
         )
+        
         navigationItem.rightBarButtonItems = [
             buttonGear,
             buttonAdd
@@ -242,9 +246,25 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
 
 // MARK: - Delegates buttons
 extension FeedViewController: FeedCollectionViewCellDelegate {
+   
+    func cell(_ cell: FeedCollectionViewCell, wantsToShowProfileFor uid: String) {
+        UserService.shared.fetchUser(uid: uid) { result in
+            switch result {
+            case .success(let user):
+                ProfilePresenter.shared.startProfile(from: self, user: user)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
     
     func feedCollectionDidTapLike(_ cell: FeedCollectionViewCell, didLike post: Post) {
+        
+        guard let tab = tabBarController as? TabBarViewController  else { return }
+        guard let user = tab.user else { return }
+        
         cell.viewModel?.post.didLike.toggle()
+        
         if post.didLike {
             viewModel.unlikePost(post: post) { _ in
                 cell.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
@@ -256,6 +276,13 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
                 cell.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
                 cell.likeButton.tintColor = .red
                 cell.viewModel?.post.likes = post.likes + 1
+                
+                self.viewModel.uploadNotification(
+                    toUid: post.ownerUid,
+                    fromUser: user,
+                    type: .like,
+                    post: post)
+                
             }
         }
     }

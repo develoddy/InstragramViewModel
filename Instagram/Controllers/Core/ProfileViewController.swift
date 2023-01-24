@@ -11,11 +11,11 @@ class ProfileViewController: UICollectionViewController {
     
     
     // MARK: - Properties
-    
-    private var profileViewModel = ProfileViewModel()
+  
+    private var viewModel = ProfileViewModel()
     
     init(user: User) {
-        profileViewModel.updatePropertiesUser(user: user)
+        viewModel.updatePropertiesUser(user: user)
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
@@ -23,44 +23,51 @@ class ProfileViewController: UICollectionViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configureCollections()
-        checkIfUserIsFollowed()
-        fetchUserStats()
         updateUI()
-        fetchPosts()
+        bind()
+        fetchData()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
     }
     
     
-    // MARK: - API
+    // MARK: - ViewModels
     
-    func checkIfUserIsFollowed() {
-        profileViewModel.checkIfUserIsFollowed { [weak self] isFollowed in
-            self?.profileViewModel.updatePropertiesIsFollwed(isFollowed: isFollowed)
+    private func bind() {
+        self.viewModel.refreshData = { [weak self] () in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
         }
     }
     
-    func fetchUserStats() {
-        let uid = profileViewModel.getUID()
-        profileViewModel.fetchUserStats(uid: uid) { [weak self] stats in
-            self?.profileViewModel.updatePropertiStats(stats: stats)
+    func fetchData() {
+        
+        viewModel.fetchPosts(uid: viewModel.getUID())
+        
+        viewModel.checkIfUserIsFollowed { [weak self] isFollowed in
+            self?.viewModel.updatePropertiesIsFollwed(isFollowed: isFollowed)
+        }
+        
+        viewModel.fetchUserStats(uid: viewModel.getUID()) { [weak self] stats in
+            self?.viewModel.updatePropertiStats(stats: stats)
         }
     }
     
-    func fetchPosts() {
-        let uid = profileViewModel.getUID()
-        profileViewModel.fetchPosts(uid: uid)
-    }
     
     // MARK: - Helpers
     
     private func configureUI() {
-        title = profileViewModel.getUsername()
+        title = viewModel.getUsername()
         collectionView.backgroundColor = .systemBackground
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        ///collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
     
     private func configureCollections() {
@@ -78,7 +85,7 @@ class ProfileViewController: UICollectionViewController {
     }
     
     func updateUI() {
-        profileViewModel.bindProfileViewModelToController = { [weak self] in
+        viewModel.refreshData = { [weak self] in
             DispatchQueue.main.async  {
                 self?.collectionView.reloadData()
             }
@@ -88,9 +95,12 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Action
 }
 
+
+// MARK: - UIColletionViewDasource
+
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return profileViewModel.numberOfRowsInSection(section: section)
+        return viewModel.numberOfRowsInSection(section: section)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -101,23 +111,16 @@ extension ProfileViewController {
             return UICollectionViewCell()
         }
         cell.backgroundColor = .red
-        let post = profileViewModel.cellForRowAt(indexPath: indexPath)
+        let post = viewModel.cellForRowAt(indexPath: indexPath)
         cell.configure(with: FeedCollectionViewCellViewModel(post: post))
         return cell
     }
-    
-    /*override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        let vc = PostsSettingViewController()
-        vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
-    }*/
-    
+
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
-        if let user = profileViewModel.fetchUser() {
+        if let user = viewModel.fetchUser() {
             header.configure(with: ProfileHeaderViewModel(user: user))
         }
         
@@ -136,7 +139,7 @@ extension ProfileViewController {
         collectionView.deselectItem(at: indexPath, animated: true)
         let vc = PostsSettingViewController()
         vc.indice = indexPath.row
-        vc.uid = profileViewModel.getUID()
+        vc.uid = viewModel.getUID()
         navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
         
@@ -152,7 +155,9 @@ extension ProfileViewController {
     }
 }
 
-// MARK: - Profile Collection Delegate Flow Layout
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -174,19 +179,20 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-// MARK: - Profile header
+// MARK: - ProfileHeaderCollectionReusableViewDelegate
+
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User) {
         if user.isCurrentUser {
             debugPrint("Debug: Show edit profile here")
         } else if user.isFollwed {
-            profileViewModel.unfollow { [weak self] error in
-                self?.profileViewModel.updatePropertiesIsFollwed(isFollowed: false)
+            viewModel.unfollow { [weak self] error in
+                self?.viewModel.updatePropertiesIsFollwed(isFollowed: false)
             }
         } else {
-            profileViewModel.follow { [weak self] error in
-                self?.profileViewModel.updatePropertiesIsFollwed(isFollowed: true)
+            viewModel.follow { [weak self] error in
+                self?.viewModel.updatePropertiesIsFollwed(isFollowed: true)
             }
         }
     }

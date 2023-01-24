@@ -15,6 +15,8 @@ class FeedViewModel {
     
     let postService: PostServiceDelegate
     
+    let notificationService: NotificationServiceDelegate
+    
     var refreshData: ( () -> () )?
     
     var posts: [Post] = [Post]() {
@@ -25,8 +27,12 @@ class FeedViewModel {
     
     // MARK: - Lifecycle
     
-    init(postService: PostServiceDelegate = PostService()) {
+    init(
+        postService: PostServiceDelegate = PostService(),
+        notificationService: NotificationServiceDelegate = NotificationService()
+    ) {
         self.postService = postService
+        self.notificationService = notificationService
     }
     
     // MARK: - Helpers
@@ -55,6 +61,14 @@ class FeedViewModel {
         postService.checkIfUserLikePost(post: post) { didLike in
             completion(didLike)
         }
+    }
+    
+    func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post?) {
+        notificationService.uploadNotification(
+            toUid: uid,
+            fromUser: fromUser,
+            type: type,
+            post: post)
     }
  
     func numberOfSections() -> Int {

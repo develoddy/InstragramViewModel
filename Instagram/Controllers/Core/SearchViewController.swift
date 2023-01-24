@@ -74,6 +74,10 @@ class SearchViewController: UIViewController {
     }
     
     
+    // MARK: - ViewModel
+    
+    
+    
     // MARK: - Helpers
     
     private func configureUI() {
@@ -95,15 +99,12 @@ class SearchViewController: UIViewController {
         collectionView.dataSource = self
     }
     
-    
-    // MARK: - API
- 
-    
-    
     // MARK: - Actions
 }
 
+
 // MARK: - Search Result
+
 extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let resultsController = searchController.searchResultsController as? SearchResultsViewController,
@@ -113,7 +114,6 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
         resultsController.delegate = self
         
         // API
-        /// APICaller.shared.fetchUsers { result in
         UserService.shared.fetchUsers { result in
             switch result {
             case .success(let users):
@@ -129,7 +129,7 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
 }
 
 
-// MARK: - Search Delegate
+// MARK: - SearchResultsViewControllerDelegate
 
 extension SearchViewController: SearchResultsViewControllerDelegate {
     func didTapResult(_ result: User) {
@@ -140,9 +140,9 @@ extension SearchViewController: SearchResultsViewControllerDelegate {
 }
 
 
-// MARK: - UiCollection Delegate & Datasource
+// MARK: - UICollectionViewDataSource
 
-extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension SearchViewController:  UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -163,6 +163,11 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         cell.backgroundColor = .systemYellow
         return cell
     }
+}
+
+
+// MARK: - UICollectionViewDelegate
+extension SearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)

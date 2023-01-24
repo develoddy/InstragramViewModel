@@ -12,7 +12,8 @@ class ProfileViewModel {
     
     // MARK: - Porperties
     
-    var bindProfileViewModelToController  : (() -> () )?
+    //var bindProfileViewModelToController  : (() -> () )?
+    var refreshData: ( () -> () )?
     
     let profileService: ProfileServiceDelegate
     
@@ -22,13 +23,13 @@ class ProfileViewModel {
     
     private var user: User? {
         didSet {
-            self.bindProfileViewModelToController?()
+            self.refreshData?()
         }
     }
     
     var posts: [Post] = [Post]() {
         didSet {
-            self.bindProfileViewModelToController?()
+            self.refreshData?()
         }
     }
     

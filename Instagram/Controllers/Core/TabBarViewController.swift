@@ -26,7 +26,6 @@ class TabBarViewController: UITabBarController {
         
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        //APICaller.shared.fetchUser(uid: uid) { [weak self] result in
         UserService.shared.fetchUser(uid: uid) { [weak self] result in
             switch result {
             case .success(let user):
