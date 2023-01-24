@@ -40,7 +40,6 @@ class FeedViewController: UIViewController {
         configureNavigationItem()
         bind()
         fetchData()
-        
     }
     
     override func viewDidLayoutSubviews() {
@@ -58,12 +57,10 @@ class FeedViewController: UIViewController {
         }
     }
     
-    
     func fetchData() {
         viewModel.fetchPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
             self?.checkIfUserLikedPosts()
-            self?.collectionView.reloadData()
         }
     }
     
@@ -78,7 +75,6 @@ class FeedViewController: UIViewController {
         }
     }
 
-    
    
     // MARK: - Helpers
     
@@ -169,8 +165,7 @@ extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSou
         cell.backgroundColor = .systemBackground
         
         let post = viewModel.cellForRowAt(indexPath: indexPath)
-        /**cell.configure(with: FeedCollectionViewCellViewModel(post: post))*/
-        
+        ///cell.configure(with: FeedCollectionViewCellViewModel(post: post))
         cell.viewModel = FeedCollectionViewCellViewModel(post: post)
         cell.delegate = self
         return cell

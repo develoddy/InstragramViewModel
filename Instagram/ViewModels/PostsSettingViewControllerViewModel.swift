@@ -11,7 +11,7 @@ class PostsSettingViewControllerViewModel {
     
     // MARK: - Porperties
     
-    let api: APICallerDelegate
+    let postService: PostServiceDelegate
     
     var refreshData: ( () -> () )?
     
@@ -23,13 +23,13 @@ class PostsSettingViewControllerViewModel {
     
     // MARK: - Init
     
-    init(api: APICallerDelegate = APICaller()) {
-        self.api = api
+    init(postService: PostServiceDelegate = PostService()) {
+        self.postService = postService
     }
     
     // MARK: - Helpers
     func fetchPosts(uid: String) {
-        api.fetchPosts(forUser: uid) { [weak self] postsData in
+        postService.fetchPosts(forUser: uid) { [weak self] postsData in
             self?.posts = postsData
         }
     }
@@ -48,5 +48,4 @@ class PostsSettingViewControllerViewModel {
     func cellForRowAt(indexPath: IndexPath) -> Post {
         return self.posts[indexPath.row]
     }
-    
 }

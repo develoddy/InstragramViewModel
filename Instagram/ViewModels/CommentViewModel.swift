@@ -13,8 +13,6 @@ class CommentViewModel {
     
     let api: CommentServiceDelegate
     
-    let userService: APICallerDelegate
-    
     var refreshData: ( () -> () )?
         
     var post: Post? {
@@ -31,9 +29,8 @@ class CommentViewModel {
     
     // MARK: - Init
     
-    init(api: CommentServiceDelegate = CommentService(), userService: APICallerDelegate = APICaller()) {
+    init(api: CommentServiceDelegate = CommentService()) {
         self.api = api
-        self.userService = userService
     }
     
     // MARK: - Helpers
@@ -62,7 +59,7 @@ class CommentViewModel {
     }
     
     func fetchUser(uid: String, completion: @escaping (Result<User, Error>) -> Void) {
-        userService.fetchUser(uid: uid) { result in
+        UserService.shared.fetchUser(uid: uid) { result in
             switch result {
             case .success(let user):
                 completion(.success(user))

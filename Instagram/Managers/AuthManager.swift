@@ -34,6 +34,10 @@ final class AuthManager {
     private var accessToken: User? {
         return self.getUser()
     }
+    
+    enum APIError: Error {
+        case faileedToGetData
+    }
         
     func getUser() -> User? {
         var userDic: User? = nil
@@ -55,6 +59,8 @@ final class AuthManager {
             completionBlock(error == nil)
         })
     }
+    
+    
     
     public func signOut(completion: (Bool) -> Void) {
         do {

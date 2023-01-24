@@ -11,7 +11,14 @@ import Firebase
 class ProfileViewModel {
     
     // MARK: - Porperties
-    let api: APICallerDelegate
+    
+    var bindProfileViewModelToController  : (() -> () )?
+    
+    let profileService: ProfileServiceDelegate
+    
+    let postService: PostServiceDelegate
+    
+    var userStats: UserStats?
     
     private var user: User? {
         didSet {
@@ -25,14 +32,15 @@ class ProfileViewModel {
         }
     }
     
-    var userStats: UserStats?
-    
-    var bindProfileViewModelToController  : (() -> () )?
     
     // MARK: - Init
     
-    init(api: APICallerDelegate = APICaller()) {
-        self.api = api
+    init(
+        profileService: ProfileServiceDelegate = ProfileService(),
+        postService: PostServiceDelegate = PostService()
+    ) {
+        self.profileService = profileService
+        self.postService = postService
     }
     
     // MARK: - Helpers
@@ -43,33 +51,33 @@ class ProfileViewModel {
     
     func checkIfUserIsFollowed(completion: @escaping(Bool) -> Void) {
         guard let uid = self.user?.uid else { return }
-        api.checkIfUserIsFollowed(uid: uid) { isFollowed in
+        profileService.checkIfUserIsFollowed(uid: uid) { isFollowed in
             completion(isFollowed)
         }
     }
 
     func follow(completion: @escaping(Error?)->Void) {
         guard let uid = self.user?.uid else { return }
-        api.follow(uid: uid) { error in
+        profileService.follow(uid: uid) { error in
             completion(error)
         }
     }
     
     func unfollow(completion: @escaping(Error?)->Void) {
         guard let uid = self.user?.uid else { return }
-        api.unfollow(uid: uid, completion: { error in
+        profileService.unfollow(uid: uid, completion: { error in
             completion(error)
         })
     }
     
     func fetchUserStats(uid: String, completion: @escaping (UserStats) ->Void ) {
-        api.fetchUserStats(uid: uid) { stats in
+        profileService.fetchUserStats(uid: uid) { stats in
             completion(stats)
         }
     }
     
     func fetchPosts(uid: String) {
-        api.fetchPosts(forUser: uid) { [weak self] posts in
+        postService.fetchPosts(forUser: uid) { [weak self] posts in
             self?.posts = posts
         }
     }

@@ -13,7 +13,7 @@ class FeedViewModel {
     
     // MARK: - Properties
     
-    let api: APICallerDelegate
+    let postService: PostServiceDelegate
     
     var refreshData: ( () -> () )?
     
@@ -25,50 +25,35 @@ class FeedViewModel {
     
     // MARK: - Lifecycle
     
-    init(api: APICallerDelegate = APICaller()) {
-        self.api = api
+    init(postService: PostServiceDelegate = PostService()) {
+        self.postService = postService
     }
     
     // MARK: - Helpers
     
     
     func fetchPosts(completion: @escaping() -> ()) {
-        api.fetchPosts { posts in
+        postService.fetchPosts { posts in
             self.posts = posts
             completion()
         }
     }
     
     func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {
-        api.likePost(post: post) { error in
+        postService.likePost(post: post) { error in
             completion(error)
         }
     }
     
     func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
-        api.unlikePost(post: post) { error in
+        postService.unlikePost(post: post) { error in
             completion(error)
         }
     }
     
     func checkIfUserLikePost(post: Post, completion: @escaping(Bool) -> Void) {
-        api.checkIfUserLikePost(post: post) { didLike in
+        postService.checkIfUserLikePost(post: post) { didLike in
             completion(didLike)
-        }
-    }
-    
-    //increase
-    //decrease
-    
-    func updateIncreaseLike(post: Post) {
-        if let index = self.posts.firstIndex(where: { $0.postId == post.postId }) {
-            self.posts[index].likes = post.likes + 1
-        }
-    }
-    
-    func updateDecreaseLike(post: Post) {
-        if let index = self.posts.firstIndex(where: { $0.postId == post.postId }) {
-            self.posts[index].likes = post.likes - 1
         }
     }
  

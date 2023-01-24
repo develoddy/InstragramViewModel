@@ -113,7 +113,8 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
         resultsController.delegate = self
         
         // API
-        APICaller.shared.fetchUsers { result in
+        /// APICaller.shared.fetchUsers { result in
+        UserService.shared.fetchUsers { result in
             switch result {
             case .success(let users):
                 resultsController.update(with: users)
