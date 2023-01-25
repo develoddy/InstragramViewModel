@@ -7,11 +7,6 @@
 
 import UIKit
 
-/**struct NotificationSection {
-    let title: String
-    let categorys: [NotificationCategory]
-}*/
-
 class NotificationViewController: UIViewController {
     
     // MARK: - Properties
@@ -26,6 +21,7 @@ class NotificationViewController: UIViewController {
         return tableView
     }()
     
+    private let refresher = UIRefreshControl()
     
     // MARK: - Lifecycle
     
@@ -72,7 +68,6 @@ class NotificationViewController: UIViewController {
         }
     }
 
-
     // MARK: - Helpers
     
     private func configureUI() {
@@ -84,24 +79,30 @@ class NotificationViewController: UIViewController {
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        tableView.refreshControl = refresher
+        
     }
     
     
     // MARK: - Actions
+    
+    @objc func handleRefresh() {
+        viewModel.notifications.removeAll()
+        fetchNotifications()
+        refresher.endRefreshing()
+    }
 }
 
 
 //MARK: - UITableViewDataSource
 
 extension NotificationViewController: UITableViewDataSource {
-    
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.viewModel.numberOfRowsInSection(section: section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: NotificationsDefaultTableViewCell.identifier,
             for: indexPath
@@ -120,7 +121,9 @@ extension NotificationViewController: UITableViewDataSource {
 
 extension NotificationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        showLoader(true)
         UserService.shared.fetchUser(uid: viewModel.cellForRowAt(indexPath: indexPath).uid) { result in
+            self.showLoader(false)
             switch result {
             case .success(let user):
                 ProfilePresenter.shared.startProfile(from: self, user: user)
@@ -135,20 +138,26 @@ extension NotificationViewController: UITableViewDelegate {
 
 extension NotificationViewController: NotificationsDefaultTableViewCellDelegate {
     func cell(_ cell: NotificationsDefaultTableViewCell, wantsToFollow uid: String) {
+        showLoader(true)
         viewModel.follow(uid: uid) { _ in
+            self.showLoader(false)
             cell.viewModel?.notification.userIsFollowed.toggle()
         }
     }
     
     func cell(_ cell: NotificationsDefaultTableViewCell, wantsTounFollow uid: String) {
+        showLoader(true)
         viewModel.unfollow(uid: uid) { _ in
+            self.showLoader(false)
             cell.viewModel?.notification.userIsFollowed.toggle()
         }
     }
     
     func cell(_ cell: NotificationsDefaultTableViewCell, wantsToViewPost postId: String) {
+        showLoader(true)
         viewModel.fetchPosts(withPostId: postId) { [weak self] in
             guard let stronSelf = self else { return }
+            stronSelf.showLoader(false)
             guard let post = stronSelf.viewModel.post else { return }
             FeedPresenter.shared.startFeed(from: stronSelf, post: post)
         }

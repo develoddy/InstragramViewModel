@@ -28,14 +28,14 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
     
     static let identifier = "NotificationsDefaultTableViewCell"
     
-    private let profileImageView: UIImageView = {
+    private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.backgroundColor = .lightGray
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfileImageTapped))
+        /**let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfileImageTapped))
         imageView.isUserInteractionEnabled = true
-        imageView.addGestureRecognizer(tap)
+        imageView.addGestureRecognizer(tap)*/
         return imageView
     }()
     
@@ -138,11 +138,7 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
     }
     
     // MARK: - Actions
-    
-    @objc func handleProfileImageTapped() {
-        
-    }
-    
+
     @objc func handleFollowTapped() {
         guard let viewModel = viewModel else { return }
         if viewModel.notification.userIsFollowed {
@@ -158,5 +154,4 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         }
         delegate?.cell(self, wantsToViewPost: postId)
     }
-      
 }
