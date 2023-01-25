@@ -16,6 +16,13 @@ class ProfilePhotosCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "PhotosCollectionViewCell"
     
+    
+    var viewModel: FeedCollectionViewCellViewModel? {
+        didSet {
+            configure()
+        }
+    }
+    
     private let postImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.image = UIImage(named: "feed01")
@@ -60,7 +67,9 @@ class ProfilePhotosCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
     }
     
-    func configure(with viewModel: FeedCollectionViewCellViewModel) {
+    //func configure(with viewModel: FeedCollectionViewCellViewModel) {
+    func configure() {
+        guard let viewModel = self.viewModel else { return }
         updateUI(imageURL: viewModel.imageURL)
     }
     

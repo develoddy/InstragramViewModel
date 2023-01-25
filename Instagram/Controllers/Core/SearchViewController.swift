@@ -11,7 +11,8 @@ class SearchViewController: UIViewController {
     
     // MARK: - Properties
     
-    private var users = [User]()
+    ///private var users = [User]()
+    var viewModel = SearchViewModel()
     
     let searchController: UISearchController = {
         let vc = UISearchController(searchResultsController: SearchResultsViewController())
@@ -66,6 +67,8 @@ class SearchViewController: UIViewController {
         configureUI()
         configureSearch()
         configureCollections()
+        bind()
+        fetchPosts()
     }
     
     override func viewDidLayoutSubviews() {
@@ -75,7 +78,19 @@ class SearchViewController: UIViewController {
     
     
     // MARK: - ViewModel
+    private func bind() {
+        self.viewModel.refreshData = { [weak self] () in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
+        }
+    }
     
+    private func fetchPosts() {
+        viewModel.fetchPosts { [weak self] in
+            //
+        }
+    }
     
     
     // MARK: - Helpers
@@ -93,7 +108,7 @@ class SearchViewController: UIViewController {
     
     private func configureCollections() {
         view.addSubview(collectionView)
-        collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
+        collectionView.register(ProfilePhotosCollectionViewCell.self, forCellWithReuseIdentifier: ProfilePhotosCollectionViewCell.identifier)
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -143,23 +158,19 @@ extension SearchViewController: SearchResultsViewControllerDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension SearchViewController:  UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return viewModel.numberOfRowsInSection(section: section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PhotoCollectionViewCell.identifier,
+            withReuseIdentifier: ProfilePhotosCollectionViewCell.identifier,
             for: indexPath
-        ) as? PhotoCollectionViewCell else {
+        ) as? ProfilePhotosCollectionViewCell else {
             return UICollectionViewCell()
         }
         
-        cell.configure()
+        cell.viewModel = FeedCollectionViewCellViewModel(post: viewModel.cellForRowAt(indexPath: indexPath))
         cell.backgroundColor = .systemYellow
         return cell
     }
@@ -170,9 +181,6 @@ extension SearchViewController:  UICollectionViewDataSource {
 extension SearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        let vc = PostsSettingViewController()
-        vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
+        FeedPresenter.shared.startFeed(from: self, post: viewModel.cellForRowAt(indexPath: indexPath))
     }
 }

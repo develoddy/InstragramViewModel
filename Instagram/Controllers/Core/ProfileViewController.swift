@@ -110,14 +110,16 @@ extension ProfileViewController {
         ) as? ProfilePhotosCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.backgroundColor = .red
-        let post = viewModel.cellForRowAt(indexPath: indexPath)
-        cell.configure(with: FeedCollectionViewCellViewModel(post: post))
+        cell.backgroundColor = .lightGray
+        cell.viewModel = FeedCollectionViewCellViewModel(post: viewModel.cellForRowAt(indexPath: indexPath))
         return cell
     }
 
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
+        guard let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier,
+            for: indexPath
+        ) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
         if let user = viewModel.fetchUser() {
