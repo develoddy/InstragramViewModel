@@ -116,25 +116,34 @@ extension NotificationViewController: UITableViewDataSource {
     }
 }
 
-
 //MARK: - UITableViewDelegate
 
 extension NotificationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("DEBUG: Tapped..")
+        UserService.shared.fetchUser(uid: viewModel.cellForRowAt(indexPath: indexPath).uid) { result in
+            switch result {
+            case .success(let user):
+                ProfilePresenter.shared.startProfile(from: self, user: user)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
-
 
 //MARK: - NotificationsDefaultTableViewCellDelegate
 
 extension NotificationViewController: NotificationsDefaultTableViewCellDelegate {
     func cell(_ cell: NotificationsDefaultTableViewCell, wantsToFollow uid: String) {
-        
+        viewModel.follow(uid: uid) { _ in
+            cell.viewModel?.notification.userIsFollowed.toggle()
+        }
     }
     
     func cell(_ cell: NotificationsDefaultTableViewCell, wantsTounFollow uid: String) {
-        
+        viewModel.unfollow(uid: uid) { _ in
+            cell.viewModel?.notification.userIsFollowed.toggle()
+        }
     }
     
     func cell(_ cell: NotificationsDefaultTableViewCell, wantsToViewPost postId: String) {
@@ -142,7 +151,6 @@ extension NotificationViewController: NotificationsDefaultTableViewCellDelegate 
             guard let stronSelf = self else { return }
             guard let post = stronSelf.viewModel.post else { return }
             FeedPresenter.shared.startFeed(from: stronSelf, post: post)
-            
         }
     }
 }

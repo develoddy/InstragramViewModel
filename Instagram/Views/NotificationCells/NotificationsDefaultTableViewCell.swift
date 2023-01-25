@@ -144,6 +144,12 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
     }
     
     @objc func handleFollowTapped() {
+        guard let viewModel = viewModel else { return }
+        if viewModel.notification.userIsFollowed {
+            delegate?.cell(self, wantsTounFollow: viewModel.notification.uid)
+        } else {
+            delegate?.cell(self, wantsToFollow: viewModel.notification.uid)
+        }
     }
     
     @objc func handlePostTapped() {

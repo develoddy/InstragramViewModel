@@ -66,6 +66,18 @@ class NotificationViewModel {
         }
     }
     
+    func follow(uid: String, completion: @escaping(Error?)->Void) {
+        profileService.follow(uid: uid) { error in
+            completion(error)
+        }
+    }
+    
+    func unfollow(uid: String, completion: @escaping(Error?)->Void) {
+        profileService.unfollow(uid: uid, completion: { error in
+            completion(error)
+        })
+    }
+    
     func numberOfSections() -> Int {
         return self.notifications.count
     }

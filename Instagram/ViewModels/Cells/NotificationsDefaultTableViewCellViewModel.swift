@@ -8,7 +8,7 @@
 import UIKit
 
 struct NotificationsDefaultTableViewCellViewModel {
-    let notification: Notification
+    var notification: Notification
     
     init(notification: Notification) {
         self.notification = notification

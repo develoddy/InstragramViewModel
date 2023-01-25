@@ -56,7 +56,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
-        imageView.backgroundColor = .systemPurple
+        imageView.backgroundColor = .lightGray
         return imageView
     }()
     

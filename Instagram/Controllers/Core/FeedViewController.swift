@@ -149,12 +149,10 @@ class FeedViewController: UIViewController {
     }
     
     @objc func handleRefresh() {
-        
         self.viewModel.posts.removeAll()
         fetchData()
     
         if viewModel.post != nil {
-            print("DEBUG: if refresh")
             self.collectionView.refreshControl?.endRefreshing()
             sendDataPost()
         }
