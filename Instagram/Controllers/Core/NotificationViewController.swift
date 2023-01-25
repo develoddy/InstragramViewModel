@@ -51,8 +51,7 @@ class NotificationViewController: UIViewController {
     
     private func fetchNotifications() {
         self.viewModel.fetchNotifications { [weak self] in
-            // Refresh
-            print("DEBUG: Notification \(String(describing: self?.viewModel.notifications)) ")
+            ///print("DEBUG: Notification \(String(describing: self?.viewModel.notifications)) ")
             self?.checkIfUserIsFollowed()
         }
     }

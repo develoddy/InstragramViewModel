@@ -171,10 +171,9 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - ProfileHeaderCollectionReusableViewDelegate
 
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
-    
-    
+ 
+    // Button Follow / Following
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User) {
-        
         guard let tab = tabBarController as? TabBarViewController  else { return }
         guard let currentUser = tab.user else { return }
         
@@ -188,7 +187,6 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         } else {
             viewModel.follow { [weak self] error in
                 self?.viewModel.updatePropertiesIsFollwed(isFollowed: true)
-                
                 // Uploader Notification
                 self?.viewModel.uploadNotification(
                     toUid: user.uid,
@@ -202,47 +200,31 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         }
     }
     
-    
-    /*func ProfileHeaderCollectionReusableViewDidTapPosts(_ posts: String) {
-        self.collectionView.scrollToItem(
-            at: IndexPath(row: 0,section: 0),
-            at: .top,
-            animated: true
-        )
-    }*/
-    
-    // Followers
-    /*func ProfileHeaderCollectionReusableViewDidTapFollowers(_ followers: String) {
-        
-        var mockData = [UserRelationship]()
-        for x in 0..<10 {
-            mockData.append(UserRelationship(
-                username: "@joer",
-                namm: "Joe Smith",
-                type: x % 2 == 0 ? .following: .not_following))
+    // Count followings
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollowing uid: String) {
+        viewModel.fetchFollowings(uid: uid) { [weak self] in
+            guard let strongSelf = self else { return }
+            FollowSettingPresenter.shared.startFollwSetting(
+                from: strongSelf,
+                users: strongSelf.viewModel.users,
+                vcName: "followings"
+            )
         }
-        
-        let vc = FollowSettingViewController(data: mockData, vc: "followers")
-        vc.title = "Followers"
-        vc.navigationItem.largeTitleDisplayMode = .never
-        self.navigationController?.pushViewController(vc, animated: true)
-    }*/
-    
-    // Followings
-    /*func ProfileHeaderCollectionReusableViewDidTapFollowings(_ followings: String) {
-        var mockData = [UserRelationship]()
-        for x in 0..<10 {
-            mockData.append(UserRelationship(
-                username: "@joer",
-                namm: "Joe Smith",
-                type: x % 2 == 0 ? .following: .not_following))
-        }
-        let vc = FollowSettingViewController(data: mockData, vc: "followings")
-        vc.title = "Following"
-        vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
     }
     
+    // Count followers
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollower uid: String) {
+        viewModel.fetchFollowers(uid: uid) { [weak self] in
+            guard let strongSelf = self else { return }
+            FollowSettingPresenter.shared.startFollwSetting(
+                from: strongSelf,
+                users: strongSelf.viewModel.users,
+                vcName: "followers"
+            )
+        }
+    }
+    
+    /*
     func ProfileHeaderCollectionReusableViewDidTapEditProfile(_ editProfile: String) {
         print(editProfile)
     }*/

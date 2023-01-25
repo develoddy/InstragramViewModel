@@ -10,6 +10,7 @@ import UIKit
 class FollowSettingViewController: UIViewController {
     
     // MARK: - Properties
+    
     private let followersVC = FollowersViewController()
     private let followingVC = FollowingViewController()
     
@@ -21,15 +22,15 @@ class FollowSettingViewController: UIViewController {
     
     private let toggleView = FollowToggleView()
     
-    private let data: [UserRelationship]
+    var users = [User]()
     
-    private var vc: String = ""
+    var vcName = ""
     
     // MARK: - Lifecycle
     
-    init(data:[UserRelationship], vc: String) {
-        self.data = data
-        self.vc = vc
+    init(users:[User], vcName: String) {
+        self.users = users
+        self.vcName = vcName
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,14 +44,6 @@ class FollowSettingViewController: UIViewController {
         configureCollectionViews()
         configureToggleView()
         addChildren()
-        
-        if self.vc == "followers" {
-            scrollView.setContentOffset(.zero, animated: true)
-            updateBarButtons()
-        } else if self.vc == "followings" {
-            scrollView.setContentOffset(CGPoint(x: view.width, y: 0), animated: true)
-            updateBarButtons()
-        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -113,17 +106,24 @@ class FollowSettingViewController: UIViewController {
     
     private func addChildren() {
         addChild(followersVC)
-        followersVC.receivedData(data: self.data)
         scrollView.addSubview(followersVC.view)
         followersVC.view.frame = CGRect(x: 0, y: 0, width: scrollView.width, height: scrollView.height)
         followersVC.didMove(toParent: self)
         
         addChild(followingVC)
-        followingVC.receivedData(data: self.data)
         scrollView.addSubview(followingVC.view)
         followingVC.view.frame = CGRect(x: view.width, y: 0, width: scrollView.width, height: scrollView.height)
         followingVC.didMove(toParent: self)
         
+        if self.vcName == "followers" {
+            scrollView.setContentOffset(.zero, animated: true)
+            followersVC.usersFollowers(users: self.users)
+            updateBarButtons()
+        } else if self.vcName == "followings" {
+            followingVC.usersFollowings(users: self.users)
+            scrollView.setContentOffset(CGPoint(x: view.width, y: 0), animated: true)
+            updateBarButtons()
+        }
     }
     
     // MARK: - Actions
@@ -134,7 +134,8 @@ class FollowSettingViewController: UIViewController {
 
 }
 
-// MARK: -
+// MARK: - UIScrollViewDelegate
+
 extension FollowSettingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x >= (view.width-100) {
@@ -147,7 +148,7 @@ extension FollowSettingViewController: UIScrollViewDelegate {
     }
 }
 
-// MARK: -
+// MARK: - FollowToggleViewDelegate
 
 extension FollowSettingViewController: FollowToggleViewDelegate {
     func followToggleViewDidTapPlaylists(_ toggleView: FollowToggleView) {

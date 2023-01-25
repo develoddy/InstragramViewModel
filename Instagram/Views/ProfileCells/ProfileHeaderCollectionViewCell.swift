@@ -23,6 +23,8 @@ import SDWebImage
 
 protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User )
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollowing uid: String )
+    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollower uid: String )
 }
 
 class ProfileHeaderCollectionReusableView: UICollectionReusableView {
@@ -113,7 +115,6 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         addSubview(profileImageView)
         addSubview(nameLabel)
         addSubview(editProfilefollowButton)
-        
         
         
         postsButton.addTarget(self, action: #selector(didTapPosts), for: .touchUpInside)
@@ -239,27 +240,20 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - Actions
     
     @objc func didTapPosts() {
-        //delegate?.ProfileHeaderCollectionReusableViewDidTapPosts("Posts")
     }
     
     @objc func didTapFollowers() {
-        //delegate?.ProfileHeaderCollectionReusableViewDidTapFollowers("followers")
-        
-        
-        
+        guard let user = self.viewModel?.user else { return }
+        delegate?.header(self, wantsToFollower: user.uid)
     }
     
     @objc func didTapFollowings() {
-        //delegate?.ProfileHeaderCollectionReusableViewDidTapFollowings("Followings")
+        guard let user = self.viewModel?.user else { return }
+        delegate?.header(self, wantsToFollowing: user.uid)
     }
     
     @objc func didTapEditProfile() {
-        //delegate?.ProfileHeaderCollectionReusableViewDidTapEditProfile("Edit Profile")
-        
-        guard let user = self.viewModel?.user else {
-            return
-        }
-      
+        guard let user = self.viewModel?.user else { return }
         delegate?.header(self, didTapActionButtonFor: user )
     }
 }

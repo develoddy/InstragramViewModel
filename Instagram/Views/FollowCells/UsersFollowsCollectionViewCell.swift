@@ -6,36 +6,34 @@
 //
 
 import UIKit
+import SDWebImage
 
-enum FollowState {
-    case following // indicates the current user is following the other user
-    case not_following // indicates the current user is NOT following the other user
-}
 
-struct UserRelationship {
-    let username: String
-    let namm: String
-    let type: FollowState
-}
 
-class FollowersCollectionViewCell: UICollectionViewCell {
+class UsersFollowsCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "FollowersCollectionViewCell"
+    static let identifier = "UsersFollowsCollectionViewCell"
     
-    private var model: UserRelationship?
+    var viewModel: UsersFollowsCollectionViewCellViewModel? {
+        didSet {
+            configure()
+        }
+    }
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.clipsToBounds = true
-        imageView.image = UIImage(named: "feed01")
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.backgroundColor = .lightGray
+        /**let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfileImageTapped))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tap)*/
         return imageView
     }()
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.text = "username"
         label.numberOfLines = 0
         return label
     }()
@@ -44,20 +42,24 @@ class FollowersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .thin)
         label.numberOfLines = 0
-        label.text = "Eddy lujan"
         return label
     }()
     
-    private let followButton: UIButton = {
+    private lazy var followButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Follow", for: .normal)
-        button.backgroundColor = .link
+        button.setTitle("Loading", for: .normal)
+        button.layer.cornerRadius = 3
+        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.layer.borderWidth = 0.5
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
+        button.setTitleColor(.black, for: .normal)
+        ///button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
         return button
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = .systemBackground
         contentView.backgroundColor = .secondarySystemBackground
         contentView.addSubview(profileImageView)
         contentView.addSubview(usernameLabel)
@@ -111,7 +113,18 @@ class FollowersCollectionViewCell: UICollectionViewCell {
         fullnameLabel.text = nil
     }
     
-    func configure(with model: UserRelationship) {
+    func configure() {
+        guard let viewModel = self.viewModel else { return }
+        profileImageView.sd_setImage(with: viewModel.userProfileImageURL)
+        usernameLabel.text = viewModel.username
+        fullnameLabel.text = viewModel.fullName
+        
+        followButton.setTitle(viewModel.followButtonText, for: .normal)
+        followButton.backgroundColor = viewModel.followButtonBackgroundColor
+        followButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
+    }
+    
+    /*func configure(with model: UserRelationship) {
         self.model = model
         usernameLabel.text = model.namm
         fullnameLabel.text = model.username
@@ -130,5 +143,5 @@ class FollowersCollectionViewCell: UICollectionViewCell {
             followButton.layer.borderWidth = 0
             followButton.layer.borderColor = UIColor.label.cgColor
         }
-    }
+    }*/
 }

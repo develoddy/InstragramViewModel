@@ -15,15 +15,23 @@ class ProfileViewModel {
     //var bindProfileViewModelToController  : (() -> () )?
     var refreshData: ( () -> () )?
     
-    let profileService: ProfileServiceDelegate
+    var profileService: ProfileServiceDelegate
     
-    let postService: PostServiceDelegate
+    var postService: PostServiceDelegate
     
-    let notificationService: NotificationServiceDelegate
+    var notificationService: NotificationServiceDelegate
+    
+    var followService: FollowServiceDelegate
     
     var userStats: UserStats?
     
     var user: User? {
+        didSet {
+            self.refreshData?()
+        }
+    }
+    
+    var users: [User] = [User]() {
         didSet {
             self.refreshData?()
         }
@@ -41,11 +49,13 @@ class ProfileViewModel {
     init(
         profileService: ProfileServiceDelegate = ProfileService(),
         postService: PostServiceDelegate = PostService(),
-        notificationService: NotificationServiceDelegate = NotificationService()
+        notificationService: NotificationServiceDelegate = NotificationService(),
+        followService: FollowServiceDelegate = FollowService()
     ) {
         self.profileService = profileService
         self.postService = postService
         self.notificationService = notificationService
+        self.followService = followService
     }
     
     // MARK: - Helpers
@@ -78,6 +88,20 @@ class ProfileViewModel {
     func fetchUserStats(uid: String, completion: @escaping (UserStats) ->Void ) {
         profileService.fetchUserStats(uid: uid) { stats in
             completion(stats)
+        }
+    }
+    
+    func fetchFollowings(uid: String, completion: @escaping () -> ()) {
+        followService.fetchFollowings(uid: uid) { users in
+            self.users = users
+            completion()
+        }
+    }
+    
+    func fetchFollowers(uid: String, completion: @escaping () -> ()) {
+        followService.fetchFollowers(uid: uid) { users in
+            self.users = users
+            completion()
         }
     }
     

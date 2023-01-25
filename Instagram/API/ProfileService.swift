@@ -38,23 +38,73 @@ class ProfileService: ProfileServiceDelegate {
     
     func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
-            .document(uid).setData([:]) { error in
-                print("DEBG: follow: ")
-                print(error as Any)
-                Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
-                    .document(currentUid).setData([:], completion: completion)
+        
+        fetchUser(uid: uid) { user in
+            let data: [String: Any] = [
+                "email": user.uid,
+                "lastname": user.fullname ,
+                "profileImageURL": user.profileImageURL,
+                "uid": user.uid,
+                "username": user.username
+            ]
+            /// aca va el users que yo sigo..
+            Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
+                .document(uid).setData(data) { error in
+                    print(error as Any)
+                    
+                    self.fetchUser(uid: currentUid) { user in
+                        let data: [String: Any] = [
+                            "email": user.uid,
+                            "lastname": user.fullname ,
+                            "profileImageURL": user.profileImageURL,
+                            "uid": user.uid,
+                            "username": user.username
+                        ]
+                        /// aca va el user que me sigue..
+                        Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                            .document(currentUid)
+                            .setData(data, completion: completion)
+                    }
+            }
         }
+        
+        
+        
+        
+        
+        /**
+         // aca va el users que yo sigo..
+         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
+             .document(uid).setData([:]) { error in
+                 print(error as Any)
+              
+                 
+                 // aca va el user que me sigue..
+                 Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                     .document(currentUid)
+                     .setData([:], completion: completion)
+                 
+         }
+         */
+        
+        
     }
     
     func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
             .document(uid).delete { error in
-                print("DEBG: unfollow: ")
                 print(error as Any)
                 Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
                     .document(currentUid).delete(completion: completion)
+        }
+    }
+    
+    func fetchUser(uid: String, completion: @escaping (User) -> Void) {
+        Constants.Collections.COLLECTION_USERS.document(uid).getDocument { snapshot, _ in
+            guard let dictionary = snapshot?.data() else { return }
+            let user = User(dictionary: dictionary)
+            completion(user)
         }
     }
     

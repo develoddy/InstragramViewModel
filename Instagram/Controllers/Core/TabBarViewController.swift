@@ -61,8 +61,8 @@ class TabBarViewController: UITabBarController {
         )
         
         let vc4 = templateNavigationController(
-            unSelectedImage: UIImage(systemName: "bell")!,
-            selectedImage: UIImage(systemName: "bell.fill")!,
+            unSelectedImage: UIImage(systemName: "heart")!,
+            selectedImage: UIImage(systemName: "heart.fill")!,
             rootViewController: NotificationViewController()
         )
         

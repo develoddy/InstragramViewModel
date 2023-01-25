@@ -60,7 +60,7 @@ class FollowersViewController: UIViewController, UISearchResultsUpdating, UISear
         })
     )
     
-    private var data: [UserRelationship] = []
+    //private var data: [UserRelationship] = []
     
     // MARK: - Lifecycle
 
@@ -91,13 +91,14 @@ class FollowersViewController: UIViewController, UISearchResultsUpdating, UISear
         self.navigationItem.searchController = searchController
     }
     
-    public func receivedData(data: [UserRelationship]) {
-        self.data = data
+    public func usersFollowers(users: [User]) {
+        print("DEBUG: FollowersViewcontroller receive data")
+        print(users)
     }
     
     private func configureCollections() {
         view.addSubview(collectionView)
-        collectionView.register(FollowersCollectionViewCell.self, forCellWithReuseIdentifier: FollowersCollectionViewCell.identifier)
+        collectionView.register(UsersFollowsCollectionViewCell.self, forCellWithReuseIdentifier: UsersFollowsCollectionViewCell.identifier)
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -129,19 +130,19 @@ extension FollowersViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data.count
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FollowersCollectionViewCell.identifier, for: indexPath) as? FollowersCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UsersFollowsCollectionViewCell.identifier, for: indexPath) as? UsersFollowsCollectionViewCell else {
             return UICollectionViewCell()
         }
        
         //cell.backgroundColor = .systemYellow
         //let userRelationsship = UserRelationship(username: "xxx", namm: "namm", type: <#T##FollowState#>)
         //cell.configure(with: userRelationsship)
-        let userRelationsship = data[indexPath.row]
-        cell.configure(with: userRelationsship)
+        //let userRelationsship = data[indexPath.row]
+        //cell.configure(with: userRelationsship)
         return cell
     }
     

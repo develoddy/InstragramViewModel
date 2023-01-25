@@ -8,12 +8,25 @@
 import Foundation
 import Firebase
 
+enum UserFollowType: Int {
+    case follow
+    case delete
+    
+    var userFollowMessage: String {
+        switch self {
+        case .follow: return " started following you."
+        case .delete: return " liked your post."
+        }
+    }
+}
+
 struct User {
     let email: String
     let fullname: String
     let profileImageURL: String
     let username: String
     let uid: String
+    let type: UserFollowType
     
     var isFollwed = false
     
@@ -31,6 +44,7 @@ struct User {
         self.username = dictionary["username"] as? String ?? ""
         self.uid = dictionary["uid"] as? String ?? ""
         self.stats = UserStats(followers: 0, following: 0, posts: 0)
+        self.type = UserFollowType(rawValue: dictionary["type"] as? Int ?? 0) ?? .follow
     }
 }
 

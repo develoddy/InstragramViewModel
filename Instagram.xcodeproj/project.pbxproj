@@ -28,6 +28,11 @@
 		B31C245629801FEE00764474 /* NotificationsDefaultTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C245529801FEE00764474 /* NotificationsDefaultTableViewCellViewModel.swift */; };
 		B31C245829808EEF00764474 /* FeedPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C245729808EEF00764474 /* FeedPresenter.swift */; };
 		B31C245A29816C4D00764474 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C245929816C4C00764474 /* SearchViewModel.swift */; };
+		B31C245C2981834A00764474 /* FollowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C245B2981834A00764474 /* FollowService.swift */; };
+		B31C245E2981D18100764474 /* FollowSettingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C245D2981D18100764474 /* FollowSettingPresenter.swift */; };
+		B31C24602981DAAB00764474 /* FollowingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C245F2981DAAB00764474 /* FollowingViewModel.swift */; };
+		B31C24622981DAC000764474 /* FollowerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C24612981DAC000764474 /* FollowerViewModel.swift */; };
+		B31C24642981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C24632981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift */; };
 		B335AFEB296C15E200AE9999 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFEA296C15E200AE9999 /* Constants.swift */; };
 		B335AFEF296C269300AE9999 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFEE296C269300AE9999 /* User.swift */; };
 		B335AFF1296C859100AE9999 /* ProfileHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFF0296C859100AE9999 /* ProfileHeaderViewModel.swift */; };
@@ -54,7 +59,7 @@
 		B385C1272979F3A4005158E0 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C1262979F3A4005158E0 /* Comment.swift */; };
 		B385C129297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */; };
 		B385C12B297AA361005158E0 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C12A297AA361005158E0 /* CommentsViewController.swift */; };
-		B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */; };
+		B3874F692971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */; };
 		B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC72965650B00606150 /* AppDelegate.swift */; };
 		B3BD8CCA2965650B00606150 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CC92965650B00606150 /* SceneDelegate.swift */; };
 		B3BD8CCC2965650B00606150 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BD8CCB2965650B00606150 /* TabBarViewController.swift */; };
@@ -101,6 +106,11 @@
 		B31C245529801FEE00764474 /* NotificationsDefaultTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsDefaultTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		B31C245729808EEF00764474 /* FeedPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPresenter.swift; sourceTree = "<group>"; };
 		B31C245929816C4C00764474 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		B31C245B2981834A00764474 /* FollowService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowService.swift; sourceTree = "<group>"; };
+		B31C245D2981D18100764474 /* FollowSettingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowSettingPresenter.swift; sourceTree = "<group>"; };
+		B31C245F2981DAAB00764474 /* FollowingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingViewModel.swift; sourceTree = "<group>"; };
+		B31C24612981DAC000764474 /* FollowerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerViewModel.swift; sourceTree = "<group>"; };
+		B31C24632981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersFollowsCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B335AFEA296C15E200AE9999 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B335AFEE296C269300AE9999 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B335AFF0296C859100AE9999 /* ProfileHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderViewModel.swift; sourceTree = "<group>"; };
@@ -127,7 +137,7 @@
 		B385C1262979F3A4005158E0 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommentsCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B385C12A297AA361005158E0 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
-		B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersCollectionViewCell.swift; sourceTree = "<group>"; };
+		B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersFollowsCollectionViewCell.swift; sourceTree = "<group>"; };
 		B3BD8CC42965650B00606150 /* Instagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3BD8CC72965650B00606150 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3BD8CC92965650B00606150 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -188,6 +198,7 @@
 				B3019293297152D1002A0335 /* PostCommentPresenter.swift */,
 				B31C244F297FE5B800764474 /* ProfilePresenter.swift */,
 				B31C245729808EEF00764474 /* FeedPresenter.swift */,
+				B31C245D2981D18100764474 /* FollowSettingPresenter.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -217,6 +228,7 @@
 				B34F9D4529781B26002956BE /* FeedCollectionViewCellViewModel.swift */,
 				B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */,
 				B31C245529801FEE00764474 /* NotificationsDefaultTableViewCellViewModel.swift */,
+				B31C24632981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -246,6 +258,7 @@
 				B31C244A297FC69200764474 /* PostService.swift */,
 				B31C244C297FC98800764474 /* UserService.swift */,
 				B31C2451297FFED800764474 /* NotificationService.swift */,
+				B31C245B2981834A00764474 /* FollowService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -253,7 +266,7 @@
 		B3874F672971FD1A004F6D17 /* FollowCells */ = {
 			isa = PBXGroup;
 			children = (
-				B3874F682971FD3A004F6D17 /* FollowersCollectionViewCell.swift */,
+				B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */,
 			);
 			path = FollowCells;
 			sourceTree = "<group>";
@@ -326,6 +339,8 @@
 				B385C1242979EC6A005158E0 /* CommentViewModel.swift */,
 				B31C245329800B2100764474 /* NotificationViewModel.swift */,
 				B31C245929816C4C00764474 /* SearchViewModel.swift */,
+				B31C245F2981DAAB00764474 /* FollowingViewModel.swift */,
+				B31C24612981DAC000764474 /* FollowerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -564,6 +579,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B31C245C2981834A00764474 /* FollowService.swift in Sources */,
 				B3BD8CF82965EC4000606150 /* AuthenticationViewModel.swift in Sources */,
 				B335AFF3296D9AD700AE9999 /* SearchResultsViewController.swift in Sources */,
 				B301928929707509002A0335 /* NotificationsDefaultTableViewCell.swift in Sources */,
@@ -575,8 +591,10 @@
 				B3BD8CE829656E8A00606150 /* SearchViewController.swift in Sources */,
 				B3019297297174E5002A0335 /* FollowSettingViewController.swift in Sources */,
 				B385C1252979EC6A005158E0 /* CommentViewModel.swift in Sources */,
+				B31C24602981DAAB00764474 /* FollowingViewModel.swift in Sources */,
 				B3BD8CCC2965650B00606150 /* TabBarViewController.swift in Sources */,
 				B31C2449297FC67500764474 /* ProfileService.swift in Sources */,
+				B31C245E2981D18100764474 /* FollowSettingPresenter.swift in Sources */,
 				B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */,
 				B3BD8CEA29656EA500606150 /* NotificationViewController.swift in Sources */,
 				B31C2452297FFED800764474 /* NotificationService.swift in Sources */,
@@ -594,9 +612,10 @@
 				B3BD8CEC29656EB100606150 /* ProfileViewController.swift in Sources */,
 				B34F9D3B2976DFB0002956BE /* ImageUploader.swift in Sources */,
 				B31C244D297FC98800764474 /* UserService.swift in Sources */,
+				B31C24642981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift in Sources */,
 				B34F9D2B29759A2E002956BE /* ProfileViewModel.swift in Sources */,
 				B31C245A29816C4D00764474 /* SearchViewModel.swift in Sources */,
-				B3874F692971FD3A004F6D17 /* FollowersCollectionViewCell.swift in Sources */,
+				B3874F692971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift in Sources */,
 				B3BD8D1229672FA500606150 /* ProfileTabsPhotosViewController.swift in Sources */,
 				B3BD8D16296734CD00606150 /* ProfileToggleView.swift in Sources */,
 				B335AFF9296DC40300AE9999 /* SearchResultDefaultTableViewCell.swift in Sources */,
@@ -629,6 +648,7 @@
 				B385C1202979ADB4005158E0 /* CommentInputAccesoryView.swift in Sources */,
 				B34F9D4429775B7D002956BE /* Post.swift in Sources */,
 				B34F9D372976DC60002956BE /* UploadPostViewModel.swift in Sources */,
+				B31C24622981DAC000764474 /* FollowerViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

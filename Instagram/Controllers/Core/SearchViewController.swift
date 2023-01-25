@@ -59,6 +59,8 @@ class SearchViewController: UIViewController {
         searchController.isActive && !searchController.searchBar.text!.isEmpty
     }
     
+    private let refresher = UIRefreshControl()
+    
     
     // MARK: - Lifecycle
     
@@ -78,6 +80,7 @@ class SearchViewController: UIViewController {
     
     
     // MARK: - ViewModel
+    
     private func bind() {
         self.viewModel.refreshData = { [weak self] () in
             DispatchQueue.main.async {
@@ -88,7 +91,7 @@ class SearchViewController: UIViewController {
     
     private func fetchPosts() {
         viewModel.fetchPosts { [weak self] in
-            //
+            self?.collectionView.refreshControl?.endRefreshing()
         }
     }
     
@@ -112,9 +115,18 @@ class SearchViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        self.collectionView.refreshControl = refresher
     }
     
     // MARK: - Actions
+    
+    @objc func handleRefresh() {
+        viewModel.posts.removeAll()
+        fetchPosts()
+        refresher.endRefreshing()
+    }
 }
 
 

@@ -11,6 +11,8 @@ class FollowingViewController: UIViewController {
     
     // MARK: - Properties
     
+    var viewModel = FollowingViewModel()
+    
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ -> NSCollectionLayoutSection? in
@@ -50,14 +52,13 @@ class FollowingViewController: UIViewController {
         })
     )
     
-    private var data: [UserRelationship] = []
-    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         configureCollections()
+        bind()
     }
     
     override func viewDidLayoutSubviews() {
@@ -65,26 +66,48 @@ class FollowingViewController: UIViewController {
         collectionView.frame = view.bounds
     }
     
-    // MARK: - Navigation
+    // MARK: - ViewModels
+    
+    private func bind() {
+        self.viewModel.refreshData = { [weak self] () in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
+        }
+    }
+    
+    public func usersFollowings(users: [User]) {
+        viewModel.usersFollowings = users
+        checkIfUserIsFollowed()
+    }
+    
+    private func checkIfUserIsFollowed() {
+        viewModel.usersFollowings.forEach { user in
+            guard user.type == .follow else { return }
+            viewModel.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
+                if let index = self.viewModel.usersFollowings.firstIndex(where: { $0.uid == user.uid }) {
+                    self.viewModel.usersFollowings[index].isFollwed = isFollowed
+                }
+            }
+        }
+    }
+    
+    // MARK: - Helpers
     
     private func configureUI() {
         title = "Following"
         view.backgroundColor = .systemPink
     }
     
-    public func receivedData(data: [UserRelationship]) {
-        self.data = data
-    }
-    
     private func configureCollections() {
         view.addSubview(collectionView)
-        collectionView.register(FollowersCollectionViewCell.self, forCellWithReuseIdentifier: FollowersCollectionViewCell.identifier)
+        collectionView.register(UsersFollowsCollectionViewCell.self, forCellWithReuseIdentifier: UsersFollowsCollectionViewCell.identifier)
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
     }
     
-    // MARK: - Navigation
+    // MARK: - Actions
 
 }
 
@@ -92,31 +115,20 @@ class FollowingViewController: UIViewController {
 // MARK: - UiCollection Delegate & Datasource
 
 extension FollowingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data.count
+        return viewModel.numberOfRowsInSection(section: section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FollowersCollectionViewCell.identifier, for: indexPath) as? FollowersCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UsersFollowsCollectionViewCell.identifier, for: indexPath) as? UsersFollowsCollectionViewCell else {
             return UICollectionViewCell()
         }
-       
-        //cell.backgroundColor = .systemYellow
-        //let userRelationsship = UserRelationship(username: "xxx", namm: "namm", type: <#T##FollowState#>)
-        //cell.configure(with: userRelationsship)
-        let userRelationsship = data[indexPath.row]
-        cell.configure(with: userRelationsship)
+        cell.backgroundColor = .systemBackground
+        cell.viewModel = UsersFollowsCollectionViewCellViewModel(user: self.viewModel.cellForRowAt(indexPath: indexPath))
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        /*let vc = PostsSettingViewController()
-        vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)*/
     }
 }
