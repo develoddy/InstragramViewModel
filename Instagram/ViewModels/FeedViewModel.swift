@@ -19,7 +19,11 @@ class FeedViewModel {
     
     var refreshData: ( () -> () )?
     
-    var post: Post?
+    var post: Post? {
+        didSet {
+            refreshData?()
+        }
+    }
     
     var posts: [Post] = [Post]() {
         didSet {
@@ -42,6 +46,13 @@ class FeedViewModel {
     
     func fetchPosts(completion: @escaping() -> ()) {
         postService.fetchPosts { posts in
+            self.posts = posts
+            completion()
+        }
+    }
+    
+    func fetchFeedPosts(completion: @escaping() -> () ) {
+        postService.fetchFeedPosts { posts in
             self.posts = posts
             completion()
         }
@@ -72,6 +83,7 @@ class FeedViewModel {
             type: type,
             post: post)
     }
+    
  
     func numberOfSections() -> Int {
         return self.posts.count

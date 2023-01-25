@@ -52,13 +52,16 @@ class NotificationService: NotificationServiceDelegate {
         }
         
         docRef.setData(data)
-        
     }
     
     func fetchNotifications(completion: @escaping([Notification]) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        Constants.Collections.COLLECTION_NOTIFICATIONS.document(uid).collection("user-notifications").getDocuments { snapshot, error in
+        let query = Constants.Collections.COLLECTION_NOTIFICATIONS.document(uid)
+            .collection("user-notifications")
+            .order(by: "timestamp", descending: true)
+        
+        query.getDocuments { snapshot, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -68,6 +71,5 @@ class NotificationService: NotificationServiceDelegate {
             }
         }
     }
-    
 }
 

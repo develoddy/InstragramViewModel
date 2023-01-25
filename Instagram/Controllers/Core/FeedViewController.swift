@@ -30,11 +30,11 @@ class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        sendDataPost()
+        sendPost()
         configureCollectionView()
         configureNavigationItem()
         bind()
-        fetchData()
+        fetchPosts()
     }
     
     override func viewDidLayoutSubviews() {
@@ -52,14 +52,17 @@ class FeedViewController: UIViewController {
         }
     }
     
-    func sendDataPost() {
+    func sendPost() {
         viewModel.post = self.post
+        if let post = viewModel.post {
+            checkIfUserLikedPost(post: post)
+        }
     }
     
-    func fetchData() {
+    func fetchPosts() {
         guard self.viewModel.post == nil else { return }
         
-        viewModel.fetchPosts { [weak self] in
+        viewModel.fetchFeedPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
             self?.checkIfUserLikedPosts()
         }
@@ -74,6 +77,13 @@ class FeedViewController: UIViewController {
             }
         }
     }
+    
+    private func checkIfUserLikedPost(post: Post) {
+        viewModel.checkIfUserLikePost(post: post) { didLiked in
+            self.viewModel.post?.didLike = didLiked
+        }
+    }
+
 
    
     // MARK: - Helpers
@@ -149,12 +159,18 @@ class FeedViewController: UIViewController {
     }
     
     @objc func handleRefresh() {
+        
         self.viewModel.posts.removeAll()
-        fetchData()
-    
+        fetchPosts()
+        
         if viewModel.post != nil {
             self.collectionView.refreshControl?.endRefreshing()
-            sendDataPost()
+            sendPost()
+        }
+        
+        if viewModel.posts.count == 0 {
+            self.collectionView.refreshControl?.endRefreshing()
+            fetchPosts()
         }
     }
 }

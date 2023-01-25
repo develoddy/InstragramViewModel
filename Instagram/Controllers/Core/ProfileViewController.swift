@@ -181,6 +181,7 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         } else if user.isFollwed {
             viewModel.unfollow { [weak self] error in
                 self?.viewModel.updatePropertiesIsFollwed(isFollowed: false)
+                self?.viewModel.updateUserFeedAfterFollowing(user: user, didFollow: false)
             }
         } else {
             viewModel.follow { [weak self] error in
@@ -190,7 +191,11 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                 self?.viewModel.uploadNotification(
                     toUid: user.uid,
                     fromUser: currentUser,
-                    type: .follow)
+                    type: .follow
+                )
+                
+                guard let user = self?.viewModel.user else { return }
+                self?.viewModel.updateUserFeedAfterFollowing(user: user, didFollow: true)
             }
         }
     }

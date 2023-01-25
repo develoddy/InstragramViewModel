@@ -23,7 +23,7 @@ class ProfileViewModel {
     
     var userStats: UserStats?
     
-    private var user: User? {
+    var user: User? {
         didSet {
             self.refreshData?()
         }
@@ -93,6 +93,10 @@ class ProfileViewModel {
             fromUser: fromUser,
             type: type,
             post: post)
+    }
+    
+    func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
+        postService.updateUserFeedAfterFollowing(user: user, didFollow: didFollow )
     }
     
     func updatePropertiStats(stats: UserStats) {
