@@ -37,10 +37,10 @@ struct UsersFollowsCollectionViewCellViewModel {
     }
     
     var followButtonBackgroundColor: UIColor {
-        return user.isFollwed ? .lightGray: .systemBlue
+        return user.isFollwed ? .secondarySystemBackground: .systemBlue
     }
     
     var followButtonTextColor: UIColor {
-        return user.isFollwed ? .black : .lightGray
+        return user.isFollwed ? .black : .secondarySystemBackground
     }
 }

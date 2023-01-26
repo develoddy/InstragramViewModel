@@ -96,7 +96,7 @@ class FollowingViewController: UIViewController {
     
     private func configureUI() {
         title = "Following"
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .systemBackground
     }
     
     private func configureCollections() {

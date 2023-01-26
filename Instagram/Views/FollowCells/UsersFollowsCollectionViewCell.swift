@@ -60,7 +60,7 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
-        contentView.backgroundColor = .secondarySystemBackground
+        ///contentView.backgroundColor = .secondarySystemBackground
         contentView.addSubview(profileImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(fullnameLabel)
@@ -74,33 +74,51 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        // profileImageView
         profileImageView.anchor(
             top: topAnchor,
             left: leftAnchor,
             paddingTop: 10,
             paddingLeft: 10
         )
+        
         let heightSize : CGFloat = 50
-        profileImageView.setDimensions(height: heightSize, width: heightSize)
+        profileImageView.setDimensions(
+            height: heightSize,
+            width: heightSize
+        )
         profileImageView.layer.cornerRadius = heightSize / 2
         
-        
-        let stack = UIStackView(arrangedSubviews: [usernameLabel, fullnameLabel])
+        // UIStackView
+        let stack = UIStackView(
+            arrangedSubviews: [
+                usernameLabel,
+                fullnameLabel
+            ]
+        )
         stack.axis = .vertical
         stack.spacing = 1
         stack.alignment = .leading
-        
         contentView.addSubview(stack)
-        stack.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 6)
+        stack.centerY(
+            inView: profileImageView,
+            leftAnchor: profileImageView.rightAnchor,
+            paddingLeft: 6
+        )
         
         let buttonWidth = contentView.width > 500 ? 220.0 : contentView.width/3
         
-        followButton.frame = CGRect(
+        // followButton
+        /**followButton.frame = CGRect(
             x: contentView.width-5-buttonWidth,
             y: (contentView.height-40)/2,
             width: buttonWidth,
             height: 40
-        )
+        )*/
+        
+        followButton.centerY(inView: self)
+        followButton.anchor(right: rightAnchor, paddingRight: 12, width: 88, height: 32)
         
         //followButton.centerY(inView: usernameLabel, leftAnchor: usernameLabel.rightAnchor, paddingLeft: contentView.width-5-buttonWidth)
         
