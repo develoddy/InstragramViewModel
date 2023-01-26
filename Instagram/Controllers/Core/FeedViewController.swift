@@ -312,8 +312,8 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
                     toUid: post.ownerUid,
                     fromUser: user,
                     type: .like,
-                    post: post)
-                
+                    post: post
+                )
             }
         }
     }

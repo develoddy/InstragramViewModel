@@ -87,21 +87,21 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         return button
     }()
   
-    private let gridButton: UIButton = {
+    let gridButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "square.grid.3x3"), for: .normal)
         button.tintColor = .lightGray
         return button
     }()
     
-    private let listButton: UIButton = {
+    let listButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "tag"), for: .normal)
         button.tintColor = .lightGray
         return button
     }()
     
-    private let bookmarkButton: UIButton = {
+    let bookmarkButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "bookmark"), for: .normal)
         button.tintColor = .lightGray

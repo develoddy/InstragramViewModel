@@ -7,12 +7,12 @@
 
 import Foundation
 import Firebase
+import UIKit
 
 class ProfileViewModel {
     
     // MARK: - Porperties
     
-    //var bindProfileViewModelToController  : (() -> () )?
     var refreshData: ( () -> () )?
     
     var profileService: ProfileServiceDelegate
@@ -22,6 +22,8 @@ class ProfileViewModel {
     var notificationService: NotificationServiceDelegate
     
     var userStats: UserStats?
+    
+    var isFollowed: Bool = false
     
     var user: User? {
         didSet {
@@ -66,7 +68,21 @@ class ProfileViewModel {
             completion(isFollowed)
         }
     }
-
+    
+    func checkIfIsFolloweds(vc: UIViewController) -> Bool {
+        guard let uid = self.user?.uid else { return false }
+        guard let tab = vc.tabBarController as? TabBarViewController  else { return false }
+        guard let currentUser = tab.user else { return false }
+       
+        if currentUser.uid == uid {
+            guard let isfollewed = user?.isFollwed else { return false }
+            return !isfollewed
+        } else {
+            guard let isfollewed = user?.isFollwed else { return false }
+            return isfollewed
+        }
+    }
+    
     func follow(completion: @escaping(Error?)->Void) {
         guard let uid = self.user?.uid else { return }
         profileService.follow(uid: uid) { error in
@@ -141,5 +157,4 @@ class ProfileViewModel {
     func cellForRowAt(indexPath: IndexPath) -> Post {
         return posts[indexPath.row]
     }
-
 }

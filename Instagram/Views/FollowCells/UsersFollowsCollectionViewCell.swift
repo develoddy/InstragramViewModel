@@ -113,16 +113,6 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
             paddingLeft: 6
         )
         
-        //let buttonWidth = contentView.width > 500 ? 220.0 : contentView.width/3
-        
-        // followButton
-        /**followButton.frame = CGRect(
-            x: contentView.width-5-buttonWidth,
-            y: (contentView.height-40)/2,
-            width: buttonWidth,
-            height: 40
-        )*/
-        
         followButton.centerY(inView: self)
         followButton.anchor(right: rightAnchor, paddingRight: 12, width: 88, height: 32)
     }

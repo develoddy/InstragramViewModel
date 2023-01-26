@@ -151,19 +151,42 @@ extension FollowingViewController: UICollectionViewDelegate {
 // MARK: - UsersFollowsCollectionViewCellDelegate
 
 extension FollowingViewController: UsersFollowsCollectionViewCellDelegate {
-    func cell(_ cell: UsersFollowsCollectionViewCell, wantsToFollow uid: String) {
-        showLoader(true)
-        viewModel.follow(uid: uid) { _ in
-            self.showLoader(false)
-            cell.viewModel?.user.isFollwed.toggle()
+    
+    func cell(_ cell: UsersFollowsCollectionViewCell, wantsTounFollow uid: String) {
+        UserService.shared.fetchUser(uid: uid) { result in
+            switch result {
+            case .success(let user):
+                self.showLoader(true)
+                self.viewModel.unfollow(uid: uid) { _ in
+                    self.showLoader(false)
+                    cell.viewModel?.user.isFollwed.toggle()
+                    self.viewModel.updateUserFeedAfterFollowing(
+                        user: user,
+                        didFollow: false
+                    )
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
     }
     
-    func cell(_ cell: UsersFollowsCollectionViewCell, wantsTounFollow uid: String) {
-        showLoader(true)
-        viewModel.unfollow(uid: uid) { _ in
-            self.showLoader(false)
-            cell.viewModel?.user.isFollwed.toggle()
+    func cell(_ cell: UsersFollowsCollectionViewCell, wantsToFollow uid: String) {
+        UserService.shared.fetchUser(uid: uid) { result in
+            switch result {
+            case .success(let user):
+                self.showLoader(true)
+                self.viewModel.follow(uid: uid) { _ in
+                    self.showLoader(false)
+                    cell.viewModel?.user.isFollwed.toggle()
+                    self.viewModel.updateUserFeedAfterFollowing(
+                        user: user,
+                        didFollow: true
+                    )
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
     }
 }

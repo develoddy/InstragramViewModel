@@ -67,20 +67,6 @@ class ProfileService: ProfileServiceDelegate {
                     }
             }
         }
-        /**
-         // aca va el users que yo sigo..
-         Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
-             .document(uid).setData([:]) { error in
-                 print(error as Any)
-              
-                 
-                 // aca va el user que me sigue..
-                 Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
-                     .document(currentUid)
-                     .setData([:], completion: completion)
-                 
-         }
-         */
     }
     
     func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {

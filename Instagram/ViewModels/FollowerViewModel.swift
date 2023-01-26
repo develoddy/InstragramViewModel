@@ -17,6 +17,8 @@ class FollowerViewModel {
     var followService: FollowServiceDelegate
     
     var profileService: ProfileServiceDelegate
+    
+    var postService: PostServiceDelegate
 
     var usersFollowers: [User] = [User]() {
         didSet {
@@ -28,10 +30,12 @@ class FollowerViewModel {
     
     init(
         followService: FollowServiceDelegate = FollowService(),
-        profileService: ProfileServiceDelegate = ProfileService()
+        profileService: ProfileServiceDelegate = ProfileService(),
+        postService: PostServiceDelegate = PostService()
     ) {
         self.followService = followService
         self.profileService = profileService
+        self.postService = postService
     }
     
     // MARK: - Helpers
@@ -60,6 +64,10 @@ class FollowerViewModel {
         profileService.checkIfUserIsFollowed(uid: uid) { isFollowed in
             completion(isFollowed)
         }
+    }
+    
+    func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
+        postService.updateUserFeedAfterFollowing(user: user, didFollow: didFollow )
     }
    
     func numberOfSections() -> Int {
