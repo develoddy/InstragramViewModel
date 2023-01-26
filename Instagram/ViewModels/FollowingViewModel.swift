@@ -23,9 +23,8 @@ class FollowingViewModel {
             self.refreshData?()
         }
     }
-  
     
-    // MARK: - Init
+    // MARK: - Lifecycle
     
     init(
         followService: FollowServiceDelegate = FollowService(),
@@ -37,13 +36,31 @@ class FollowingViewModel {
     
     // MARK: - Helpers
     
+    func fetchFollowings(uid: String, completion: @escaping () -> ()) {
+        followService.fetchFollowings(uid: uid) { users in
+            self.usersFollowings = users
+            completion()
+        }
+    }
+    
+    func follow(uid: String, completion: @escaping(Error?)->Void) {
+        profileService.follow(uid: uid) { error in
+            completion(error)
+        }
+    }
+    
+    func unfollow(uid: String, completion: @escaping(Error?)->Void) {
+        profileService.unfollow(uid: uid, completion: { error in
+            completion(error)
+        })
+    }
+    
     func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void) {
         profileService.checkIfUserIsFollowed(uid: uid) { isFollowed in
             completion(isFollowed)
         }
     }
    
-    
     func numberOfSections() -> Int {
         return usersFollowings.count
     }
@@ -58,6 +75,4 @@ class FollowingViewModel {
     func cellForRowAt(indexPath: IndexPath) -> User {
         return usersFollowings[indexPath.row]
     }
-
 }
-

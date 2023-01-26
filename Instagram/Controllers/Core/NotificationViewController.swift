@@ -79,7 +79,6 @@ class NotificationViewController: UIViewController {
         tableView.dataSource = self
         refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         tableView.refreshControl = refresher
-        
     }
     
     
@@ -135,19 +134,41 @@ extension NotificationViewController: UITableViewDelegate {
 //MARK: - NotificationsDefaultTableViewCellDelegate
 
 extension NotificationViewController: NotificationsDefaultTableViewCellDelegate {
-    func cell(_ cell: NotificationsDefaultTableViewCell, wantsToFollow uid: String) {
-        showLoader(true)
-        viewModel.follow(uid: uid) { _ in
-            self.showLoader(false)
-            cell.viewModel?.notification.userIsFollowed.toggle()
+    func cell(_ cell: NotificationsDefaultTableViewCell, wantsTounFollow uid: String) {
+        UserService.shared.fetchUser(uid: uid) { result in
+            switch result {
+            case .success(let user):
+                self.showLoader(true)
+                self.viewModel.unfollow(uid: uid) { _ in
+                    self.showLoader(false)
+                    cell.viewModel?.notification.userIsFollowed.toggle()
+                    self.viewModel.updateUserFeedAfterFollowing(
+                        user: user,
+                        didFollow: false
+                    )
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
     }
     
-    func cell(_ cell: NotificationsDefaultTableViewCell, wantsTounFollow uid: String) {
-        showLoader(true)
-        viewModel.unfollow(uid: uid) { _ in
-            self.showLoader(false)
-            cell.viewModel?.notification.userIsFollowed.toggle()
+    func cell(_ cell: NotificationsDefaultTableViewCell, wantsToFollow uid: String) {
+        UserService.shared.fetchUser(uid: uid) { result in
+            switch result {
+            case .success(let user):
+                self.showLoader(true)
+                self.viewModel.follow(uid: uid) { _ in
+                    self.showLoader(false)
+                    cell.viewModel?.notification.userIsFollowed.toggle()
+                    self.viewModel.updateUserFeedAfterFollowing(
+                        user: user,
+                        didFollow: true
+                    )
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
     }
     

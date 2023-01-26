@@ -21,7 +21,7 @@ class FollowingViewController: UIViewController {
                 NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(100)
+                        heightDimension: .absolute(20)
                     ),
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top)
@@ -76,9 +76,10 @@ class FollowingViewController: UIViewController {
         }
     }
     
-    public func usersFollowings(users: [User]) {
-        viewModel.usersFollowings = users
-        checkIfUserIsFollowed()
+    public func usersFollowings(uid: String) {
+        viewModel.fetchFollowings(uid: uid) { [weak self] in
+            self?.checkIfUserIsFollowed()
+        }
     }
     
     private func checkIfUserIsFollowed() {
@@ -111,10 +112,9 @@ class FollowingViewController: UIViewController {
 
 }
 
+// MARK: - UICollectionViewDataSource
 
-// MARK: - UiCollection Delegate & Datasource
-
-extension FollowingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension FollowingViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.numberOfRowsInSection(section: section)
     }
@@ -124,11 +124,46 @@ extension FollowingViewController: UICollectionViewDelegate, UICollectionViewDat
             return UICollectionViewCell()
         }
         cell.backgroundColor = .systemBackground
-        cell.viewModel = UsersFollowsCollectionViewCellViewModel(user: self.viewModel.cellForRowAt(indexPath: indexPath))
+        cell.viewModel = UsersFollowsCollectionViewCellViewModel(user: self.viewModel.cellForRowAt(indexPath: indexPath), cellName: "followings")
+        cell.delegate = self
         return cell
     }
-    
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension FollowingViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        showLoader(true)
+        UserService.shared.fetchUser(uid: viewModel.cellForRowAt(indexPath: indexPath).uid) { result in
+            self.showLoader(false)
+            switch result {
+            case .success(let user):
+                ProfilePresenter.shared.startProfile(from: self, user: user)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
+// MARK: - UsersFollowsCollectionViewCellDelegate
+
+extension FollowingViewController: UsersFollowsCollectionViewCellDelegate {
+    func cell(_ cell: UsersFollowsCollectionViewCell, wantsToFollow uid: String) {
+        showLoader(true)
+        viewModel.follow(uid: uid) { _ in
+            self.showLoader(false)
+            cell.viewModel?.user.isFollwed.toggle()
+        }
+    }
+    
+    func cell(_ cell: UsersFollowsCollectionViewCell, wantsTounFollow uid: String) {
+        showLoader(true)
+        viewModel.unfollow(uid: uid) { _ in
+            self.showLoader(false)
+            cell.viewModel?.user.isFollwed.toggle()
+        }
     }
 }

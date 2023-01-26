@@ -7,20 +7,16 @@
 
 import UIKit
 
-enum FollowState {
+/**enum FollowState {
     case following // indicates the current user is following the other user
     case not_following // indicates the current user is NOT following the other user
-}
-
-/**struct UserRelationship {
-    let username: String
-    let namm: String
-    let type: FollowState
 }*/
 
 struct UsersFollowsCollectionViewCellViewModel {
     
     var user: User
+    
+    var cellName : String
     
     var userProfileImageURL: URL? { return URL(string: user.profileImageURL ) }
     
@@ -28,14 +24,19 @@ struct UsersFollowsCollectionViewCellViewModel {
     
     var fullName: String { return user.fullname }
  
-    init(user: User) {
+    init(user: User, cellName: String ) {
         self.user = user
+        self.cellName = cellName
     }
-    
+
     var followButtonText : String {
-        return user.isFollwed ? "Following" : "Follow11"
+        /**if cellName == "followers" {
+            return user.isFollwed ? "Delete" : "Follow"
+        }
+        return user.isFollwed ? "Following" : "Follow"*/
+        return cellName == "followers" ? user.isFollwed ? "Delete" : "Follow" : user.isFollwed ? "Following" : "Follow"
     }
-    
+
     var followButtonBackgroundColor: UIColor {
         return user.isFollwed ? .secondarySystemBackground: .systemBlue
     }

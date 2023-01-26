@@ -67,11 +67,6 @@ class ProfileService: ProfileServiceDelegate {
                     }
             }
         }
-        
-        
-        
-        
-        
         /**
          // aca va el users que yo sigo..
          Constants.Collections.COLLECTION_FOLLOWINGS.document(currentUid).collection("user-followings")
@@ -86,8 +81,6 @@ class ProfileService: ProfileServiceDelegate {
                  
          }
          */
-        
-        
     }
     
     func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {

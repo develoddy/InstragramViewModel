@@ -182,7 +182,10 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         } else if user.isFollwed {
             viewModel.unfollow { [weak self] error in
                 self?.viewModel.updatePropertiesIsFollwed(isFollowed: false)
-                self?.viewModel.updateUserFeedAfterFollowing(user: user, didFollow: false)
+                self?.viewModel.updateUserFeedAfterFollowing(
+                    user: user,
+                    didFollow: false
+                )
             }
         } else {
             viewModel.follow { [weak self] error in
@@ -195,37 +198,22 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                 )
                 
                 guard let user = self?.viewModel.user else { return }
-                self?.viewModel.updateUserFeedAfterFollowing(user: user, didFollow: true)
+                self?.viewModel.updateUserFeedAfterFollowing(
+                    user: user,
+                    didFollow: true
+                )
             }
         }
     }
     
     // Count followings
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollowing uid: String) {
-        viewModel.fetchFollowings(uid: uid) { [weak self] in
-            guard let strongSelf = self else { return }
-            FollowSettingPresenter.shared.startFollwSetting(
-                from: strongSelf,
-                users: strongSelf.viewModel.users,
-                vcName: "followings"
-            )
-        }
+        FollowSettingPresenter.shared.startFollwSetting(from: self, uid: uid, vcName: "followings")
+        
     }
     
     // Count followers
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollower uid: String) {
-        viewModel.fetchFollowers(uid: uid) { [weak self] in
-            guard let strongSelf = self else { return }
-            FollowSettingPresenter.shared.startFollwSetting(
-                from: strongSelf,
-                users: strongSelf.viewModel.users,
-                vcName: "followers"
-            )
-        }
+        FollowSettingPresenter.shared.startFollwSetting(from: self, uid: uid, vcName: "followers")
     }
-    
-    /*
-    func ProfileHeaderCollectionReusableViewDidTapEditProfile(_ editProfile: String) {
-        print(editProfile)
-    }*/
 }

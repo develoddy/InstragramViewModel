@@ -112,7 +112,6 @@ class NotificationsDefaultTableViewCell: UITableViewCell {
         infoLabel.anchor(right: followButton.leftAnchor, paddingRight: 4)
     }
     
-    
     // MARK: - Helpers
     
     override func prepareForReuse() {

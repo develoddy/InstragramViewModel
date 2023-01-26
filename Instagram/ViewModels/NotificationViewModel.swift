@@ -19,6 +19,12 @@ class NotificationViewModel {
     
     var refreshData: ( () -> () )?
     
+    var user: User? {
+        didSet {
+            self.refreshData?()
+        }
+    }
+    
     var notifications: [Notification] = [Notification]() {
         didSet {
             self.refreshData?()
@@ -76,6 +82,10 @@ class NotificationViewModel {
         profileService.unfollow(uid: uid, completion: { error in
             completion(error)
         })
+    }
+    
+    func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
+        postService.updateUserFeedAfterFollowing(user: user, didFollow: didFollow )
     }
     
     func numberOfSections() -> Int {

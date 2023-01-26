@@ -10,6 +10,11 @@ import SDWebImage
 
 
 
+protocol UsersFollowsCollectionViewCellDelegate: AnyObject {
+    func cell(_ cell: UsersFollowsCollectionViewCell, wantsToFollow uid: String)
+    func cell(_ cell: UsersFollowsCollectionViewCell, wantsTounFollow uid: String)
+}
+
 class UsersFollowsCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "UsersFollowsCollectionViewCell"
@@ -19,6 +24,8 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
             configure()
         }
     }
+    
+    weak var delegate: UsersFollowsCollectionViewCellDelegate?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -53,14 +60,13 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
         button.layer.borderWidth = 0.5
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
         button.setTitleColor(.black, for: .normal)
-        ///button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
         return button
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
-        ///contentView.backgroundColor = .secondarySystemBackground
         contentView.addSubview(profileImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(fullnameLabel)
@@ -107,7 +113,7 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
             paddingLeft: 6
         )
         
-        let buttonWidth = contentView.width > 500 ? 220.0 : contentView.width/3
+        //let buttonWidth = contentView.width > 500 ? 220.0 : contentView.width/3
         
         // followButton
         /**followButton.frame = CGRect(
@@ -119,9 +125,6 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
         
         followButton.centerY(inView: self)
         followButton.anchor(right: rightAnchor, paddingRight: 12, width: 88, height: 32)
-        
-        //followButton.centerY(inView: usernameLabel, leftAnchor: usernameLabel.rightAnchor, paddingLeft: contentView.width-5-buttonWidth)
-        
     }
     
     override func prepareForReuse() {
@@ -142,24 +145,14 @@ class UsersFollowsCollectionViewCell: UICollectionViewCell {
         followButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
     }
     
-    /*func configure(with model: UserRelationship) {
-        self.model = model
-        usernameLabel.text = model.namm
-        fullnameLabel.text = model.username
-        
-        switch model.type {
-        case .following:
-            followButton.setTitle("Unfollow", for: .normal)
-            followButton.setTitleColor(.label, for: .normal)
-            followButton.backgroundColor = .systemBackground
-            followButton.layer.borderWidth = 1
-            followButton.layer.borderColor = UIColor.label.cgColor
-        case .not_following:
-            followButton.setTitle("Follow", for: .normal)
-            followButton.setTitleColor(.white, for: .normal)
-            followButton.backgroundColor = .link
-            followButton.layer.borderWidth = 0
-            followButton.layer.borderColor = UIColor.label.cgColor
+    // MARK: - Actions
+    
+    @objc func handleFollowTapped() {
+        guard let viewModel = viewModel else { return }
+        if viewModel.user.isFollwed {
+            delegate?.cell(self, wantsTounFollow: viewModel.user.uid)
+        } else {
+            delegate?.cell(self, wantsToFollow: viewModel.user.uid)
         }
-    }*/
+    }
 }

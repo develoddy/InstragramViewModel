@@ -11,6 +11,8 @@ class FollowSettingViewController: UIViewController {
     
     // MARK: - Properties
     
+    var viewModel = FollowSettingViewModel()
+    
     private let followersVC = FollowersViewController()
     private let followingVC = FollowingViewController()
     
@@ -22,14 +24,14 @@ class FollowSettingViewController: UIViewController {
     
     private let toggleView = FollowToggleView()
     
-    var users = [User]()
+    var uid = ""
     
     var vcName = ""
     
     // MARK: - Lifecycle
     
-    init(users:[User], vcName: String) {
-        self.users = users
+    init(uid:String, vcName: String) {
+        self.uid = uid
         self.vcName = vcName
         super.init(nibName: nil, bundle: nil)
     }
@@ -43,6 +45,8 @@ class FollowSettingViewController: UIViewController {
         configureUI()
         configureCollectionViews()
         configureToggleView()
+        bind()
+        fetchData()
         addChildren()
     }
     
@@ -61,11 +65,26 @@ class FollowSettingViewController: UIViewController {
             width: 200,
             height: 55
         )
-        
-        /*
-         scrollView.setContentOffset(CGPoint(x: view.width, y: 0), animated: true)
-         updateBarButtons()
-         */
+    }
+    
+    // MARK: - ViewModels
+    
+    private func bind() {
+        self.viewModel.refreshData = { [weak self] () in
+            DispatchQueue.main.async {
+                //self?.collectionView.reloadData()
+            }
+        }
+    }
+    
+    func fetchData() {
+        viewModel.fetchUserStats(uid: self.uid) { [weak self]  in
+            guard let statsFollowers = self?.viewModel.userStats?.followers else { return }
+            self?.toggleView.followerButton.setTitle("\(statsFollowers) Followers", for: .normal)
+            
+            guard let statsFollowings = self?.viewModel.userStats?.following else { return }
+            self?.toggleView.followingButton.setTitle("\(statsFollowings) Followings", for: .normal)
+        }
     }
     
     // MARK: - Helpers
@@ -84,6 +103,7 @@ class FollowSettingViewController: UIViewController {
             height: 55
         )
         toggleView.delegate = self
+  
     }
     
     private func configureCollectionViews() {
@@ -97,9 +117,9 @@ class FollowSettingViewController: UIViewController {
     
     private func updateBarButtons() {
         switch toggleView.state {
-        case .playlist:
+        case .follower:
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAdd))
-        case .album:
+        case .following:
             navigationItem.rightBarButtonItem = nil
         }
     }
@@ -117,16 +137,17 @@ class FollowSettingViewController: UIViewController {
         
         if self.vcName == "followers" {
             scrollView.setContentOffset(.zero, animated: true)
-            followersVC.usersFollowers(users: self.users)
+            followersVC.usersFollowers(uid: self.uid)
             updateBarButtons()
         } else if self.vcName == "followings" {
-            followingVC.usersFollowings(users: self.users)
             scrollView.setContentOffset(CGPoint(x: view.width, y: 0), animated: true)
+            followingVC.usersFollowings(uid: self.uid)
             updateBarButtons()
         }
     }
     
     // MARK: - Actions
+   
     
     @objc private func didTapAdd() {
         //followersVC.showCreatePlaylistAlert()
@@ -139,10 +160,10 @@ class FollowSettingViewController: UIViewController {
 extension FollowSettingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x >= (view.width-100) {
-            toggleView.update(for: .album)
+            toggleView.update(for: .following)
             updateBarButtons()
         } else {
-            toggleView.update(for: .playlist)
+            toggleView.update(for: .follower)
             updateBarButtons()
         }
     }
@@ -151,13 +172,17 @@ extension FollowSettingViewController: UIScrollViewDelegate {
 // MARK: - FollowToggleViewDelegate
 
 extension FollowSettingViewController: FollowToggleViewDelegate {
-    func followToggleViewDidTapPlaylists(_ toggleView: FollowToggleView) {
+    func followToggleViewDidTapFollower(_ toggleView: FollowToggleView) {
         scrollView.setContentOffset(.zero, animated: true)
+        followersVC.usersFollowers(uid: self.uid)
         updateBarButtons()
+        fetchData()
     }
     
-    func followToggleViewDidTapAlbums(_ toggleView: FollowToggleView) {
+    func followToggleViewDidTapFollowing(_ toggleView: FollowToggleView) {
         scrollView.setContentOffset(CGPoint(x: view.width, y: 0), animated: true)
+        followingVC.usersFollowings(uid: uid)
         updateBarButtons()
+        fetchData()
     }
 }

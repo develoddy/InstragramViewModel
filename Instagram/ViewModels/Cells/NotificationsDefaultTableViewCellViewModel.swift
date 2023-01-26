@@ -30,12 +30,23 @@ struct NotificationsDefaultTableViewCellViewModel {
         let username = notification.username
         let message = notification.type.notificationMessage
         
-        let attributedTex = NSMutableAttributedString(string: username, attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold) ])
+        let attributedTex = NSMutableAttributedString(
+            string: username,
+            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold) ]
+        )
         
-        attributedTex.append(NSAttributedString(string: message, attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular) ]))
+        attributedTex.append(NSAttributedString(
+            string: message,
+            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular) ])
+        )
         
-        attributedTex.append(NSAttributedString(string: " \(timestampString ?? "")", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular), .foregroundColor: UIColor.lightGray ]))
-        
+        attributedTex.append(
+            NSAttributedString(
+                string: " \(timestampString ?? "")",
+                attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular), .foregroundColor: UIColor.lightGray ]
+            )
+        )
+    
         return attributedTex
     }
     
@@ -46,10 +57,10 @@ struct NotificationsDefaultTableViewCellViewModel {
     }
     
     var followButtonBackgroundColor: UIColor {
-        return notification.userIsFollowed ? .white: .systemBlue
+        return notification.userIsFollowed ? .secondarySystemBackground: .systemBlue
     }
     
     var followButtonTextColor: UIColor {
-        return notification.userIsFollowed ? .black : .white
+        return notification.userIsFollowed ? .black : .secondarySystemBackground
     }
 }

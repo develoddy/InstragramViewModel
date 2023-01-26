@@ -19,10 +19,10 @@ final class FollowSettingPresenter {
     
     func startFollwSetting(
         from viewController: UIViewController,
-        users: [User],
+        uid: String,
         vcName: String
     ) {
-        let vc = FollowSettingViewController(users: users, vcName: vcName)
+        let vc = FollowSettingViewController(uid: uid, vcName: vcName)
         vc.navigationItem.largeTitleDisplayMode = .never
         viewController.navigationController?.pushViewController(vc, animated: true)
     }

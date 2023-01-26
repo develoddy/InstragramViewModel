@@ -8,35 +8,36 @@
 import UIKit
 
 protocol FollowToggleViewDelegate: AnyObject {
-    func followToggleViewDidTapPlaylists(_ toggleView: FollowToggleView)
-    func followToggleViewDidTapAlbums(_ toggleView: FollowToggleView)
+    func followToggleViewDidTapFollower(_ toogleView: FollowToggleView)
+    func followToggleViewDidTapFollowing(_ toogleView: FollowToggleView)
 }
 
 
 class FollowToggleView: UIView {
 
     enum State {
-        case playlist
-        case album
+        case follower//playlist
+        case following//album
     }
     
-    var state: State = .playlist
+    var state: State = .follower
     
     weak var delegate: FollowToggleViewDelegate?
     
-    private let playlistButton: UIButton = {
+    let followerButton: UIButton = {
         let button = UIButton()
+        button.setTitle("Loading", for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
-        button.setTitle("20 followers", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
+        //button.setTitle("20 followers", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
         return button
     }()
     
-    private let albumButton: UIButton = {
+    let followingButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(UIColor.black, for: .normal)
-        button.setTitle("10 Followings", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
+        //button.setTitle("10 Followings", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
         return button
     }()
     
@@ -50,12 +51,12 @@ class FollowToggleView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(playlistButton)
-        addSubview(albumButton)
+        addSubview(followerButton)
+        addSubview(followingButton)
         addSubview(indicatorView)
         
-        playlistButton.addTarget(self, action: #selector(didTapPlaylists), for: .touchUpInside)
-        albumButton.addTarget(self, action: #selector(didTapAlbums), for: .touchUpInside)
+        followerButton.addTarget(self, action: #selector(didTapFollowers), for: .touchUpInside)
+        followingButton.addTarget(self, action: #selector(didTapFollowings), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -64,34 +65,35 @@ class FollowToggleView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        playlistButton.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        albumButton.frame = CGRect(x: playlistButton.right, y: 0, width: 100, height: 40)
+        followerButton.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+        followingButton.frame = CGRect(x: followerButton.right, y: 0, width: 100, height: 40)
         layoutIndicator()
     }
     
     func layoutIndicator() {
         switch state {
-        case .playlist:
-            indicatorView.frame = CGRect(x: 0, y: playlistButton.bottom, width: 100, height: 2)
-        case .album:
-            indicatorView.frame = CGRect(x: 100, y: playlistButton.bottom, width: 100, height: 2)
+        case .follower:
+            indicatorView.frame = CGRect(x: 0, y: followerButton.bottom, width: 100, height: 2)
+        case .following:
+            indicatorView.frame = CGRect(x: 100, y: followerButton.bottom, width: 100, height: 2)
         }
     }
     
-    @objc private func didTapPlaylists() {
-        state = .playlist
+    @objc private func didTapFollowers() {
+        state = .follower
         UIView.animate(withDuration: 0.2) {
             self.layoutIndicator()
         }
-        delegate?.followToggleViewDidTapPlaylists(self)
+        
+        delegate?.followToggleViewDidTapFollower(self)
     }
     
-    @objc private func didTapAlbums() {
-        state = .album
+    @objc private func didTapFollowings() {
+        state = .following
         UIView.animate(withDuration: 0.2) {
             self.layoutIndicator()
         }
-        delegate?.followToggleViewDidTapAlbums(self)
+        delegate?.followToggleViewDidTapFollowing(self)
     }
     
     func update(for state: State) {
