@@ -18,6 +18,8 @@ class FeedViewController: UIViewController {
     
     var post: Post?
     
+    private let noFeedview = FeedEmptyLabelView()
+    
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout { sectionIndex, _ -> NSCollectionLayoutSection? in
@@ -33,12 +35,17 @@ class FeedViewController: UIViewController {
         sendPost()
         configureCollectionView()
         configureNavigationItem()
+        setUpNoCommentsView()
         bind()
         fetchPosts()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        //collectionView.frame = view.bounds
+        
+        noFeedview.frame = CGRect(x: (view.height-150)/2, y: (view.height-150)/2, width: view.width-20, height: 150)
+        noFeedview.center = view.center
         collectionView.frame = view.bounds
     }
     
@@ -60,10 +67,12 @@ class FeedViewController: UIViewController {
     }
     
     func fetchPosts() {
+        
         guard self.viewModel.post == nil else { return }
         
         viewModel.fetchFeedPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
+            self?.updateUI() // No funciona en esta posicon..
             self?.checkFollowingBeforeIHadPosts()
             self?.checkIfUserLikedPosts()
         }
@@ -149,6 +158,26 @@ class FeedViewController: UIViewController {
         ]
     }
     
+    private func setUpNoCommentsView() {
+        view.addSubview(noFeedview)
+        noFeedview.viewModel = FeedEmptyLabelViewViewModel(text: "Todavia no hay publicaciones", actionTitle: "Se el primero en publicar.")
+    }
+    
+    private func updateUI() {
+        
+        print("DEBUG: updateui")
+        print(viewModel.posts.count)
+        if viewModel.posts.isEmpty {
+            noFeedview.backgroundColor = .systemBackground
+            noFeedview.isHidden = false
+            collectionView.isHidden = true
+        } else {
+            collectionView.reloadData()
+            noFeedview.isHidden = true
+            collectionView.isHidden = false
+        }
+    }
+    
     
     // MARK: - Actions
     
@@ -185,7 +214,6 @@ class FeedViewController: UIViewController {
 extension FeedViewController : UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return viewModel.numberOfRowsInSection(section: section)
         return viewModel.post == nil ? viewModel.numberOfRowsInSection(section: section) : 1
     }
    

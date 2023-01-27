@@ -25,7 +25,10 @@ class ProfileViewController: UICollectionViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let refresher = UIRefreshControl()
+    
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -49,9 +52,8 @@ class ProfileViewController: UICollectionViewController {
     }
     
     func fetchData() {
-        
         viewModel.fetchPosts(uid: viewModel.getUID()) { [weak self] in
-            //self?.updateUI()
+            self?.collectionView.refreshControl?.endRefreshing()
         }
         
         viewModel.checkIfUserIsFollowed { [weak self] isFollowed in
@@ -83,9 +85,18 @@ class ProfileViewController: UICollectionViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier
         )
+        
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refresher
     }
         
     // MARK: - Action
+    
+    @objc func handleRefresh() {
+        viewModel.posts.removeAll()
+        fetchData()
+        refresher.endRefreshing()
+    }
 }
 
 

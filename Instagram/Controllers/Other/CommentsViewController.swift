@@ -128,7 +128,6 @@ class CommentsViewController: UICollectionViewController {
         view.addSubview(noCommentview)
         //noCommentview.delegate = self
         noCommentview.viewModel = CommentEmptyLabelViewViewModel( text: "Todavia no hay comentarios", actionTitle: "Se el primero en comentar.")
-        
     }
     
     private func updateUI() {
