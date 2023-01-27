@@ -23,7 +23,7 @@ class CommentViewModel {
         }
     }
     
-    var arrayComment: [Comment] = [Comment]() {
+    var comments: [Comment] = [Comment]() {
         didSet {
             self.refreshData?()
         }
@@ -51,16 +51,9 @@ class CommentViewModel {
         }
     }
     
-    func fetchComments(forPost postID: String) {
+    func fetchComments(forPost postID: String, completion: @escaping (Result<[Comment], Error>) -> Void) {
         api.fetchComments(forPost: postID) { result in
-            switch result {
-            case .success(let comments):
-                print("DEBUG: ViewModel fetch comments")
-                print(comments)
-                self.arrayComment = comments
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
+           completion(result)
         }
     }
     
@@ -84,17 +77,17 @@ class CommentViewModel {
     }
     
     func numberOfSections() -> Int {
-        return self.arrayComment.count
+        return self.comments.count
     }
     
     func numberOfRowsInSection(section: Int) -> Int {
-        if self.arrayComment.count != 0 {
-            return self.arrayComment.count
+        if self.comments.count != 0 {
+            return self.comments.count
         }
         return 0
     }
     
     func cellForRowAt(indexPath: IndexPath) -> Comment {
-        return self.arrayComment[indexPath.row]
+        return self.comments[indexPath.row]
     }
 }

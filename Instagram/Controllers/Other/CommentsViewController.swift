@@ -13,6 +13,7 @@ class CommentsViewController: UICollectionViewController {
     
     var viewModel = CommentViewModel()
     
+    private let noCommentview = CommentEmptyLabelView()
     
     private lazy var commentInputView: CommentInputAccesoryView = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
@@ -36,6 +37,7 @@ class CommentsViewController: UICollectionViewController {
         super.viewDidLoad()
         configureUI()
         configureCollections()
+        setUpNoCommentsView()
         bind()
         fetchComments()
     }
@@ -61,6 +63,9 @@ class CommentsViewController: UICollectionViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
+        noCommentview.frame = CGRect(x: (view.height-150)/2, y: (view.height-150)/2, width: view.width-20, height: 150)
+        noCommentview.center = view.center
+        collectionView.frame = view.bounds
     }
     
     //MARK: - ViewModel
@@ -77,7 +82,16 @@ class CommentsViewController: UICollectionViewController {
         guard let postId = viewModel.post?.postId else {
             return
         }
-        viewModel.fetchComments(forPost: postId)
+        
+        viewModel.fetchComments(forPost: postId) { [weak self] result in
+            switch result {
+            case .success(let comments):
+                self?.viewModel.comments = comments
+                self?.updateUI()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     
@@ -108,6 +122,27 @@ class CommentsViewController: UICollectionViewController {
         
         collectionView.alwaysBounceVertical = true
         collectionView.keyboardDismissMode = .interactive
+    }
+    
+    private func setUpNoCommentsView() {
+        view.addSubview(noCommentview)
+        //noCommentview.delegate = self
+        noCommentview.viewModel = CommentEmptyLabelViewViewModel( text: "Todavia no hay comentarios", actionTitle: "Se el primero en comentar.")
+        
+    }
+    
+    private func updateUI() {
+        if viewModel.comments.isEmpty {
+            // Show label
+            noCommentview.backgroundColor = .systemBackground
+            noCommentview.isHidden = false
+            collectionView.isHidden = true
+        } else {
+            // Show Table
+            collectionView.reloadData()
+            noCommentview.isHidden = true
+            collectionView.isHidden = false
+        }
     }
     
     // MARK: - Actions
@@ -151,8 +186,6 @@ extension CommentsViewController {
                 print(error.localizedDescription)
             }
         }
-        
-        
     }
 }
 

@@ -42,7 +42,7 @@
 		B335AFFB296F701200AE9999 /* StoriesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFFA296F701100AE9999 /* StoriesCollectionViewCell.swift */; };
 		B335AFFF29704AE900AE9999 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B335AFFE29704AE900AE9999 /* Notification.swift */; };
 		B34A1A342982A5CE001329DE /* FollowSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34A1A332982A5CE001329DE /* FollowSettingViewModel.swift */; };
-		B34A1A382983FADF001329DE /* ProfileActionLabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34A1A372983FADF001329DE /* ProfileActionLabelCollectionViewCell.swift */; };
+		B34A1A3A298423A4001329DE /* CommentEmptyLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34A1A39298423A3001329DE /* CommentEmptyLabelView.swift */; };
 		B34F9D1F297465BB002956BE /* SettingStorieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */; };
 		B34F9D2129753AB1002956BE /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2029753AB1002956BE /* HapticsManager.swift */; };
 		B34F9D2B29759A2E002956BE /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D2A29759A2E002956BE /* ProfileViewModel.swift */; };
@@ -122,7 +122,7 @@
 		B335AFFA296F701100AE9999 /* StoriesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesCollectionViewCell.swift; sourceTree = "<group>"; };
 		B335AFFE29704AE900AE9999 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		B34A1A332982A5CE001329DE /* FollowSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowSettingViewModel.swift; sourceTree = "<group>"; };
-		B34A1A372983FADF001329DE /* ProfileActionLabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileActionLabelCollectionViewCell.swift; sourceTree = "<group>"; };
+		B34A1A39298423A3001329DE /* CommentEmptyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEmptyLabelView.swift; sourceTree = "<group>"; };
 		B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStorieViewController.swift; sourceTree = "<group>"; };
 		B34F9D2029753AB1002956BE /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
 		B34F9D2A29759A2E002956BE /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
@@ -222,7 +222,6 @@
 			children = (
 				B312360429678596004ECE2E /* ProfilePhotosCollectionViewCell.swift */,
 				B312360629678625004ECE2E /* ProfileHeaderCollectionViewCell.swift */,
-				B34A1A372983FADF001329DE /* ProfileActionLabelCollectionViewCell.swift */,
 			);
 			path = ProfileCells;
 			sourceTree = "<group>";
@@ -367,6 +366,7 @@
 				B30192902970B5A0002A0335 /* CommentsHeaderCollectionReusableView.swift */,
 				B301929C2971781A002A0335 /* FollowToggleView.swift */,
 				B385C11F2979ADB4005158E0 /* CommentInputAccesoryView.swift */,
+				B34A1A39298423A3001329DE /* CommentEmptyLabelView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -601,7 +601,6 @@
 				B3BD8CCC2965650B00606150 /* TabBarViewController.swift in Sources */,
 				B31C2449297FC67500764474 /* ProfileService.swift in Sources */,
 				B31C245E2981D18100764474 /* FollowSettingPresenter.swift in Sources */,
-				B34A1A382983FADF001329DE /* ProfileActionLabelCollectionViewCell.swift in Sources */,
 				B3BD8CC82965650B00606150 /* AppDelegate.swift in Sources */,
 				B3BD8CEA29656EA500606150 /* NotificationViewController.swift in Sources */,
 				B31C2452297FFED800764474 /* NotificationService.swift in Sources */,
@@ -646,6 +645,7 @@
 				B3BD8CF12965A59800606150 /* FeedCollectionViewCell.swift in Sources */,
 				B335AFFF29704AE900AE9999 /* Notification.swift in Sources */,
 				B3BD8CE329656D8700606150 /* Extensions.swift in Sources */,
+				B34A1A3A298423A4001329DE /* CommentEmptyLabelView.swift in Sources */,
 				B301928F2970B3F5002A0335 /* ListCommentsCollectionViewCell.swift in Sources */,
 				B34F9D40297712F3002956BE /* FeedViewModel.swift in Sources */,
 				B3BD8CF42965D9E500606150 /* LoginViewController.swift in Sources */,

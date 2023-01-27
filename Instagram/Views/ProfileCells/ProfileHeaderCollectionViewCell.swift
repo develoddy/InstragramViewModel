@@ -116,11 +116,14 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         addSubview(nameLabel)
         addSubview(editProfilefollowButton)
         
-        
         postsButton.addTarget(self, action: #selector(didTapPosts), for: .touchUpInside)
         followersButton.addTarget(self, action: #selector(didTapFollowers), for: .touchUpInside)
         followingsButton.addTarget(self, action: #selector(didTapFollowings), for: .touchUpInside)
         editProfilefollowButton.addTarget(self, action: #selector(didTapEditProfile), for: .touchUpInside)
+        
+        gridButton.isHidden = true
+        listButton.isHidden = true
+        bookmarkButton.isHidden = true
     }
     
     

@@ -93,13 +93,19 @@ class ProfileViewController: UICollectionViewController {
 
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if viewModel.numberOfRowsInSection(section: section) == 0 {
-            collectionView.setEmptyMessage("Aún no hay publicaciones")
-            return 0
+        
+        if viewModel.checkIfIsFolloweds(vc: self) {
+            if viewModel.numberOfRowsInSection(section: section) == 0 {
+                collectionView.setEmptyMessage("Aún no hay publicaciones.")
+                return 0
+            } else {
+                collectionView.restore()
+            }
+            return viewModel.numberOfRowsInSection(section: section)
         } else {
-            collectionView.restore()
+            collectionView.setEmptyMessage("Esta cuenta es privada. \nSigue esta cuenta para ver sus fotos y videos.")
+            return 0
         }
-        return viewModel.numberOfRowsInSection(section: section)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -116,51 +122,6 @@ extension ProfileViewController {
         cell.backgroundColor = .lightGray
         return cell
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /**override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.checkIfIsFolloweds(vc: self) ? viewModel.numberOfRowsInSection(section: section) : 0
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-  
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ProfilePhotosCollectionViewCell.identifier,
-            for: indexPath
-        ) as? ProfilePhotosCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        if viewModel.checkIfIsFolloweds(vc: self) {
-            cell.viewModel = FeedCollectionViewCellViewModel(
-                post: viewModel.cellForRowAt(indexPath: indexPath)
-            )
-        }
-        
-        cell.backgroundColor = .lightGray
-        return cell
-        
-    }*/
 }
 
 
@@ -184,9 +145,15 @@ extension ProfileViewController {
             return UICollectionReusableView()
         }
         
-        header.gridButton.isHidden = !viewModel.isFollowed
-        header.listButton.isHidden = !viewModel.isFollowed
-        header.bookmarkButton.isHidden = !viewModel.isFollowed
+        /***
+         * Comprobar si el usuario actual sigue al perfil que está visitando y
+         * tambien se comprueba si el perfil que se visita tiene publicaciones.
+         ***/
+        if viewModel.checkIfIsFolloweds(vc: self) && viewModel.posts.count != 0 {
+            header.gridButton.isHidden = false
+            header.listButton.isHidden = false
+            header.bookmarkButton.isHidden = false
+        }
         
         if let user = viewModel.fetchUser() {
             header.configure(
@@ -260,6 +227,9 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                     user: user,
                     didFollow: false
                 )
+                profileHeader.gridButton.isHidden = true
+                profileHeader.listButton.isHidden = true
+                profileHeader.bookmarkButton.isHidden = true
                 self?.fetchData()
             }
         } else {

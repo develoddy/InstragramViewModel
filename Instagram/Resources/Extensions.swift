@@ -21,10 +21,10 @@ extension UICollectionView {
         
         let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
         messageLabel.text = message
-        messageLabel.textColor = .black
+        messageLabel.textColor = .secondaryLabel
         messageLabel.numberOfLines = 0
         messageLabel.textAlignment = .center
-        messageLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        messageLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         messageLabel.sizeToFit()
         
         self.backgroundView = messageLabel
