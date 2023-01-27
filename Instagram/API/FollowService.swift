@@ -26,7 +26,6 @@ class FollowService: FollowServiceDelegate {
     
     // MARK: - Helpers
     
-    // Siguiendo
     func fetchFollowings(uid: String, completion: @escaping([User]) -> Void) {
         Constants.Collections.COLLECTION_FOLLOWINGS.document(uid).collection("user-followings")
             .getDocuments { snapshot, _ in

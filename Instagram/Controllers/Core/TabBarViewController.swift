@@ -29,7 +29,6 @@ class TabBarViewController: UITabBarController {
         UserService.shared.fetchUser(uid: uid) { [weak self] result in
             switch result {
             case .success(let user):
-                print(user)
                 self?.user = user
             case .failure(let error):
                 print("DEBUG: TabBAR \(error.localizedDescription)")

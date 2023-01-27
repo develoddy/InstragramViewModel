@@ -38,6 +38,13 @@ class SearchViewModel {
         }
     }
     
+    func fetchFeedPosts(completion: @escaping() -> () ) {
+        postService.fetchFeedPosts { posts in
+            self.posts = posts
+            completion()
+        }
+    }
+    
     func numberOfSections() -> Int {
         return self.posts.count
     }

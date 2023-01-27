@@ -15,13 +15,11 @@ class UploadPostViewController: UIViewController {
     
     // MARK: - Properties
     
-    // GET DATA FROM TabBarViewController
-    
     var currentUser: User?
     
     var selectedimage: UIImage? { didSet { photoImageView.image = selectedimage } }
     
-    private var uploadPostViewModel = UploadPostViewModel()
+    private var viewModel = UploadPostViewModel()
     
     weak var delegate: UploadPostViewControllerDelegate?
     
@@ -29,7 +27,6 @@ class UploadPostViewController: UIViewController {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        //imageView.image = UIImage(named: "feed01")
         return imageView
     }()
     
@@ -58,11 +55,7 @@ class UploadPostViewController: UIViewController {
     }
     
     // MARK: - Helpers
-    func checkMaxLength(_ textView: UITextView) {
-        if (textView.text.count) > 100 {
-            textView.deleteBackward()
-        }
-    }
+    
     
     private func configureUI() {
         view.backgroundColor = .white
@@ -98,7 +91,18 @@ class UploadPostViewController: UIViewController {
         )
         
         view.addSubview(characterCountLabel)
-        characterCountLabel.anchor(bottom: captionTextView.bottomAnchor, right: view.rightAnchor, paddingBottom: -8, paddingRight: 12)
+        characterCountLabel.anchor(
+            bottom: captionTextView.bottomAnchor,
+            right: view.rightAnchor,
+            paddingBottom: -8,
+            paddingRight: 12
+        )
+    }
+
+    func checkMaxLength(_ textView: UITextView) {
+        if (textView.text.count) > 100 {
+            textView.deleteBackward()
+        }
     }
     
     
@@ -113,12 +117,13 @@ class UploadPostViewController: UIViewController {
         guard let image = selectedimage else { return }
         guard let user = currentUser else { return }
         
-        // START LOADER
         showLoader(true)
-        
-        // CALL VIEWMODEL
-        uploadPostViewModel.uploadPost(caption: caption, image: image, user: user) { [weak self] error in
-            // FINISH LOADER
+        viewModel.uploadPost(
+            caption: caption,
+            image: image,
+            user: user
+        ) { [weak self] error in
+            
             self?.showLoader(false)
             guard let strongSelf = self else { return }
             if let error = error {

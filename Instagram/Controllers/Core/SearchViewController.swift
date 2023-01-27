@@ -11,7 +11,6 @@ class SearchViewController: UIViewController {
     
     // MARK: - Properties
     
-    ///private var users = [User]()
     var viewModel = SearchViewModel()
     
     let searchController: UISearchController = {
@@ -90,12 +89,11 @@ class SearchViewController: UIViewController {
     }
     
     private func fetchPosts() {
-        viewModel.fetchPosts { [weak self] in
+        viewModel.fetchFeedPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
         }
     }
-    
-    
+
     // MARK: - Helpers
     
     private func configureUI() {
@@ -111,7 +109,9 @@ class SearchViewController: UIViewController {
     
     private func configureCollections() {
         view.addSubview(collectionView)
-        collectionView.register(ProfilePhotosCollectionViewCell.self, forCellWithReuseIdentifier: ProfilePhotosCollectionViewCell.identifier)
+        collectionView.register(
+            ProfilePhotosCollectionViewCell.self, forCellWithReuseIdentifier: ProfilePhotosCollectionViewCell.identifier
+        )
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -140,7 +140,7 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
         }
         resultsController.delegate = self
         
-        // API
+        // UserService
         UserService.shared.fetchUsers { result in
             switch result {
             case .success(let users):
@@ -182,7 +182,9 @@ extension SearchViewController:  UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.viewModel = FeedCollectionViewCellViewModel(post: viewModel.cellForRowAt(indexPath: indexPath))
+        cell.viewModel = FeedCollectionViewCellViewModel(
+            post: viewModel.cellForRowAt(indexPath: indexPath)
+        )
         cell.backgroundColor = .systemYellow
         return cell
     }
@@ -191,7 +193,6 @@ extension SearchViewController:  UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         FeedPresenter.shared.startFeed(from: self, post: viewModel.cellForRowAt(indexPath: indexPath))
     }

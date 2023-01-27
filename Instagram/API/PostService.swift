@@ -9,6 +9,7 @@ import Firebase
 
 protocol PostServiceDelegate: AnyObject {
     func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping(FirestoreCompletion))
+    ///func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping (Result<Bool, Error>) -> Void)
     func fetchPosts(completion: @escaping([Post]) -> Void)
     func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void)
     func likePost(post: Post, completion: @escaping(FirestoreCompletion))
@@ -47,8 +48,8 @@ class PostService: PostServiceDelegate {
             ] as [String: Any]
             
             let docRef = Constants.Collections.COLLECTION_POSTS.addDocument(data: data, completion: completion)
-            
-            self.updateUserFeedAfterPost(postId: docRef.documentID)
+            //self.updateUserFeedAfterPost(postId: docRef.documentID)
+            self.updateUserFeedAfterUserPost(postId: docRef.documentID)
         }
     }
     
@@ -162,8 +163,11 @@ class PostService: PostServiceDelegate {
             }
         }
     }
-    
+  
+
     func updateUserFeedAfterPost(postId: String) {
+        // Arreglar: esto solo sirve para los follower
+        
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, _ in
@@ -182,5 +186,16 @@ class PostService: PostServiceDelegate {
                     .setData([:])
             }
         }
+    }
+    
+    func updateUserFeedAfterUserPost(postId: String) {
+        
+        print("DEBUG: updateUserFeedAfterPost postid is \(postId)")
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        Constants.Collections.COLLECTION_USERS.document(uid)
+            .collection("user-feed")
+            .document(postId)
+            .setData([:])
     }
 }

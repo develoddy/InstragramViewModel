@@ -17,6 +17,8 @@ class FeedViewModel {
     
     let notificationService: NotificationServiceDelegate
     
+    var followService: FollowServiceDelegate
+    
     var refreshData: ( () -> () )?
     
     var post: Post? {
@@ -35,14 +37,21 @@ class FeedViewModel {
     
     init(
         postService: PostServiceDelegate = PostService(),
-        notificationService: NotificationServiceDelegate = NotificationService()
+        notificationService: NotificationServiceDelegate = NotificationService(),
+        followService: FollowServiceDelegate = FollowService()
     ) {
         self.postService = postService
         self.notificationService = notificationService
+        self.followService = followService
     }
     
     // MARK: - Helpers
     
+    func currentUser(vc: UIViewController) -> User {
+        guard let tab = vc.tabBarController as? TabBarViewController  else { fatalError("not data currentUser")  }
+        guard let user = tab.user else { fatalError("not data currentUser")  }
+        return user
+    }
     
     func fetchPosts(completion: @escaping() -> ()) {
         postService.fetchPosts { posts in
@@ -56,6 +65,16 @@ class FeedViewModel {
             self.posts = posts
             completion()
         }
+    }
+    
+    func fetchFollowings(uid: String, completion: @escaping([User]) -> Void) {
+        followService.fetchFollowings(uid: uid) { users in
+            completion(users)
+        }
+    }
+    
+    func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
+        postService.updateUserFeedAfterFollowing(user: user, didFollow: didFollow )
     }
     
     func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {

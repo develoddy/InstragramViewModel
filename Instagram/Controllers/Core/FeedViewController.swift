@@ -64,7 +64,14 @@ class FeedViewController: UIViewController {
         
         viewModel.fetchFeedPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
+            self?.checkFollowingBeforeIHadPosts()
             self?.checkIfUserLikedPosts()
+        }
+    }
+    
+    private func checkFollowingBeforeIHadPosts() {
+        viewModel.fetchFollowings(uid: viewModel.currentUser(vc: self).uid) { [weak self] users in
+            let _ = users.compactMap({ self?.viewModel.updateUserFeedAfterFollowing(user: $0, didFollow: true) })
         }
     }
     
@@ -83,9 +90,7 @@ class FeedViewController: UIViewController {
             self.viewModel.post?.didLike = didLiked
         }
     }
-
-
-   
+    
     // MARK: - Helpers
     
     private func configureUI() {
@@ -159,7 +164,6 @@ class FeedViewController: UIViewController {
     }
     
     @objc func handleRefresh() {
-        
         self.viewModel.posts.removeAll()
         fetchPosts()
         
