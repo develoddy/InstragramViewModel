@@ -7,6 +7,8 @@
 
 import UIKit
 
+
+
 class ProfileViewController: UICollectionViewController {
     
     
@@ -28,7 +30,6 @@ class ProfileViewController: UICollectionViewController {
         super.viewDidLoad()
         configureUI()
         configureCollections()
-        updateUI()
         bind()
         fetchData()
     }
@@ -48,7 +49,10 @@ class ProfileViewController: UICollectionViewController {
     }
     
     func fetchData() {
-        viewModel.fetchPosts(uid: viewModel.getUID())
+        
+        viewModel.fetchPosts(uid: viewModel.getUID()) { [weak self] in
+            //self?.updateUI()
+        }
         
         viewModel.checkIfUserIsFollowed { [weak self] isFollowed in
             self?.viewModel.updatePropertiesIsFollwed(isFollowed: isFollowed)
@@ -58,9 +62,10 @@ class ProfileViewController: UICollectionViewController {
             self?.viewModel.updatePropertiStats(stats: stats)
         }
     }
+    
 
     // MARK: - Helpers
-    
+
     private func configureUI() {
         title = viewModel.getUsername()
         collectionView.backgroundColor = .systemBackground
@@ -79,15 +84,7 @@ class ProfileViewController: UICollectionViewController {
             withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier
         )
     }
-    
-    func updateUI() {
-        viewModel.refreshData = { [weak self] in
-            DispatchQueue.main.async  {
-                self?.collectionView.reloadData()
-            }
-        }
-    }
-    
+        
     // MARK: - Action
 }
 
@@ -96,10 +93,57 @@ class ProfileViewController: UICollectionViewController {
 
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if viewModel.numberOfRowsInSection(section: section) == 0 {
+            collectionView.setEmptyMessage("Aún no hay publicaciones")
+            return 0
+        } else {
+            collectionView.restore()
+        }
+        return viewModel.numberOfRowsInSection(section: section)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: ProfilePhotosCollectionViewCell.identifier,
+            for: indexPath
+        ) as? ProfilePhotosCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.viewModel = FeedCollectionViewCellViewModel(
+            post: viewModel.cellForRowAt(indexPath: indexPath)
+        )
+        cell.backgroundColor = .lightGray
+        return cell
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /**override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.checkIfIsFolloweds(vc: self) ? viewModel.numberOfRowsInSection(section: section) : 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+  
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: ProfilePhotosCollectionViewCell.identifier,
             for: indexPath
@@ -111,11 +155,12 @@ extension ProfileViewController {
             cell.viewModel = FeedCollectionViewCellViewModel(
                 post: viewModel.cellForRowAt(indexPath: indexPath)
             )
-            return cell
         }
+        
         cell.backgroundColor = .lightGray
         return cell
-    }
+        
+    }*/
 }
 
 

@@ -9,6 +9,32 @@ import Foundation
 import UIKit
 import JGProgressHUD
 
+extension UICollectionView {
+
+    func setEmptyMessage(_ message: String) {
+        /**let header = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height/4).integral)
+        let size = header.height/1.5
+        let profilePhotoButton = UIButton(frame: CGRect(x: (self.bounds.size.width-size)/2,y: (header.height-size)/2, width: size, height: size) )
+        header.addSubview(profilePhotoButton)
+        let messageLabel = UILabel(frame: CGRect(x: 10,y: profilePhotoButton.bottom+5,width: width-20, height: 20))
+        header.addSubview(messageLabel)*/
+        
+        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
+        messageLabel.text = message
+        messageLabel.textColor = .black
+        messageLabel.numberOfLines = 0
+        messageLabel.textAlignment = .center
+        messageLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        messageLabel.sizeToFit()
+        
+        self.backgroundView = messageLabel
+    }
+
+    func restore() {
+        self.backgroundView = nil
+    }
+}
+
 extension UIViewController {
     
     static let hud = JGProgressHUD(style: .dark)

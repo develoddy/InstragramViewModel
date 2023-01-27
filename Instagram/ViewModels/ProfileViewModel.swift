@@ -21,6 +21,8 @@ class ProfileViewModel {
     
     var notificationService: NotificationServiceDelegate
     
+    var followService: FollowServiceDelegate
+    
     var userStats: UserStats?
     
     var isFollowed: Bool = false
@@ -49,14 +51,29 @@ class ProfileViewModel {
     init(
         profileService: ProfileServiceDelegate = ProfileService(),
         postService: PostServiceDelegate = PostService(),
-        notificationService: NotificationServiceDelegate = NotificationService()
+        notificationService: NotificationServiceDelegate = NotificationService(),
+        followService: FollowServiceDelegate = FollowService()
     ) {
         self.profileService = profileService
         self.postService = postService
         self.notificationService = notificationService
+        self.followService = followService
     }
     
     // MARK: - Helpers
+    
+    func currentUser(vc: UIViewController) -> User {
+        guard let tab = vc.tabBarController as? TabBarViewController  else { fatalError("not data currentUser")  }
+        guard let user = tab.user else { fatalError("not data currentUser")  }
+        return user
+    }
+    
+    func fetchPosts(uid: String, completion: @escaping() -> ()) {
+        postService.fetchPosts(forUser: uid) { [weak self] posts in
+            self?.posts = posts
+            completion()
+        }
+    }
     
     func updatePropertiesUser(user: User) {
         self.user = user
@@ -103,11 +120,7 @@ class ProfileViewModel {
         }
     }
     
-    func fetchPosts(uid: String) {
-        postService.fetchPosts(forUser: uid) { [weak self] posts in
-            self?.posts = posts
-        }
-    }
+   
     
     func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post? = nil) {
         notificationService.uploadNotification(
