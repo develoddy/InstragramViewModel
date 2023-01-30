@@ -8,8 +8,6 @@
 
 import UIKit
 
-
-/// Fee View Controller
 class FeedViewController: UIViewController {
 
     // MARK: - Properties
@@ -42,8 +40,6 @@ class FeedViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        //collectionView.frame = view.bounds
-        
         noFeedview.frame = CGRect(x: (view.height-150)/2, y: (view.height-150)/2, width: view.width-20, height: 150)
         noFeedview.center = view.center
         collectionView.frame = view.bounds
@@ -160,13 +156,13 @@ class FeedViewController: UIViewController {
     
     private func setUpNoCommentsView() {
         view.addSubview(noFeedview)
-        noFeedview.viewModel = FeedEmptyLabelViewViewModel(text: "Todavia no hay publicaciones", actionTitle: "Se el primero en publicar.")
+        noFeedview.viewModel = FeedEmptyLabelViewViewModel(
+            text: "Todavia no hay publicaciones",
+            actionTitle: "Se el primero en publicar."
+        )
     }
     
     private func updateUI() {
-        
-        print("DEBUG: updateui")
-        print(viewModel.posts.count)
         if viewModel.posts.isEmpty {
             noFeedview.backgroundColor = .systemBackground
             noFeedview.isHidden = false
@@ -360,5 +356,26 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
     
     func feedCollectionDidTapMoreComments(_ user: String) {
         // More Comment
+    }
+    
+    func cell(_ cell: FeedCollectionViewCell, wantsToPost uid: String ) {
+        let vcShee = SheePostViewController()
+        vcShee.delegate = self
+        vcShee.postId = uid
+        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.present(vcShee, animated: true)
+    }
+}
+
+extension FeedViewController: DeletePostViewControllerDelegate {
+    func deletePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController) {
+        //guard let currentUser = tab.user else { return }
+        //tab.selectedIndex = 4
+        controller.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
+        guard let tab = tabBarController as? TabBarViewController  else { return }
+        guard let feedNav = tab.viewControllers?.first as? UINavigationController else { return }
+        guard let feed = feedNav.viewControllers.first as? ProfileViewController else { return }
+        feed.handleRefresh()
     }
 }

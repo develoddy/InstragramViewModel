@@ -23,6 +23,8 @@ class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        UITabBar.appearance().barTintColor = .white
+        UITabBar.appearance().isTranslucent = false
         
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -44,9 +46,9 @@ class TabBarViewController: UITabBarController {
         let vc1 = templateNavigationController(
             unSelectedImage: UIImage(systemName: "house")!,
             selectedImage: UIImage(systemName: "house.fill")!,
-            rootViewController: FeedViewController()
+            rootViewController:FeedViewController()
         )
-        
+       
         let vc2 = templateNavigationController(
             unSelectedImage: UIImage(systemName: "magnifyingglass")!,
             selectedImage: UIImage(systemName: "magnifyingglass.circle.fill")!,
@@ -160,7 +162,6 @@ extension TabBarViewController: UploadPostViewControllerDelegate {
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
         selectedIndex = 0
         controller.dismiss(animated: true, completion: nil)
-        
         guard let feedNav = viewControllers?.first as? UINavigationController else { return }
         guard let feed = feedNav.viewControllers.first as? FeedViewController else { return }
         feed.handleRefresh()

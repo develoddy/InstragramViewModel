@@ -18,6 +18,7 @@ protocol PostServiceDelegate: AnyObject {
     func fetchPosts(withPostId postId: String, completion: @escaping(Post) -> Void )
     func fetchFeedPosts(completion: @escaping([Post]) -> Void )
     func updateUserFeedAfterFollowing(user: User, didFollow: Bool)
+    func deletePost(withPostId postId: String, completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
 class PostService: PostServiceDelegate {
@@ -86,6 +87,23 @@ class PostService: PostServiceDelegate {
         }
     }
     
+    func deletePost(withPostId postId: String, completion: @escaping (Result<Bool, Error>) -> Void ) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Constants.Collections.COLLECTION_POSTS.document(postId).delete { err in
+            if let err = err {
+                print("DEBUF: deletePost: \(err)")
+                completion(.failure(APIError.faileedToGetData))
+            } else {
+                Constants.Collections.COLLECTION_USERS.document(uid)
+                    .collection("user-feed")
+                    .document(postId)
+                    .delete()
+                completion(.success(true))
+            }
+        }
+    }
+    
+    
     func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -93,7 +111,8 @@ class PostService: PostServiceDelegate {
         
         Constants.Collections.COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).setData([:]) { _ in
             
-                Constants.Collections.COLLECTION_USERS.document(uid).collection("user-likes")
+                Constants.Collections.COLLECTION_USERS.document(uid)
+                .collection("user-likes")
                 .document(post.postId)
                 .setData([:], completion: completion)
         }
@@ -166,10 +185,8 @@ class PostService: PostServiceDelegate {
   
 
     func updateUserFeedAfterPost(postId: String) {
-        // Arreglar: esto solo sirve para los follower
-        
+        //Esto solo sirve para los follower
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        
         Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, _ in
             guard let documents = snapshot?.documents else { return }
             

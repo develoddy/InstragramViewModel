@@ -18,15 +18,13 @@ extension UICollectionView {
         header.addSubview(profilePhotoButton)
         let messageLabel = UILabel(frame: CGRect(x: 10,y: profilePhotoButton.bottom+5,width: width-20, height: 20))
         header.addSubview(messageLabel)*/
-        
-        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
+        let messageLabel = UILabel(frame: CGRect(x:0, y:0, width: self.bounds.size.width, height: self.bounds.size.height))
         messageLabel.text = message
         messageLabel.textColor = .secondaryLabel
         messageLabel.numberOfLines = 0
         messageLabel.textAlignment = .center
         messageLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         messageLabel.sizeToFit()
-        
         self.backgroundView = messageLabel
     }
 

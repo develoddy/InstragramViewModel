@@ -14,6 +14,7 @@ protocol FeedCollectionViewCellDelegate: AnyObject {
     func feedCollectionDidTapShare(_ user: String)
     func feedCollectionDidTapMoreComments(_ user: String)
     func cell(_ cell: FeedCollectionViewCell, wantsToShowProfileFor uid: String )
+    func cell(_ cell: FeedCollectionViewCell, wantsToPost uid: String )
 }
 
 class FeedCollectionViewCell: UICollectionViewCell {
@@ -110,6 +111,13 @@ class FeedCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    private let actionButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = .black
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        return button
+    }()
+    
     private var stackView = UIStackView()
     
     override init(frame: CGRect) {
@@ -119,6 +127,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         
         addSubview(profileImageView)
         addSubview(usernameButton)
+        addSubview(actionButton)
         
         addSubview(postImageView)
         
@@ -134,8 +143,8 @@ class FeedCollectionViewCell: UICollectionViewCell {
         likeButton.addTarget(self, action: #selector(didTapLike), for: .touchUpInside)
         commentButton.addTarget(self, action: #selector(didTapComment), for: .touchUpInside)
         sharedButton.addTarget(self, action: #selector(didTapShare), for: .touchUpInside)
-        
         moreCommentsLabel.addTarget(self, action: #selector(didTapMoreComments), for: .touchUpInside)
+        actionButton.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -159,6 +168,14 @@ class FeedCollectionViewCell: UICollectionViewCell {
             paddingLeft: 8
         )
         
+        actionButton.centerY(inView: usernameButton)
+        //actionButton.anchor(right: rightAnchor, paddingRight: 12, width: 40, height: 32)
+        actionButton.anchor(
+            right: rightAnchor,
+            paddingTop: 12,
+            paddingRight: 12
+        )
+        
         postImageView.anchor(
             top: profileImageView.bottomAnchor,
             left: leftAnchor,
@@ -177,7 +194,6 @@ class FeedCollectionViewCell: UICollectionViewCell {
         postTimeLabel.anchor(top: moreCommentsLabel.bottomAnchor, left: leftAnchor, paddingTop: 4, paddingLeft: 8)
     }
     
-
     override func prepareForReuse() {
         super.prepareForReuse()
         captionLabel.text = nil
@@ -195,7 +211,6 @@ class FeedCollectionViewCell: UICollectionViewCell {
         addSubview(stackView)
         stackView.anchor(top: postImageView.bottomAnchor, width: 120, height: 50)
     }
-    
     
     //func configure(with viewModel: FeedCollectionViewCellViewModel) {
     func configure() {
@@ -260,5 +275,12 @@ class FeedCollectionViewCell: UICollectionViewCell {
     @objc func didTapMoreComments() {
         print("debug: comment")
         delegate?.feedCollectionDidTapMoreComments("user")
+    }
+    
+    @objc func didTapActionButton() {
+        guard let postId = viewModel?.post.postId else {
+            return
+        }
+        delegate?.cell(self, wantsToPost: postId)
     }
 }

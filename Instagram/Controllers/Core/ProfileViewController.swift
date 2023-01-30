@@ -14,7 +14,7 @@ class ProfileViewController: UICollectionViewController {
     
     // MARK: - Properties
   
-    private var viewModel = ProfileViewModel()
+    var viewModel = ProfileViewModel()
     
     init(user: User) {
         viewModel.updatePropertiesUser(user: user)
@@ -69,7 +69,8 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Helpers
 
     private func configureUI() {
-        title = viewModel.getUsername()
+        //title = viewModel.getUsername()
+        navigationItem.title = viewModel.getUsername()
         collectionView.backgroundColor = .systemBackground
     }
     
@@ -93,9 +94,11 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Action
     
     @objc func handleRefresh() {
+        print("DEBUG: Haldle Refresh profile")
         viewModel.posts.removeAll()
         fetchData()
-        refresher.endRefreshing()
+        //refresher.endRefreshing()
+        //self.collectionView.refreshControl?.endRefreshing()
     }
 }
 
@@ -107,7 +110,7 @@ extension ProfileViewController {
         
         if viewModel.checkIfIsFolloweds(vc: self) {
             if viewModel.numberOfRowsInSection(section: section) == 0 {
-                collectionView.setEmptyMessage("Aún no hay publicaciones.")
+                collectionView.setEmptyMessage("\n\n\n\n\n\n\n\nAún no hay publicaciones.")
                 return 0
             } else {
                 collectionView.restore()
@@ -160,7 +163,12 @@ extension ProfileViewController {
          * Comprobar si el usuario actual sigue al perfil que está visitando y
          * tambien se comprueba si el perfil que se visita tiene publicaciones.
          ***/
-        if viewModel.checkIfIsFolloweds(vc: self) && viewModel.posts.count != 0 {
+        
+        if viewModel.checkIfIsFolloweds(vc: self) && viewModel.posts.count == 0 {
+            header.gridButton.isHidden = true
+            header.listButton.isHidden = true
+            header.bookmarkButton.isHidden = true
+        } else if viewModel.checkIfIsFolloweds(vc: self) && viewModel.posts.count != 0 {
             header.gridButton.isHidden = false
             header.listButton.isHidden = false
             header.bookmarkButton.isHidden = false
