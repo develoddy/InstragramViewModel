@@ -33,4 +33,10 @@ class UploadPostViewModel {
             completion(error)
         }
     }
+    
+    func updatePost(post: Post, completion: @escaping (Error?) -> Void ) {
+        postService.updatePost(post: post) { error in
+            completion(error)
+        }
+    }
 }

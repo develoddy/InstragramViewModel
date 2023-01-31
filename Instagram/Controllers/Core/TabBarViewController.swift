@@ -159,11 +159,16 @@ extension TabBarViewController: UITabBarControllerDelegate {
 // MARK: - UploadPostViewControllerDelegate
 
 extension TabBarViewController: UploadPostViewControllerDelegate {
+ 
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
         selectedIndex = 0
         controller.dismiss(animated: true, completion: nil)
         guard let feedNav = viewControllers?.first as? UINavigationController else { return }
         guard let feed = feedNav.viewControllers.first as? FeedViewController else { return }
         feed.handleRefresh()
+    }
+    
+    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
+        //
     }
 }

@@ -7,8 +7,9 @@
 
 import UIKit
 
-protocol DeletePostViewControllerDelegate: AnyObject {
+protocol SheePostViewControllerDelegate: AnyObject {
     func deletePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController)
+    func updatePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController, wantsToUser currentUser: User, wantsToPost post: Post )
 }
 
 class SheePostViewController: UIViewController {
@@ -21,7 +22,11 @@ class SheePostViewController: UIViewController {
     
     var postId = ""
     
-    weak var delegate: DeletePostViewControllerDelegate?
+    var post: Post?
+    
+    var currentUser: User?
+    
+    weak var delegate: SheePostViewControllerDelegate?
     
     // MARK: - Lifecycle
     
@@ -140,17 +145,46 @@ extension SheePostViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        
         if indexPath.section == 0 {
             //
         } else if indexPath.section == 1 {
             switch indexPath.item {
             case 0:
                 // Edit
-                break
+                /*
+                 guard let selectedImage = items.singlePhoto?.image else {
+                     return
+                 }
+                 let vc = UploadPostViewController()
+                 vc.selectedimage = selectedImage
+                 vc.delegate = self
+                 vc.currentUser = self.user
+                 let navVC = UINavigationController(rootViewController: vc)
+                 navVC.modalPresentationStyle = .fullScreen
+                 self.present(navVC, animated: true, completion: nil)
+                 */
+             
+                guard let currentUser = self.currentUser, let post = self.post else {
+                    return
+                }
+                
+                delegate?.updatePostViewControllerDidFinishDeletingPost(self, wantsToUser: currentUser, wantsToPost: post)
+                
+                /*guard let postImage = post?.imageURL else { return }
+                let vc = UploadPostViewController()
+                vc.selectedimage = postImage
+                vc.currentUser = user
+                let navVC = UINavigationController(rootViewController: vc)
+                navVC.modalPresentationStyle = .fullScreen
+                self.present(navVC, animated: true, completion: nil)*/
+                
+                
             case 1:
                 // Delete
                 showLoader(true)
-                viewModel.deletePost(withPostId: postId) { [weak self] result in
+                viewModel.deletePost(withPostId: post?.postId ?? "") { [weak self] result in
                     guard let stronSelf = self else { return }
                     switch result {
                     case .success(_):

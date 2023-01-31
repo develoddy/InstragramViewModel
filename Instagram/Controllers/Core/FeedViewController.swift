@@ -7,6 +7,7 @@
 
 
 import UIKit
+import SDWebImage
 
 class FeedViewController: UIViewController {
 
@@ -358,19 +359,38 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
         // More Comment
     }
     
-    func cell(_ cell: FeedCollectionViewCell, wantsToPost uid: String ) {
+    func cell(_ cell: FeedCollectionViewCell, wantsToPost post: Post ) {
+        
+        guard let tab = tabBarController as? TabBarViewController  else { return }
+        guard let currentUser = tab.user else { return }
+        
         let vcShee = SheePostViewController()
         vcShee.delegate = self
-        vcShee.postId = uid
+        vcShee.post = post
+        vcShee.currentUser = currentUser
         navigationItem.largeTitleDisplayMode = .never
         navigationController?.present(vcShee, animated: true)
     }
 }
 
-extension FeedViewController: DeletePostViewControllerDelegate {
+extension FeedViewController: SheePostViewControllerDelegate {
+    func updatePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController, wantsToUser currentUser: User, wantsToPost post: Post) {
+        controller.dismiss(animated: true, completion: nil)
+        
+        let vc = UploadPostViewController()
+        vc.selectedimageName = post.imageURL
+        vc.currentUser = currentUser
+        vc.post = post
+        vc.typeAction = "update"
+        vc.delegate = self
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        self.present(navVC, animated: true, completion: nil)
+        
+    }
+
+    
     func deletePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController) {
-        //guard let currentUser = tab.user else { return }
-        //tab.selectedIndex = 4
         controller.dismiss(animated: true, completion: nil)
         self.navigationController?.popViewController(animated: true)
         guard let tab = tabBarController as? TabBarViewController  else { return }
@@ -378,4 +398,21 @@ extension FeedViewController: DeletePostViewControllerDelegate {
         guard let feed = feedNav.viewControllers.first as? ProfileViewController else { return }
         feed.handleRefresh()
     }
+}
+
+extension FeedViewController: UploadPostViewControllerDelegate {
+    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
+        controller.dismiss(animated: true)
+        guard let tab = tabBarController as? TabBarViewController  else { return }
+        guard let feedNav = tab.viewControllers?.first as? UINavigationController else { return }
+        guard let feed = feedNav.viewControllers.first as? FeedViewController else { return }
+        feed.handleRefresh()
+    }
+    
+   
+    func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
+        
+    }
+    
+
 }

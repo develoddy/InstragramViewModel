@@ -6,22 +6,42 @@
 //
 
 import UIKit
+import SDWebImage
 
 protocol UploadPostViewControllerDelegate: AnyObject {
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController)
+    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController)
 }
 
 class UploadPostViewController: UIViewController {
     
     // MARK: - Properties
     
-    var currentUser: User?
-    
-    var selectedimage: UIImage? { didSet { photoImageView.image = selectedimage } }
-    
     private var viewModel = UploadPostViewModel()
     
     weak var delegate: UploadPostViewControllerDelegate?
+    
+    var currentUser: User?
+    
+    var typeAction = ""
+    
+    var selectedimage: UIImage? {
+        didSet {
+            photoImageView.image = selectedimage
+        }
+    }
+    
+    var selectedimageName: String? {
+        didSet {
+            photoImageView.sd_setImage(with: URL(string: selectedimageName ?? "") )
+        }
+    }
+    
+    var post: Post? {
+        didSet {
+            captionTextView.text = post?.caption
+        }
+    }
     
     private let photoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -32,7 +52,6 @@ class UploadPostViewController: UIViewController {
     
     private lazy var captionTextView: InputTextView = {
         let textView = InputTextView()
-        textView.placeholderText = "Enter caption.."
         textView.font = .systemFont(ofSize: 16, weight: .semibold)
         textView.delegate = self
         textView.placeHolderShouldCenter = false
@@ -54,6 +73,11 @@ class UploadPostViewController: UIViewController {
         configureUI()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        captionTextView.becomeFirstResponder()
+    }
+    
     // MARK: - Helpers
     
     
@@ -67,11 +91,19 @@ class UploadPostViewController: UIViewController {
             action: #selector(didTapCancel)
         )
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "Share",
-            style: .done,
-            target: self, action: #selector(didTapDone)
-        )
+        if typeAction == "update" {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                title: "update",
+                style: .done,
+                target: self, action: #selector(didTapUpdate)
+            )
+        } else {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                title: "Listo",
+                style: .done,
+                target: self, action: #selector(didTapDone)
+            )
+        }
         
         view.addSubview(photoImageView)
         photoImageView.setDimensions(height: 180, width: 180)
@@ -112,6 +144,28 @@ class UploadPostViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    // Update Post
+    @objc func didTapUpdate() {
+        guard var post = self.post else {
+            return
+        }
+        post.caption = captionTextView.text
+        
+        showLoader(true)
+        viewModel.updatePost(
+            post: post
+        ) { [weak self] error in
+            self?.showLoader(false)
+            guard let strongSelf = self else { return }
+            if let error = error {
+                print("DEBUG: Failed to upload : \(error.localizedDescription)")
+                return
+            }
+            strongSelf.delegate?.updatePostViewControllerDidFinishUploadingPost(strongSelf)
+        }
+    }
+    
+    // Upload Post
     @objc func didTapDone() {
         guard let caption = captionTextView.text else { return }
         guard let image = selectedimage else { return }
@@ -123,7 +177,6 @@ class UploadPostViewController: UIViewController {
             image: image,
             user: user
         ) { [weak self] error in
-            
             self?.showLoader(false)
             guard let strongSelf = self else { return }
             if let error = error {
@@ -139,7 +192,16 @@ class UploadPostViewController: UIViewController {
 // MARK: - UITextViewDelegate
 
 extension UploadPostViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            captionTextView.placeholderText = "Enter caption.."
+        }
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            captionTextView.placeholderText = "Enter caption.."
+        }
         checkMaxLength(textView)
         let count = textView.text.count
         characterCountLabel.text = "\(count)/100"

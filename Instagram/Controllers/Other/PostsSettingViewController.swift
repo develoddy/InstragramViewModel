@@ -171,6 +171,10 @@ extension PostsSettingViewController: UICollectionViewDelegate, UICollectionView
 }
 
 extension PostsSettingViewController: FeedCollectionViewCellDelegate {
+    func cell(_ cell: FeedCollectionViewCell, wantsToPost post: Post) {
+        
+    }
+    
     
     func cell(_ cell: FeedCollectionViewCell, wantsToPost uid: String ) {
         

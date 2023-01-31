@@ -86,6 +86,12 @@ class SheePostViewModel {
         }
     }
     
+    func updatePost(post: Post, completion: @escaping () -> Void ) {
+        /*postService.updatePost(post: post) {
+            completion()
+        }*/
+    }
+    
     func numberOfSections() -> Int {
         return viewModel.count
     }

@@ -19,6 +19,7 @@ protocol PostServiceDelegate: AnyObject {
     func fetchFeedPosts(completion: @escaping([Post]) -> Void )
     func updateUserFeedAfterFollowing(user: User, didFollow: Bool)
     func deletePost(withPostId postId: String, completion: @escaping (Result<Bool, Error>) -> Void)
+    func updatePost(post: Post, completion: @escaping(FirestoreCompletion))
 }
 
 class PostService: PostServiceDelegate {
@@ -49,7 +50,7 @@ class PostService: PostServiceDelegate {
             ] as [String: Any]
             
             let docRef = Constants.Collections.COLLECTION_POSTS.addDocument(data: data, completion: completion)
-            //self.updateUserFeedAfterPost(postId: docRef.documentID)
+            self.updateUserFeedAfterPost(postId: docRef.documentID)
             self.updateUserFeedAfterUserPost(postId: docRef.documentID)
         }
     }
@@ -89,18 +90,80 @@ class PostService: PostServiceDelegate {
     
     func deletePost(withPostId postId: String, completion: @escaping (Result<Bool, Error>) -> Void ) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        Constants.Collections.COLLECTION_POSTS.document(postId).delete { err in
+        
+        /**Constants.Collections.COLLECTION_POSTS.document(postId).delete { err in
             if let err = err {
                 print("DEBUF: deletePost: \(err)")
                 completion(.failure(APIError.faileedToGetData))
             } else {
+                let docRef = Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
+                Constants.Collections.COLLECTION_USERS.document(docRef.collectionID)
+                    .collection("user-feed")
+                    .document(postId)
+                    .delete()
+                
                 Constants.Collections.COLLECTION_USERS.document(uid)
                     .collection("user-feed")
                     .document(postId)
                     .delete()
                 completion(.success(true))
             }
+        }*/
+        
+        Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, err in
+            if let err = err {
+                print("DEBUF: deletePost: \(err)")
+                completion(.failure(APIError.faileedToGetData))
+            } else {
+                guard let documents = snapshot?.documents else { return }
+                documents.forEach { document in
+                    
+                    Constants.Collections.COLLECTION_POSTS.document(postId).delete()
+                    
+                    Constants.Collections.COLLECTION_USERS.document(document.documentID)
+                        .collection("user-fedd")
+                        .document(postId)
+                        .delete()
+                    
+                    Constants.Collections.COLLECTION_USERS.document(uid)
+                        .collection("user-feed")
+                        .document(postId)
+                        .delete()
+                    
+                    completion(.success(true))
+                }
+            }
         }
+        
+    }
+    
+    /*
+     
+     func updateUserFeedAfterPost(postId: String) {
+         //Esto solo sirve para los follower
+         guard let uid = Auth.auth().currentUser?.uid else { return }
+         Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, _ in
+             guard let documents = snapshot?.documents else { return }
+             
+             documents.forEach { document in
+                 Constants.Collections.COLLECTION_USERS.document(document.documentID)
+                     .collection("user-fedd")
+                     .document(postId)
+                     .setData([:]
+                 )
+                 
+                 Constants.Collections.COLLECTION_USERS.document(uid)
+                     .collection("user-feed")
+                     .document(postId)
+                     .setData([:])
+             }
+         }
+     }
+     */
+    
+    func updatePost(post: Post, completion: @escaping(FirestoreCompletion)) {
+        Constants.Collections.COLLECTION_POSTS.document(post.postId)
+            .updateData(["caption" : post.caption], completion: completion)
     }
     
     

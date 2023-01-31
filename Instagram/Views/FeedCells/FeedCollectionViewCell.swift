@@ -14,7 +14,7 @@ protocol FeedCollectionViewCellDelegate: AnyObject {
     func feedCollectionDidTapShare(_ user: String)
     func feedCollectionDidTapMoreComments(_ user: String)
     func cell(_ cell: FeedCollectionViewCell, wantsToShowProfileFor uid: String )
-    func cell(_ cell: FeedCollectionViewCell, wantsToPost uid: String )
+    func cell(_ cell: FeedCollectionViewCell, wantsToPost post: Post )
 }
 
 class FeedCollectionViewCell: UICollectionViewCell {
@@ -278,9 +278,9 @@ class FeedCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func didTapActionButton() {
-        guard let postId = viewModel?.post.postId else {
+        guard let post = viewModel?.post else {
             return
         }
-        delegate?.cell(self, wantsToPost: postId)
+        delegate?.cell(self, wantsToPost: post)
     }
 }
