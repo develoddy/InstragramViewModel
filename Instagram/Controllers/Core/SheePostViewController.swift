@@ -152,48 +152,35 @@ extension SheePostViewController: UITableViewDelegate {
         } else if indexPath.section == 1 {
             switch indexPath.item {
             case 0:
-                // Edit
-                /*
-                 guard let selectedImage = items.singlePhoto?.image else {
-                     return
-                 }
-                 let vc = UploadPostViewController()
-                 vc.selectedimage = selectedImage
-                 vc.delegate = self
-                 vc.currentUser = self.user
-                 let navVC = UINavigationController(rootViewController: vc)
-                 navVC.modalPresentationStyle = .fullScreen
-                 self.present(navVC, animated: true, completion: nil)
-                 */
-             
-                guard let currentUser = self.currentUser, let post = self.post else {
-                    return
-                }
-                
+                // Edit Post
+                guard let currentUser = self.currentUser, let post = self.post else { return }
                 delegate?.updatePostViewControllerDidFinishDeletingPost(self, wantsToUser: currentUser, wantsToPost: post)
-                
-                /*guard let postImage = post?.imageURL else { return }
-                let vc = UploadPostViewController()
-                vc.selectedimage = postImage
-                vc.currentUser = user
-                let navVC = UINavigationController(rootViewController: vc)
-                navVC.modalPresentationStyle = .fullScreen
-                self.present(navVC, animated: true, completion: nil)*/
-                
-                
             case 1:
-                // Delete
-                showLoader(true)
-                viewModel.deletePost(withPostId: post?.postId ?? "") { [weak self] result in
-                    guard let stronSelf = self else { return }
-                    switch result {
-                    case .success(_):
-                        stronSelf.showLoader(false)
-                        stronSelf.delegate?.deletePostViewControllerDidFinishDeletingPost(stronSelf)
-                    case .failure(let err):
-                        print(err.localizedDescription)
+                // Delete Post
+                let alert = UIAlertController(
+                    title: "¿Eliminar publicación?",
+                    message: "Podrás restaurar esta publicación duante los proximos 30 días desde 'Eliminados recientemente' en 'Tu Actividad' Transcurrido este tiempo, se eliminará definitivamente.",
+                    preferredStyle: .alert
+                )
+                
+                alert.addAction(UIAlertAction(title: Constants.PostView.alertActionTitleCancel, style: .cancel, handler: { _ in
+                    self.dismiss(animated: true)
+                }))
+                alert.addAction(UIAlertAction(title: Constants.PostView.alertActionTitleDelete, style: .destructive, handler: { _ in
+                    self.showLoader(true)
+                    self.viewModel.deletePost(withPostId: self.post?.postId ?? "") { [weak self] result in
+                        guard let stronSelf = self else { return }
+                        switch result {
+                        case .success(_):
+                            stronSelf.showLoader(false)
+                            stronSelf.delegate?.deletePostViewControllerDidFinishDeletingPost(stronSelf)
+                        case .failure(let err):
+                            print(err.localizedDescription)
+                        }
                     }
-                }
+                }))
+                present(alert, animated: true)
+                
             default:
                 print("Default..")
             }

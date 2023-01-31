@@ -64,7 +64,6 @@ class FeedViewController: UIViewController {
     }
     
     func fetchPosts() {
-        
         guard self.viewModel.post == nil else { return }
         
         viewModel.fetchFeedPosts { [weak self] in
@@ -378,10 +377,10 @@ extension FeedViewController: SheePostViewControllerDelegate {
         controller.dismiss(animated: true, completion: nil)
         
         let vc = UploadPostViewController()
+        vc.type = "update"
         vc.selectedimageName = post.imageURL
         vc.currentUser = currentUser
         vc.post = post
-        vc.typeAction = "update"
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .fullScreen
@@ -401,11 +400,13 @@ extension FeedViewController: SheePostViewControllerDelegate {
 }
 
 extension FeedViewController: UploadPostViewControllerDelegate {
-    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
+    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController, wantsToPost post: Post) {
         controller.dismiss(animated: true)
         guard let tab = tabBarController as? TabBarViewController  else { return }
         guard let feedNav = tab.viewControllers?.first as? UINavigationController else { return }
         guard let feed = feedNav.viewControllers.first as? FeedViewController else { return }
+        
+        viewModel.post = post
         feed.handleRefresh()
     }
     
@@ -413,6 +414,4 @@ extension FeedViewController: UploadPostViewControllerDelegate {
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
         
     }
-    
-
 }

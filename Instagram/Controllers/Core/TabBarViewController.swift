@@ -159,6 +159,8 @@ extension TabBarViewController: UITabBarControllerDelegate {
 // MARK: - UploadPostViewControllerDelegate
 
 extension TabBarViewController: UploadPostViewControllerDelegate {
+   
+    
  
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
         selectedIndex = 0
@@ -168,7 +170,7 @@ extension TabBarViewController: UploadPostViewControllerDelegate {
         feed.handleRefresh()
     }
     
-    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
+    func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController, wantsToPost post: Post) {
         //
     }
 }

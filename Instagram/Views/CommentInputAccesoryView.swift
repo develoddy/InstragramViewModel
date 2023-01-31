@@ -17,22 +17,30 @@ class CommentInputAccesoryView: UIView {
     
     weak var delegate: CommentInputAccesoryViewDelegate?
     
-    private let commentTextView: InputTextView = {
+    let commentTextView: InputTextView = {
         let textView = InputTextView()
-        textView.placeholderText = "Enter comment.."
+        //textView.placeholderText = "Enter comment.."
         textView.font = .systemFont(ofSize: 15, weight: .regular)
         textView.isScrollEnabled = false
         textView.placeHolderShouldCenter = true
         return textView
     }()
     
-    private lazy var postButton: UIButton = {
+    lazy var postButton: UIButton = {
         let button = UIButton()
         button.setTitle("Post", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
         button.addTarget(self, action: #selector(handleCommentUpload), for: .touchUpInside)
         return button
+    }()
+    
+    let characterCountLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .lightGray
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.text = "0/100"
+        return label
     }()
     
     
@@ -44,6 +52,7 @@ class CommentInputAccesoryView: UIView {
         
         addSubview(commentTextView)
         addSubview(postButton)
+        postButton.isHidden = true
     }
     
     override func layoutSubviews() {
@@ -65,12 +74,21 @@ class CommentInputAccesoryView: UIView {
             paddingBottom: 8,
             paddingRight: 8
         )
+        
+        addSubview(characterCountLabel)
+        characterCountLabel.anchor(
+            bottom: commentTextView.bottomAnchor,
+            right: rightAnchor,
+            paddingBottom: -8,
+            paddingRight: 12
+        )
+        
         let divider = UIView()
         divider.backgroundColor = .lightGray
         addSubview(divider)
         divider.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
     }
-    
+        
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -89,5 +107,4 @@ class CommentInputAccesoryView: UIView {
     @objc func handleCommentUpload() {
         delegate?.inputView(self, wantsToUploadComment: commentTextView.text)
     }
-
 }

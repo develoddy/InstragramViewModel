@@ -16,4 +16,9 @@ struct Constants {
         static let COLLECTION_POSTS = Firestore.firestore().collection("posts")
         static let COLLECTION_NOTIFICATIONS = Firestore.firestore().collection("notifications")
     }
+    
+    struct PostView {
+        static let alertActionTitleDelete = "Delete"
+        static let alertActionTitleCancel = "Cancel"
+    }
 }

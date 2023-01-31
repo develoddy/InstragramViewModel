@@ -62,12 +62,13 @@ class CommentsViewController: UICollectionViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        commentInputView.commentTextView.becomeFirstResponder()
         collectionView.frame = view.bounds
         noCommentview.frame = CGRect(x: (view.height-150)/2, y: (view.height-150)/2, width: view.width-20, height: 150)
         noCommentview.center = view.center
         collectionView.frame = view.bounds
     }
-    
+        
     //MARK: - ViewModel
     
     private func bind() {
@@ -100,6 +101,7 @@ class CommentsViewController: UICollectionViewController {
     private func configureUI() {
         navigationItem.title = "Comments"
         view.backgroundColor = .systemBackground
+        commentInputView.postButton.isHidden = false
     }
     
     private func configureCollections() {
@@ -234,7 +236,4 @@ extension CommentsViewController: CommentInputAccesoryViewDelegate {
             type: .comment,
             post: viewModel.post)
     }
-    
-    
 }
-
