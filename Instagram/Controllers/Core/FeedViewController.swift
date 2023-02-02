@@ -26,6 +26,8 @@ class FeedViewController: UIViewController {
         }
     )
     
+    let refresher = UIRefreshControl()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -52,6 +54,7 @@ class FeedViewController: UIViewController {
         self.viewModel.refreshData = { [weak self] () in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
+                self?.collectionView.refreshControl = self?.refresher
             }
         }
     }
@@ -68,7 +71,7 @@ class FeedViewController: UIViewController {
         
         viewModel.fetchFeedPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
-            self?.updateUI() // No funciona en esta posicon..
+            self?.updateUI()
             self?.checkFollowingBeforeIHadPosts()
             self?.checkIfUserLikedPosts()
         }
@@ -111,7 +114,6 @@ class FeedViewController: UIViewController {
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
         
-        let refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refresher
     }
@@ -197,10 +199,10 @@ class FeedViewController: UIViewController {
             sendPost()
         }
         
-        if viewModel.posts.count == 0 {
+        /*if viewModel.posts.count == 0 {
             self.collectionView.refreshControl?.endRefreshing()
             fetchPosts()
-        }
+        }*/
     }
 }
 
@@ -359,7 +361,6 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
     }
     
     func cell(_ cell: FeedCollectionViewCell, wantsToPost post: Post ) {
-        
         guard let tab = tabBarController as? TabBarViewController  else { return }
         guard let currentUser = tab.user else { return }
         
@@ -372,7 +373,15 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
     }
 }
 
+//MARK: - SheePostViewControllerDelegate
+
 extension FeedViewController: SheePostViewControllerDelegate {
+    func refreshPostViewControllerDidFinishRefreshingPost(_ controller: SheePostViewController) {
+        // Refresh
+        controller.dismiss(animated: true, completion: nil)
+        self.handleRefresh()
+    }
+    
     func updatePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController, wantsToUser currentUser: User, wantsToPost post: Post) {
         controller.dismiss(animated: true, completion: nil)
         
@@ -385,7 +394,6 @@ extension FeedViewController: SheePostViewControllerDelegate {
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .fullScreen
         self.present(navVC, animated: true, completion: nil)
-        
     }
 
     
@@ -399,13 +407,15 @@ extension FeedViewController: SheePostViewControllerDelegate {
     }
 }
 
+
+// MARK: - UploadPostViewControllerDelegate
+
 extension FeedViewController: UploadPostViewControllerDelegate {
     func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController, wantsToPost post: Post) {
         controller.dismiss(animated: true)
         guard let tab = tabBarController as? TabBarViewController  else { return }
         guard let feedNav = tab.viewControllers?.first as? UINavigationController else { return }
         guard let feed = feedNav.viewControllers.first as? FeedViewController else { return }
-        
         viewModel.post = post
         feed.handleRefresh()
     }

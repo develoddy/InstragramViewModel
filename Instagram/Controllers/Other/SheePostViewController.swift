@@ -10,6 +10,7 @@ import UIKit
 protocol SheePostViewControllerDelegate: AnyObject {
     func deletePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController)
     func updatePostViewControllerDidFinishDeletingPost(_ controller: SheePostViewController, wantsToUser currentUser: User, wantsToPost post: Post )
+    func refreshPostViewControllerDidFinishRefreshingPost(_ controller: SheePostViewController)
 }
 
 class SheePostViewController: UIViewController {
@@ -56,8 +57,14 @@ class SheePostViewController: UIViewController {
     }
     
     func fetchData() {
-        viewModel.fetchData { [weak self] in
-            //
+        if currentUser?.uid == post?.ownerUid {
+            viewModel.ShowSheeCurrentUser {
+                //
+            }
+        } else {
+            viewModel.ShowSheeFollows {
+                //
+            }
         }
     }
     
@@ -145,10 +152,34 @@ extension SheePostViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        
         if indexPath.section == 0 {
-            //
+            switch indexPath.item {
+            case 0: break
+            case 1:
+                // Dejar de seguir
+                guard let uid = post?.ownerUid else { return }
+                UserService.shared.fetchUser(uid: uid) { result in
+                    switch result {
+                    case .success(let user):
+                        self.showLoader(true)
+                        self.viewModel.unfollow(uid: uid) { [weak self] _ in
+                            guard let strongSelf = self else { return }
+                            strongSelf.showLoader(false)
+                            strongSelf.viewModel.updateUserFeedAfterFollowing(
+                                user: user,
+                                didFollow: false
+                            )
+                            strongSelf.delegate?.refreshPostViewControllerDidFinishRefreshingPost(strongSelf)
+                        }
+                    case .failure(let err):
+                        print(err.localizedDescription)
+                    }
+                }
+            default:
+                print("Default..")
+            }
+            
+            
         } else if indexPath.section == 1 {
             switch indexPath.item {
             case 0:
@@ -166,6 +197,7 @@ extension SheePostViewController: UITableViewDelegate {
                 alert.addAction(UIAlertAction(title: Constants.PostView.alertActionTitleCancel, style: .cancel, handler: { _ in
                     self.dismiss(animated: true)
                 }))
+                
                 alert.addAction(UIAlertAction(title: Constants.PostView.alertActionTitleDelete, style: .destructive, handler: { _ in
                     self.showLoader(true)
                     self.viewModel.deletePost(withPostId: self.post?.postId ?? "") { [weak self] result in

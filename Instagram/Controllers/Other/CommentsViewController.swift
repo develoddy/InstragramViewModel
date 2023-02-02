@@ -19,6 +19,7 @@ class CommentsViewController: UICollectionViewController {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         let cv = CommentInputAccesoryView(frame: frame)
         cv.delegate = self
+        cv.commentTextView.delegate = self
         return cv
     }()
     
@@ -146,6 +147,12 @@ class CommentsViewController: UICollectionViewController {
         }
     }
     
+    func checkMaxLength(_ textView: UITextView) {
+        if (textView.text.count) > 100 {
+            textView.deleteBackward()
+        }
+    }
+    
     // MARK: - Actions
     
 }
@@ -235,5 +242,24 @@ extension CommentsViewController: CommentInputAccesoryViewDelegate {
             fromUser: currentUser,
             type: .comment,
             post: viewModel.post)
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension CommentsViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            commentInputView.commentTextView.placeholderText = "Enter caption..."
+        }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            commentInputView.commentTextView.placeholderText = "Enter caption..."
+        }
+        checkMaxLength(textView)
+        let count = textView.text.count
+        commentInputView.characterCountLabel.text = "\(count)/100"
     }
 }

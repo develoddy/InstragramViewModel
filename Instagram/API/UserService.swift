@@ -74,5 +74,13 @@ class UserService {
             }
         }
     }
+    
+    func updateUserValue(uid: String, label: String, value: String, completion: @escaping(FirestoreCompletion)) {
+        Constants.Collections.COLLECTION_USERS.document(uid)
+            .updateData(
+                [label : value],
+                completion: completion
+            )
+    }
 }
 

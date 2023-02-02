@@ -9,7 +9,6 @@ import Firebase
 
 protocol PostServiceDelegate: AnyObject {
     func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping(FirestoreCompletion))
-    ///func uploadPost(caption: String, image: UIImage, user: User, completion: @escaping (Result<Bool, Error>) -> Void)
     func fetchPosts(completion: @escaping([Post]) -> Void)
     func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void)
     func likePost(post: Post, completion: @escaping(FirestoreCompletion))
@@ -90,26 +89,6 @@ class PostService: PostServiceDelegate {
     
     func deletePost(withPostId postId: String, completion: @escaping (Result<Bool, Error>) -> Void ) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        /**Constants.Collections.COLLECTION_POSTS.document(postId).delete { err in
-            if let err = err {
-                print("DEBUF: deletePost: \(err)")
-                completion(.failure(APIError.faileedToGetData))
-            } else {
-                let docRef = Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers")
-                Constants.Collections.COLLECTION_USERS.document(docRef.collectionID)
-                    .collection("user-feed")
-                    .document(postId)
-                    .delete()
-                
-                Constants.Collections.COLLECTION_USERS.document(uid)
-                    .collection("user-feed")
-                    .document(postId)
-                    .delete()
-                completion(.success(true))
-            }
-        }*/
-        
         Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, err in
             if let err = err {
                 print("DEBUF: deletePost: \(err)")
@@ -121,7 +100,7 @@ class PostService: PostServiceDelegate {
                     Constants.Collections.COLLECTION_POSTS.document(postId).delete()
                     
                     Constants.Collections.COLLECTION_USERS.document(document.documentID)
-                        .collection("user-fedd")
+                        .collection("user-feed")
                         .document(postId)
                         .delete()
                     
@@ -134,32 +113,7 @@ class PostService: PostServiceDelegate {
                 }
             }
         }
-        
     }
-    
-    /*
-     
-     func updateUserFeedAfterPost(postId: String) {
-         //Esto solo sirve para los follower
-         guard let uid = Auth.auth().currentUser?.uid else { return }
-         Constants.Collections.COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, _ in
-             guard let documents = snapshot?.documents else { return }
-             
-             documents.forEach { document in
-                 Constants.Collections.COLLECTION_USERS.document(document.documentID)
-                     .collection("user-fedd")
-                     .document(postId)
-                     .setData([:]
-                 )
-                 
-                 Constants.Collections.COLLECTION_USERS.document(uid)
-                     .collection("user-feed")
-                     .document(postId)
-                     .setData([:])
-             }
-         }
-     }
-     */
     
     func updatePost(post: Post, completion: @escaping(FirestoreCompletion)) {
         Constants.Collections.COLLECTION_POSTS.document(post.postId)

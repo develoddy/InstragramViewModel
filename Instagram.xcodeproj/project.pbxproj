@@ -63,6 +63,11 @@
 		B385C129297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */; };
 		B385C12B297AA361005158E0 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C12A297AA361005158E0 /* CommentsViewController.swift */; };
 		B3874F692971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */; };
+		B39E0A54298BCCB2004C323A /* EditTextFieldViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */; };
+		B3A342F9298A6EFD00E4D6C9 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A342F8298A6EFD00E4D6C9 /* EditProfileViewController.swift */; };
+		B3A342FB298A6F9B00E4D6C9 /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A342FA298A6F9B00E4D6C9 /* EditProfileViewModel.swift */; };
+		B3A342FD298A76E600E4D6C9 /* EditProfilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A342FC298A76E600E4D6C9 /* EditProfilePresenter.swift */; };
+		B3A342FF298A836E00E4D6C9 /* FormEditProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A342FE298A836D00E4D6C9 /* FormEditProfileTableViewCell.swift */; };
 		B3BABDF52987B56C009D44B5 /* SheePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BABDF42987B56C009D44B5 /* SheePostViewController.swift */; };
 		B3BABDF72987C280009D44B5 /* SheePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BABDF62987C27F009D44B5 /* SheePostView.swift */; };
 		B3BABDF92987D0D1009D44B5 /* SheePostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BABDF82987D0D1009D44B5 /* SheePostTableViewCell.swift */; };
@@ -148,6 +153,11 @@
 		B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommentsCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B385C12A297AA361005158E0 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersFollowsCollectionViewCell.swift; sourceTree = "<group>"; };
+		B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTextFieldViewController.swift; sourceTree = "<group>"; };
+		B3A342F8298A6EFD00E4D6C9 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		B3A342FA298A6F9B00E4D6C9 /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
+		B3A342FC298A76E600E4D6C9 /* EditProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfilePresenter.swift; sourceTree = "<group>"; };
+		B3A342FE298A836D00E4D6C9 /* FormEditProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormEditProfileTableViewCell.swift; sourceTree = "<group>"; };
 		B3BABDF42987B56C009D44B5 /* SheePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheePostViewController.swift; sourceTree = "<group>"; };
 		B3BABDF62987C27F009D44B5 /* SheePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheePostView.swift; sourceTree = "<group>"; };
 		B3BABDF82987D0D1009D44B5 /* SheePostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheePostTableViewCell.swift; sourceTree = "<group>"; };
@@ -213,6 +223,7 @@
 				B31C244F297FE5B800764474 /* ProfilePresenter.swift */,
 				B31C245729808EEF00764474 /* FeedPresenter.swift */,
 				B31C245D2981D18100764474 /* FollowSettingPresenter.swift */,
+				B3A342FC298A76E600E4D6C9 /* EditProfilePresenter.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -357,6 +368,7 @@
 				B31C24612981DAC000764474 /* FollowerViewModel.swift */,
 				B34A1A332982A5CE001329DE /* FollowSettingViewModel.swift */,
 				B3BABDFA2987D4A1009D44B5 /* SheePostViewModel.swift */,
+				B3A342FA298A6F9B00E4D6C9 /* EditProfileViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -381,6 +393,7 @@
 				B34A1A3B29848E4E001329DE /* FeedEmptyLabelView.swift */,
 				B3BABDF62987C27F009D44B5 /* SheePostView.swift */,
 				B3BABDF82987D0D1009D44B5 /* SheePostTableViewCell.swift */,
+				B3A342FE298A836D00E4D6C9 /* FormEditProfileTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -417,7 +430,6 @@
 				B3BD8CEB29656EB100606150 /* ProfileViewController.swift */,
 				B3BD8CE929656EA500606150 /* NotificationViewController.swift */,
 				B34F9D2D2976AE56002956BE /* ImageSelectorViewController.swift */,
-				B3BABDF42987B56C009D44B5 /* SheePostViewController.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -442,6 +454,7 @@
 		B3BD8D082966FF3900606150 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */,
 				B34F9D352976DC31002956BE /* UploadPost */,
 				B301929529717330002A0335 /* Follows */,
 				B3BD8D1029672F7900606150 /* ProfileTabs */,
@@ -450,6 +463,8 @@
 				B301928A2970A851002A0335 /* PostsSettingViewController.swift */,
 				B34F9D1E297465BB002956BE /* SettingStorieViewController.swift */,
 				B385C12A297AA361005158E0 /* CommentsViewController.swift */,
+				B3BABDF42987B56C009D44B5 /* SheePostViewController.swift */,
+				B3A342F8298A6EFD00E4D6C9 /* EditProfileViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -626,6 +641,7 @@
 				B312360729678625004ECE2E /* ProfileHeaderCollectionViewCell.swift in Sources */,
 				B34F9D322976CA08002956BE /* InputTextView.swift in Sources */,
 				B335AFF1296C859100AE9999 /* ProfileHeaderViewModel.swift in Sources */,
+				B3A342F9298A6EFD00E4D6C9 /* EditProfileViewController.swift in Sources */,
 				B3BABDF72987C280009D44B5 /* SheePostView.swift in Sources */,
 				B3BD8CEE2965986100606150 /* FeedViewController.swift in Sources */,
 				B34F9D2129753AB1002956BE /* HapticsManager.swift in Sources */,
@@ -635,6 +651,7 @@
 				B3BD8CEC29656EB100606150 /* ProfileViewController.swift in Sources */,
 				B34F9D3B2976DFB0002956BE /* ImageUploader.swift in Sources */,
 				B31C244D297FC98800764474 /* UserService.swift in Sources */,
+				B3A342FD298A76E600E4D6C9 /* EditProfilePresenter.swift in Sources */,
 				B31C24642981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift in Sources */,
 				B34F9D2B29759A2E002956BE /* ProfileViewModel.swift in Sources */,
 				B31C245A29816C4D00764474 /* SearchViewModel.swift in Sources */,
@@ -655,6 +672,8 @@
 				B34F9D4829786366002956BE /* PostsSettingViewControllerViewModel.swift in Sources */,
 				B3BD8D0C2966FFB900606150 /* SettingsModels.swift in Sources */,
 				B3019294297152D1002A0335 /* PostCommentPresenter.swift in Sources */,
+				B3A342FF298A836E00E4D6C9 /* FormEditProfileTableViewCell.swift in Sources */,
+				B39E0A54298BCCB2004C323A /* EditTextFieldViewController.swift in Sources */,
 				B31C245429800B2100764474 /* NotificationViewModel.swift in Sources */,
 				B335AFFB296F701200AE9999 /* StoriesCollectionViewCell.swift in Sources */,
 				B3BD8D1429672FC100606150 /* ProfileTabsTagViewController.swift in Sources */,
@@ -669,6 +688,7 @@
 				B301928F2970B3F5002A0335 /* ListCommentsCollectionViewCell.swift in Sources */,
 				B34F9D40297712F3002956BE /* FeedViewModel.swift in Sources */,
 				B3BD8CF42965D9E500606150 /* LoginViewController.swift in Sources */,
+				B3A342FB298A6F9B00E4D6C9 /* EditProfileViewModel.swift in Sources */,
 				B301928B2970A852002A0335 /* PostsSettingViewController.swift in Sources */,
 				B34A1A342982A5CE001329DE /* FollowSettingViewModel.swift in Sources */,
 				B31C2450297FE5B800764474 /* ProfilePresenter.swift in Sources */,
@@ -819,8 +839,10 @@
 				DEVELOPMENT_TEAM = 34LBG6P59G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Instagram/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow us to access your photos";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
@@ -848,8 +870,10 @@
 				DEVELOPMENT_TEAM = 34LBG6P59G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Instagram/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow us to access your photos";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;

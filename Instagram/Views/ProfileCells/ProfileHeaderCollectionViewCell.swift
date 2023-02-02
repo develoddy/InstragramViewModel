@@ -257,6 +257,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     @objc func didTapEditProfile() {
         guard let user = self.viewModel?.user else { return }
-        delegate?.header(self, didTapActionButtonFor: user )
+        //delegate?.header(self, wantsToCurrentUser: user)
+        delegate?.header(self, didTapActionButtonFor: user)
     }
 }

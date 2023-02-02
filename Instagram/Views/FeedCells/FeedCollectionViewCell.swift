@@ -47,7 +47,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         let button = UIButton(type: .system)
         button.setTitle("User", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
         button.addTarget(self, action: #selector(showUserProfile), for: .touchUpInside)
         return button
     }()

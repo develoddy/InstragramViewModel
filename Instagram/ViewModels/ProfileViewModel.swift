@@ -62,12 +62,6 @@ class ProfileViewModel {
     
     // MARK: - Helpers
     
-    func currentUser(vc: UIViewController) -> User {
-        guard let tab = vc.tabBarController as? TabBarViewController  else { fatalError("not data currentUser")  }
-        guard let user = tab.user else { fatalError("not data currentUser")  }
-        return user
-    }
-    
     func fetchPosts(uid: String, completion: @escaping() -> ()) {
         postService.fetchPosts(forUser: uid) { [weak self] posts in
             self?.posts = posts
@@ -75,8 +69,10 @@ class ProfileViewModel {
         }
     }
     
-    func updatePropertiesUser(user: User) {
-        self.user = user
+    func fetchUserStats(uid: String, completion: @escaping (UserStats) ->Void ) {
+        profileService.fetchUserStats(uid: uid) { stats in
+            completion(stats)
+        }
     }
     
     func checkIfUserIsFollowed(completion: @escaping(Bool) -> Void) {
@@ -114,20 +110,22 @@ class ProfileViewModel {
         })
     }
     
-    func fetchUserStats(uid: String, completion: @escaping (UserStats) ->Void ) {
-        profileService.fetchUserStats(uid: uid) { stats in
-            completion(stats)
-        }
-    }
-    
-   
-    
     func uploadNotification(toUid uid: String, fromUser: User, type: NotificationType, post: Post? = nil) {
         notificationService.uploadNotification(
             toUid: uid,
             fromUser: fromUser,
             type: type,
             post: post)
+    }
+    
+    func currentUser(vc: UIViewController) -> User {
+        guard let tab = vc.tabBarController as? TabBarViewController  else { fatalError("not data currentUser")  }
+        guard let user = tab.user else { fatalError("not data currentUser")  }
+        return user
+    }
+    
+    func updateUser(user: User) {
+        self.user = user
     }
     
     func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
@@ -142,14 +140,15 @@ class ProfileViewModel {
         self.user?.isFollwed = isFollowed
     }
     
-    func getUID() -> String {
+    func fetchUid() -> String {
         guard let uid = self.user?.uid else { return "" }
         return uid
     }
     
-    func getUsername() -> String {
+    func fetchUsername() -> String {
         return self.user?.username ?? "-"
     }
+    
         
     func fetchUser() -> User? {
         return self.user

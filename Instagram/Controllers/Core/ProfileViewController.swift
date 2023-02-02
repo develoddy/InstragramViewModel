@@ -17,7 +17,7 @@ class ProfileViewController: UICollectionViewController {
     var viewModel = ProfileViewModel()
     
     init(user: User) {
-        viewModel.updatePropertiesUser(user: user)
+        viewModel.updateUser(user: user)
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
@@ -52,7 +52,7 @@ class ProfileViewController: UICollectionViewController {
     }
     
     func fetchData() {
-        viewModel.fetchPosts(uid: viewModel.getUID()) { [weak self] in
+        viewModel.fetchPosts(uid: viewModel.fetchUid()) { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
         }
         
@@ -60,8 +60,21 @@ class ProfileViewController: UICollectionViewController {
             self?.viewModel.updatePropertiesIsFollwed(isFollowed: isFollowed)
         }
         
-        viewModel.fetchUserStats(uid: viewModel.getUID()) { [weak self] stats in
+        viewModel.fetchUserStats(uid: viewModel.fetchUid()) { [weak self] stats in
             self?.viewModel.updatePropertiStats(stats: stats)
+        }
+    }
+    
+    func fechUser() {
+        guard let uid = viewModel.user?.uid else { return }
+        UserService.shared.fetchUser(uid: uid) { result in
+            switch result {
+            case .success(let user):
+                self.viewModel.user = user
+            case .failure(let err):
+                print("DEBUG: Error handleRefresn profileController")
+                print(err.localizedDescription)
+            }
         }
     }
     
@@ -69,13 +82,12 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Helpers
 
     private func configureUI() {
-        //title = viewModel.getUsername()
-        navigationItem.title = viewModel.getUsername()
+        navigationItem.title = viewModel.user?.username
         collectionView.backgroundColor = .systemBackground
     }
     
     private func configureCollections() {
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         collectionView.register(
             ProfilePhotosCollectionViewCell.self,
             forCellWithReuseIdentifier: ProfilePhotosCollectionViewCell.identifier
@@ -94,11 +106,9 @@ class ProfileViewController: UICollectionViewController {
     // MARK: - Action
     
     @objc func handleRefresh() {
-        print("DEBUG: Haldle Refresh profile")
         viewModel.posts.removeAll()
         fetchData()
-        //refresher.endRefreshing()
-        //self.collectionView.refreshControl?.endRefreshing()
+        fechUser()
     }
 }
 
@@ -107,7 +117,6 @@ class ProfileViewController: UICollectionViewController {
 
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         if viewModel.checkIfIsFolloweds(vc: self) {
             if viewModel.numberOfRowsInSection(section: section) == 0 {
                 collectionView.setEmptyMessage("\n\n\n\n\n\n\n\nAún no hay publicaciones.")
@@ -163,7 +172,6 @@ extension ProfileViewController {
          * Comprobar si el usuario actual sigue al perfil que está visitando y
          * tambien se comprueba si el perfil que se visita tiene publicaciones.
          ***/
-        
         if viewModel.checkIfIsFolloweds(vc: self) && viewModel.posts.count == 0 {
             header.gridButton.isHidden = true
             header.listButton.isHidden = true
@@ -189,7 +197,6 @@ extension ProfileViewController {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -228,7 +235,7 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - ProfileHeaderCollectionReusableViewDelegate
 
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
- 
+   
     // Button Follow / Following
     func header(
         _ profileHeader: ProfileHeaderCollectionReusableView,
@@ -239,34 +246,42 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         
         if user.isCurrentUser {
             debugPrint("Debug: Show edit profile here")
+            let vc = EditProfileViewController()
+            vc.uid = user.uid
+            vc.delegate = self
+            let navVC = UINavigationController(rootViewController: vc)
+            navVC.modalPresentationStyle = .fullScreen
+            self.present(navVC, animated: true, completion: nil)
+            
         } else if user.isFollwed {
             viewModel.unfollow { [weak self] error in
-                self?.viewModel.updatePropertiesIsFollwed(isFollowed: false)
-                self?.viewModel.updateUserFeedAfterFollowing(
+                guard let strongSelf = self else { return }
+                strongSelf.viewModel.updatePropertiesIsFollwed(isFollowed: false)
+                strongSelf.viewModel.updateUserFeedAfterFollowing(
                     user: user,
                     didFollow: false
                 )
                 profileHeader.gridButton.isHidden = true
                 profileHeader.listButton.isHidden = true
                 profileHeader.bookmarkButton.isHidden = true
-                self?.fetchData()
+                strongSelf.fetchData()
             }
         } else {
             viewModel.follow { [weak self] error in
-                self?.viewModel.updatePropertiesIsFollwed(isFollowed: true)
-                self?.viewModel.uploadNotification(
+                guard let strongSelf = self else { return }
+                strongSelf.viewModel.updatePropertiesIsFollwed(isFollowed: true)
+                strongSelf.viewModel.uploadNotification(
                     toUid: user.uid,
                     fromUser: currentUser,
                     type: .follow
                 )
                 
-                guard let user = self?.viewModel.user else { return }
+                guard let user = strongSelf.viewModel.user else { return }
                 self?.viewModel.updateUserFeedAfterFollowing(
                     user: user,
                     didFollow: true
                 )
-                
-                self?.fetchData()
+                strongSelf.fetchData()
             }
         }
     }
@@ -293,5 +308,13 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
             uid: uid,
             vcName: "followers"
         )
+    }
+}
+
+
+extension ProfileViewController: EditProfileViewControllerDelegate {
+    func updateEditProfileViewControllerDidFinishUpdateUser(_ controller: EditProfileViewController) {
+        controller.dismiss(animated: true)
+        self.handleRefresh()
     }
 }

@@ -159,9 +159,6 @@ extension TabBarViewController: UITabBarControllerDelegate {
 // MARK: - UploadPostViewControllerDelegate
 
 extension TabBarViewController: UploadPostViewControllerDelegate {
-   
-    
- 
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {
         selectedIndex = 0
         controller.dismiss(animated: true, completion: nil)

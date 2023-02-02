@@ -65,7 +65,7 @@ class UploadPostViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("User", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
         return button
     }()
     
@@ -229,14 +229,13 @@ class UploadPostViewController: UIViewController {
         viewModel.updatePost(
             post: post
         ) { [weak self] error in
-            self?.showLoader(false)
             guard let strongSelf = self else { return }
+            strongSelf.showLoader(false)
             if let error = error {
                 print("DEBUG: Failed to upload : \(error.localizedDescription)")
                 return
             }
             strongSelf.delegate?.updatePostViewControllerDidFinishUploadingPost(strongSelf, wantsToPost: post)
-            
         }
     }
     

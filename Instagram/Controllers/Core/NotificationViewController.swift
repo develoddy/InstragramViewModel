@@ -13,6 +13,8 @@ class NotificationViewController: UIViewController {
     
     var viewModel = NotificationViewModel()
     
+    let noNotificationview = FeedEmptyLabelView()
+    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .systemBackground
@@ -29,6 +31,7 @@ class NotificationViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configureTableView()
+        setUpNoNotificationView()
         bind()
         fetchNotifications()
     }
@@ -36,6 +39,8 @@ class NotificationViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        noNotificationview.frame = CGRect(x: (view.height-150)/2, y: (view.height-150)/2, width: view.width-20, height: 150)
+        noNotificationview.center = view.center
     }
     
     
@@ -51,6 +56,8 @@ class NotificationViewController: UIViewController {
     
     private func fetchNotifications() {
         self.viewModel.fetchNotifications { [weak self] in
+            self?.tableView.refreshControl?.endRefreshing()
+            self?.updateUI()
             self?.checkIfUserIsFollowed()
         }
     }
@@ -70,7 +77,7 @@ class NotificationViewController: UIViewController {
     
     private func configureUI() {
         title = "Notification"
-        view.backgroundColor = .orange
+        view.backgroundColor = .systemBackground
     }
     
     private func configureTableView() {
@@ -80,6 +87,27 @@ class NotificationViewController: UIViewController {
         refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         tableView.refreshControl = refresher
     }
+    
+    private func setUpNoNotificationView() {
+        view.addSubview(noNotificationview)
+        noNotificationview.viewModel = FeedEmptyLabelViewViewModel(
+            text: "Todavia no hay notificaciones.",
+            actionTitle: ""
+        )
+    }
+    
+    private func updateUI() {
+        if viewModel.notifications.isEmpty {
+            noNotificationview.backgroundColor = .systemBackground
+            noNotificationview.isHidden = false
+            tableView.isHidden = true
+        } else {
+            tableView.reloadData()
+            noNotificationview.isHidden = true
+            tableView.isHidden = false
+        }
+    }
+    
     
     
     // MARK: - Actions

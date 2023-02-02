@@ -22,7 +22,7 @@ final class ProfilePresenter {
         user: User
     ) {
         let vc = ProfileViewController(user: user)
-        vc.title = "ProfiileXXXXX"
+        vc.title = user.username
         vc.navigationItem.largeTitleDisplayMode = .never
         viewController.navigationController?.pushViewController(vc, animated: true)
     }

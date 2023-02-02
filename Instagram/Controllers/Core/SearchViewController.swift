@@ -28,12 +28,7 @@ class SearchViewController: UIViewController {
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .fractionalHeight(1)))
             
-            item.contentInsets = NSDirectionalEdgeInsets(
-                top: 1,
-                leading: 1,
-                bottom: 1,
-                trailing: 1
-            )
+            item.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: 1, bottom: 1, trailing: 1)
             
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: NSCollectionLayoutSize(
@@ -157,6 +152,8 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate {
 
 
 // MARK: - SearchResultsViewControllerDelegate
+
+
 
 extension SearchViewController: SearchResultsViewControllerDelegate {
     func didTapResult(_ result: User) {

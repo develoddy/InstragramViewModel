@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct SheePostFormModel:Hashable {
     let iconImage: String
@@ -19,6 +20,8 @@ class SheePostViewModel {
     
     var postService: PostServiceDelegate
     
+    var profileService: ProfileServiceDelegate
+    
     var refreshData: ( () -> () )?
 
     var viewModel: [[ SheePostFormModel ]] = [[ SheePostFormModel ]]() {
@@ -30,23 +33,23 @@ class SheePostViewModel {
     // MARK: - Init
     
     init(
-        postService: PostServiceDelegate = PostService()
+        postService: PostServiceDelegate = PostService(),
+        profileService: ProfileServiceDelegate = ProfileService()
     ) {
         self.postService = postService
+        self.profileService = profileService
     }
     
     // MARK: - Helpers
     
-    //func fetchData(completion: @escaping ([[SheePostFormModel]]) -> Void ) {
-    func fetchData(completion: @escaping () -> Void ) {
-        
+    func ShowSheeCurrentUser(completion: @escaping () -> Void ) {
         var arr_section01 = [SheePostFormModel]()
         var arr_section02 = [SheePostFormModel]()
         
         let section01: [SheePostFormModel] = [
             SheePostFormModel(iconImage: "bell.slash",label: "Desactivar notificaciones"),
             SheePostFormModel(iconImage: "pin",label: "Fijar en el perfil"),
-            SheePostFormModel(iconImage: "clock",label: "Archivar"),
+            SheePostFormModel(iconImage: "circle.slash",label: "Desactivar comentarios"),
         ]
         
         let section02: [SheePostFormModel] = [
@@ -75,6 +78,52 @@ class SheePostViewModel {
         completion()
     }
     
+    
+    func ShowSheeFollows(completion: @escaping () -> Void ) {
+        var arr_section01 = [SheePostFormModel]()
+        var arr_section02 = [SheePostFormModel]()
+        
+        let section01: [SheePostFormModel] = [
+            SheePostFormModel(iconImage: "star",label: "Añadir a favoritos"),
+            SheePostFormModel(iconImage: "person.badge.minus",label: "Dejar de seguir"),
+        ]
+        
+        let section02: [SheePostFormModel] = [
+            SheePostFormModel(iconImage: "info",label: "Información sobre la cuenta"),
+            SheePostFormModel(iconImage: "exclamationmark.bubble",label: "Denunciar")
+        ]
+        
+        // SECTION 01
+        for item in section01 {
+            let model = SheePostFormModel(
+                iconImage: item.iconImage,
+                label: item.label)
+            arr_section01.append(model)
+        }
+        viewModel.append(arr_section01)
+        
+        // SECTION 02
+        for item in section02 {
+            let model = SheePostFormModel(
+                iconImage: item.iconImage,
+                label: item.label)
+            arr_section02.append(model)
+        }
+        viewModel.append(arr_section02)
+        
+        completion()
+    }
+    
+    func unfollow(uid: String, completion: @escaping(Error?)->Void) {
+        profileService.unfollow(uid: uid, completion: { error in
+            completion(error)
+        })
+    }
+    
+    func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
+        postService.updateUserFeedAfterFollowing(user: user, didFollow: didFollow )
+    }
+    
     func deletePost(withPostId postId: String, completion: @escaping (Result<Bool, Error>) -> Void) {
         postService.deletePost(withPostId: postId) { result in
             switch result {
@@ -84,12 +133,6 @@ class SheePostViewModel {
                 completion(.failure(err))
             }
         }
-    }
-    
-    func updatePost(post: Post, completion: @escaping () -> Void ) {
-        /*postService.updatePost(post: post) {
-            completion()
-        }*/
     }
     
     func numberOfSections() -> Int {

@@ -24,7 +24,7 @@ struct User {
     let email: String
     let fullname: String
     let profileImageURL: String
-    let username: String
+    var username: String
     let uid: String
     let type: UserFollowType
     

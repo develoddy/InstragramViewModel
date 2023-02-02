@@ -53,6 +53,9 @@ class ProfilePhotosCollectionViewCell: UICollectionViewCell {
     
     func configure() {
         guard let viewModel = self.viewModel else { return }
+        
+        
+        
         updateUI(imageURL: viewModel.imageURL)
     }
     
