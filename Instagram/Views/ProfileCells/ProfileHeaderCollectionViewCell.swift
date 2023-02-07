@@ -8,19 +8,6 @@
 import UIKit
 import SDWebImage
 
-/*protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
-    func ProfileHeaderCollectionReusableViewDidTapPosts(_ posts: String)
-    func ProfileHeaderCollectionReusableViewDidTapFollowers(_ followers: String)
-    func ProfileHeaderCollectionReusableViewDidTapFollowings(_ followings: String)
-    func ProfileHeaderCollectionReusableViewDidTapEditProfile(_ editProfile: String)
-}*/
-
-/*protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
-    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollow uid: String)
-    func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToUnFollow uid: String)
-    func headerWantsToShowEditProfile(_ profileHeaderCollectionReusableView: ProfileHeaderCollectionReusableView)
-}*/
-
 protocol ProfileHeaderCollectionReusableViewDelegate: AnyObject {
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User )
     func header(_ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollowing uid: String )
@@ -48,7 +35,6 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .bold)
-        //label.text = "Laura P."
         return label
     }()
     
@@ -57,6 +43,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         button.setTitle("Loading", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.borderColor = UIColor.lightGray.cgColor
+        //button.backgroundColor = .lightGray
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
         button.layer.cornerRadius = 3
         button.layer.borderWidth = 0.5
@@ -174,7 +161,6 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         super.prepareForReuse()
     }
     
-    // public func setCellWithValuesOf(_ model: Userpost, liked: Bool) {
     func configure(with viewModel: ProfileHeaderViewModel) {
         self.viewModel = viewModel
         
@@ -257,7 +243,6 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     @objc func didTapEditProfile() {
         guard let user = self.viewModel?.user else { return }
-        //delegate?.header(self, wantsToCurrentUser: user)
         delegate?.header(self, didTapActionButtonFor: user)
     }
 }

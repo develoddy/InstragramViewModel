@@ -24,6 +24,7 @@ class FollowService: FollowServiceDelegate {
     
     // MARK: - Lifecycle
     
+    
     // MARK: - Helpers
     
     func fetchFollowings(uid: String, completion: @escaping([User]) -> Void) {

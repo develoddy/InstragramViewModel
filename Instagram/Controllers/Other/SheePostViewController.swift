@@ -200,13 +200,16 @@ extension SheePostViewController: UITableViewDelegate {
                 
                 alert.addAction(UIAlertAction(title: Constants.PostView.alertActionTitleDelete, style: .destructive, handler: { _ in
                     self.showLoader(true)
-                    self.viewModel.deletePost(withPostId: self.post?.postId ?? "") { [weak self] result in
+                    guard let postId = self.post?.postId else { return }
+                    print("DEBUG: self.post?.postId is \(postId)")
+                    self.viewModel.deletePost(withPostId: postId) { [weak self] result in
                         guard let stronSelf = self else { return }
                         switch result {
                         case .success(_):
                             stronSelf.showLoader(false)
                             stronSelf.delegate?.deletePostViewControllerDidFinishDeletingPost(stronSelf)
                         case .failure(let err):
+                            print("DEBUG: Error al borrar el post..")
                             print(err.localizedDescription)
                         }
                     }

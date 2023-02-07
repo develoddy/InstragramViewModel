@@ -17,10 +17,11 @@ final class FeedPresenter {
     static let shared = FeedPresenter()
     
     // MARK: - Helpers
-    
+
     func startFeed(
         from viewController: UIViewController,
-        post: Post
+        post: Post,
+        indexPath: IndexPath? = nil
     ) {
         let vc = FeedViewController()
         vc.post = post

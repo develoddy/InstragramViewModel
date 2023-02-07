@@ -28,11 +28,11 @@ struct ProfileHeaderViewModel {
     }
     
     var followButtonBackgroundColor: UIColor {
-        return user.isCurrentUser ? .white : .systemBlue
+        return user.isCurrentUser ? .secondarySystemBackground : .systemBlue
     }
     
     var followButtonTextBackgroundColor: UIColor {
-        return user.isCurrentUser ? .black : .white
+        return user.isCurrentUser ? .black : .secondarySystemBackground
     }
     
     var numberOfFollowings: Int {

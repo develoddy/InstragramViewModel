@@ -15,7 +15,7 @@ class SearchViewController: UIViewController {
     
     let searchController: UISearchController = {
         let vc = UISearchController(searchResultsController: SearchResultsViewController())
-        vc.searchBar.placeholder = "Songs, Artists, Albums"
+        vc.searchBar.placeholder = "Buscar"
         vc.searchBar.searchBarStyle = .minimal
         vc.definesPresentationContext = true
         return vc
@@ -84,6 +84,8 @@ class SearchViewController: UIViewController {
     }
     
     private func fetchPosts() {
+        
+        
         viewModel.fetchFeedPosts { [weak self] in
             self?.collectionView.refreshControl?.endRefreshing()
         }

@@ -454,7 +454,6 @@
 		B3BD8D082966FF3900606150 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */,
 				B34F9D352976DC31002956BE /* UploadPost */,
 				B301929529717330002A0335 /* Follows */,
 				B3BD8D1029672F7900606150 /* ProfileTabs */,
@@ -465,6 +464,7 @@
 				B385C12A297AA361005158E0 /* CommentsViewController.swift */,
 				B3BABDF42987B56C009D44B5 /* SheePostViewController.swift */,
 				B3A342F8298A6EFD00E4D6C9 /* EditProfileViewController.swift */,
+				B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";

@@ -156,7 +156,8 @@ extension ProfileViewController {
         collectionView.deselectItem(at: indexPath, animated: true)
         FeedPresenter.shared.startFeed(
             from: self,
-            post: viewModel.cellForRowAt(indexPath: indexPath)
+            post: viewModel.cellForRowAt(indexPath: indexPath),
+            indexPath: indexPath
         )
     }
     
