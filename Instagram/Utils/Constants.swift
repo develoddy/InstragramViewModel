@@ -15,6 +15,7 @@ struct Constants {
         static let COLLECTION_FOLLOWINGS = Firestore.firestore().collection("followings")
         static let COLLECTION_POSTS = Firestore.firestore().collection("posts")
         static let COLLECTION_NOTIFICATIONS = Firestore.firestore().collection("notifications")
+        static let COLLECTION_STORIES = Firestore.firestore().collection("stories")
     }
     
     struct PostView {

@@ -21,15 +21,16 @@ class FeedCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Properties
     
+    static let identifier = "FeedCollectionViewCell"
+    
+    weak var delegate: FeedCollectionViewCellDelegate?
+    
     var viewModel: FeedCollectionViewCellViewModel? {
         didSet {
             configure()
         }
     }
     
-    static let identifier = "FeedCollectionViewCell"
-    
-    weak var delegate: FeedCollectionViewCellDelegate?
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -212,9 +213,7 @@ class FeedCollectionViewCell: UICollectionViewCell {
         stackView.anchor(top: postImageView.bottomAnchor, width: 120, height: 50)
     }
     
-    //func configure(with viewModel: FeedCollectionViewCellViewModel) {
     func configure() {
-        
         guard let viewModel = viewModel else {
             return
         }

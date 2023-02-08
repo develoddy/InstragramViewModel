@@ -1,5 +1,5 @@
 //
-//  StoriesCollectionViewCell.swift
+//  CreateStoryCollectionViewCell.swift
 //  Instagram
 //
 //  Created by Eddy Donald Chinchay Lujan on 8/2/23.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class StoryCollectionViewCell: UICollectionViewCell {
+class CreateStoryCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Properties
     
-    static let identifier = "StoryCollectionViewCell"
+    static let identifier = "CreateStoryCollectionViewCell"
     
     var viewModel: StoryCollectionViewCellViewModel? {
         didSet {
@@ -19,7 +19,7 @@ class StoryCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    private let imageURL: UIImageView = {
+    private let createStoryImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -31,13 +31,14 @@ class StoryCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textColor = .black
+        label.text = "Tu historia"
         return label
     }()
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(imageURL)
+        addSubview(createStoryImageView)
         addSubview(nameLabel)
     }
     
@@ -47,13 +48,13 @@ class StoryCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        imageURL.anchor(top: topAnchor, left: leftAnchor, paddingTop: 6, paddingLeft: 10) // 12
-        imageURL.setDimensions(height: 50, width: 50)
-        imageURL.layer.cornerRadius = 50/2.0
-        imageURL.backgroundColor = .secondarySystemBackground
         
-        nameLabel.anchor(top: imageURL.bottomAnchor, left: leftAnchor, paddingTop: 12, paddingLeft: 6)
+        createStoryImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 6, paddingLeft: 16) // 12
+        createStoryImageView.setDimensions(height: 50, width: 50)
+        createStoryImageView.layer.cornerRadius = 50/2.0
+        createStoryImageView.backgroundColor = .secondarySystemBackground
         
+        nameLabel.anchor(top: createStoryImageView.bottomAnchor, left: leftAnchor, paddingTop: 12, paddingLeft: 6)
     }
     
     override func prepareForReuse() {
@@ -63,12 +64,7 @@ class StoryCollectionViewCell: UICollectionViewCell {
     // MARK: - Helper
     
     func configure() {
-        guard let viewModel = self.viewModel else {
-            return
-        }
-        //crateStoryImageView.image = UIImage(systemName: "person")
-        nameLabel.text = viewModel.username
-        imageURL.sd_setImage(with: viewModel.imageURL)
+      
     }
     
     // MARK: - Actions

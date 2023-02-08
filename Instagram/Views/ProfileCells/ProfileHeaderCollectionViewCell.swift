@@ -141,7 +141,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         topDivider.backgroundColor = .lightGray
         
         let bottomDivider = UIView()
-        topDivider.backgroundColor = .lightGray
+        bottomDivider.backgroundColor = .lightGray
         
         let buttonStack = UIStackView(arrangedSubviews: [gridButton, listButton, bookmarkButton])
         buttonStack.distribution = .fillEqually
