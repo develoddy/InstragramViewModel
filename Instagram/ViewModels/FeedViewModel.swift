@@ -34,6 +34,12 @@ class FeedViewModel {
         }
     }
     
+    var storiesCurrentUser: [ History ] = [ History ]() {
+        didSet {
+            refreshData?()
+        }
+    }
+    
     var posts: [ Post ] = [ Post ]() {
         didSet {
             refreshData?()
@@ -79,6 +85,12 @@ class FeedViewModel {
     func fetchStories() {
         historyService.fetchStories { stories in
             self.stories = stories
+        }
+    }
+    
+    func fetchStoriesCurrentUser( forUser uid: String ) {
+        historyService.fetchStoriesCurrentUser(forUser: uid) { stories in
+            self.storiesCurrentUser = stories
         }
     }
     

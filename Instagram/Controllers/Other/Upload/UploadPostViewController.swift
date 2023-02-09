@@ -247,11 +247,7 @@ class UploadPostViewController: UIViewController {
         guard let user = currentUser else { return }
         
         showLoader(true)
-        viewModel.uploadPost(
-            caption: caption,
-            image: image,
-            user: user
-        ) { [weak self] error in
+        viewModel.uploadPost( caption: caption, image: image, user: user ) { [ weak self ] error in
             self?.showLoader(false)
             guard let strongSelf = self else { return }
             if let error = error {

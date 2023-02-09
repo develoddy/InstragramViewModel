@@ -6,8 +6,11 @@
 //
 
 import UIKit
-
 import SDWebImage
+
+protocol StoriesCollectionReusableViewDelegate: AnyObject {
+    func cell(_ createStoryCell: StoriesCollectionReusableView, didTapActionButtonFor user: User)
+}
 
 class StoriesCollectionReusableView: UICollectionReusableView {
     
@@ -15,14 +18,19 @@ class StoriesCollectionReusableView: UICollectionReusableView {
     
     static let identifier = "StoriesCollectionReusableView"
     
+    weak var delegate: StoriesCollectionReusableViewDelegate?
+    
     private let collectionView: UICollectionView
     
     var viewModel = [History]()
     
+    var viewModelCurrentUser = [History]()
+    
+    var user: User?
+    
     // MARK: - Init
     
     override init(frame: CGRect) {
-        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 0, height: 0)
@@ -33,9 +41,10 @@ class StoriesCollectionReusableView: UICollectionReusableView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         super.init(frame: frame)
-        
-        collectionView.register(StoryCollectionViewCell.self, forCellWithReuseIdentifier: StoryCollectionViewCell.identifier)
         collectionView.register(CreateStoryCollectionViewCell.self, forCellWithReuseIdentifier: CreateStoryCollectionViewCell.identifier)
+        collectionView.register(StoryCurrentUserCollectionViewCell.self, forCellWithReuseIdentifier: StoryCurrentUserCollectionViewCell.identifier)
+        collectionView.register(StoryCollectionViewCell.self, forCellWithReuseIdentifier: StoryCollectionViewCell.identifier)
+        
         collectionView.delegate = self
         collectionView.dataSource = self
         addSubview(collectionView)
@@ -50,16 +59,17 @@ class StoriesCollectionReusableView: UICollectionReusableView {
         collectionView.frame = bounds
     }
     
-    
     // MARK: - Helpers
-    func configure(stories: [History])  {
+    
+    func configure(stories: [History], storiesCurrentUser: [History], user: User)  {
         self.viewModel = stories
+        self.viewModelCurrentUser = storiesCurrentUser
+        self.user = user
         DispatchQueue.main.async{
             self.collectionView.reloadData()
         }
     }
  
-    
     // MARK: - Actions
 }
 
@@ -67,17 +77,20 @@ class StoriesCollectionReusableView: UICollectionReusableView {
 
 extension StoriesCollectionReusableView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 3
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return section == 0 ? 1 : viewModel.count
+        if section == 0 { return 1 } // Create history
+        if section == 1 { return viewModelCurrentUser.count > 0 ? 1 : 0 } // Aca tiene que las historias del currentUser
+        return viewModel.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let section = indexPath.section
         switch section {
+        /// Create history
         case 0:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: CreateStoryCollectionViewCell.identifier,
@@ -85,21 +98,46 @@ extension StoriesCollectionReusableView: UICollectionViewDataSource {
             ) as? CreateStoryCollectionViewCell else {
                 return UICollectionViewCell()
             }
+           
+            if let user = self.user {
+                cell.viewModel = CreateStoryCollectionViewCellViewModel(user: user)
+            }
+            cell.backgroundColor = .systemBackground
+            cell.delegate = self
+            return cell
+            
+        /// Fetch Stories CurrentUser
+        case 1:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: StoryCurrentUserCollectionViewCell.identifier,
+                for: indexPath
+            ) as? StoryCurrentUserCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.viewModel = StoryCollectionViewCellViewModel(
+                history: viewModelCurrentUser[ indexPath.row ]
+            )
             cell.backgroundColor = .systemBackground
             return cell
-        case 1:
+            
+        /// Fetch Stories
+        case 2:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: StoryCollectionViewCell.identifier,
                 for: indexPath
             ) as? StoryCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.viewModel = StoryCollectionViewCellViewModel(history: viewModel[indexPath.row])
+            cell.viewModel = StoryCollectionViewCellViewModel(
+                history: viewModel[ indexPath.row ]
+            )
             cell.backgroundColor = .systemBackground
             return cell
+            
         default:
             print("DEBUG: error collectionReusable")
         }
+        
         return UICollectionViewCell()
     }
 }
@@ -108,6 +146,10 @@ extension StoriesCollectionReusableView: UICollectionViewDataSource {
 
 extension StoriesCollectionReusableView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let dd = viewModel[indexPath.row]
+        print("DEBUG: obtener datos del story")
+        print(dd)
         
     }
 }
@@ -120,5 +162,14 @@ extension StoriesCollectionReusableView: UICollectionViewDelegateFlowLayout {
             width: 80,
             height: 80
         )
+    }
+}
+
+// MARK: - CreateStoryCollectionViewCellDelegate
+
+extension StoriesCollectionReusableView: CreateStoryCollectionViewCellDelegate {
+    
+    func cell(_ createStoryCell: CreateStoryCollectionViewCell, didTapActionButtonFor user: User) {
+        delegate?.cell(self, didTapActionButtonFor: user)
     }
 }

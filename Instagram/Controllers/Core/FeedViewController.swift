@@ -8,6 +8,7 @@
 
 import UIKit
 import SDWebImage
+import YPImagePicker
 
 
 class FeedViewController: UIViewController {
@@ -17,6 +18,8 @@ class FeedViewController: UIViewController {
     var viewModel = FeedViewModel()
     
     var post: Post?
+    
+    var user: User?
     
     private let noFeedview = FeedEmptyLabelView()
     
@@ -35,12 +38,14 @@ class FeedViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         sendPost()
+        fetchUser()
         configureCollectionView()
         configureNavigationItem()
         setUpNoCommentsView()
         bind()
         fetchPosts()
         fetchStories()
+        fetchStoriesCurrentUser()
     }
     
     override func viewDidLayoutSubviews() {
@@ -83,6 +88,12 @@ class FeedViewController: UIViewController {
         viewModel.fetchStories()
     }
     
+    func fetchStoriesCurrentUser() {
+        guard let tab = tabBarController as? TabBarViewController  else { return }
+        guard let user = tab.user else { return }
+        viewModel.fetchStoriesCurrentUser(forUser: user.uid)
+    }
+    
     private func checkFollowingBeforeIHadPosts() {
         viewModel.fetchFollowings(uid: viewModel.currentUser(vc: self).uid) { [weak self] users in
             let _ = users.compactMap({ self?.viewModel.updateUserFeedAfterFollowing(user: $0, didFollow: true) })
@@ -102,6 +113,19 @@ class FeedViewController: UIViewController {
     private func checkIfUserLikedPost(post: Post) {
         viewModel.checkIfUserLikePost(post: post) { didLiked in
             self.viewModel.post?.didLike = didLiked
+        }
+    }
+    
+    private func fetchUser() {
+        guard let tab = tabBarController as? TabBarViewController else { return }
+        guard let currentUser = tab.user else { return }
+        UserService.shared.fetchUser( uid: currentUser.uid ) { result in
+            switch result {
+            case .success( let user ):
+                self.user = user
+            case .failure( let err ):
+                print(err.localizedDescription)
+            }
         }
     }
     
@@ -189,6 +213,20 @@ class FeedViewController: UIViewController {
             collectionView.reloadData()
             noFeedview.isHidden = true
             collectionView.isHidden = false
+        }
+    }
+    
+    func didFinishPickingMedia(_ picker: YPImagePicker) {
+        picker.didFinishPicking { items, cancelled in
+            picker.dismiss(animated: true)
+            guard let selectedImage = items.singlePhoto?.image else { return }
+            let vc = UploadHistoryViewController()
+            vc.selectedImage = selectedImage
+            vc.delegate = self
+            vc.currentUser = self.user
+            let navVC = UINavigationController(rootViewController: vc)
+            navVC.modalPresentationStyle = .fullScreen
+            self.present(navVC, animated: true, completion: nil)
         }
     }
     
@@ -325,35 +363,14 @@ extension FeedViewController: UICollectionViewDelegate {
         ) as? StoriesCollectionReusableView else {
             return UICollectionReusableView()
         }
-        //if viewModel.stories.count > 0 {
-            header.configure(stories: viewModel.stories)
-        //}
-       header.backgroundColor = .systemBackground
-       return header
-   }
-    
-    /**func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
-        switch indexPath.section {
-        case 0:
-            guard let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind, withReuseIdentifier: StoriesCollectionReusableView.identifier,
-                for: indexPath
-            ) as? StoriesCollectionReusableView else {
-                return UICollectionReusableView()
-            }
-            if !viewModel.stories.isEmpty {
-                header.configure(stories: viewModel.stories)
-            }
-            
-            header.backgroundColor = .red
-            return header
-        default:
-            break
+        if let user = self.user {
+            //header.configure(stories: viewModel.stories, user: user)
+            header.configure(stories: viewModel.stories, storiesCurrentUser: viewModel.storiesCurrentUser, user: user)
         }
-        return UICollectionReusableView()
-    }*/
-    
+        header.delegate = self
+        header.backgroundColor = .systemBackground
+        return header
+   }
 }
 
 
@@ -483,3 +500,34 @@ extension FeedViewController: UploadPostViewControllerDelegate {
     func uploadPostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController) {}
 }
 
+
+// MARK: - StoriesCollectionReusableViewDelegate
+
+extension FeedViewController: StoriesCollectionReusableViewDelegate {
+    
+    func cell(_ createStoryCell: StoriesCollectionReusableView, didTapActionButtonFor user: User) {
+        var config = YPImagePickerConfiguration()
+        config.library.mediaType = .photo
+        config.shouldSaveNewPicturesToAlbum = false
+        config.startOnScreen = .library
+        config.screens = [.library]
+        config.hidesStatusBar = false
+        config.hidesBottomBar = false
+        config.library.maxNumberOfItems = 1
+        
+        let picker = YPImagePicker(configuration: config)
+        picker.modalPresentationStyle = .fullScreen
+        present(picker, animated: true, completion: nil)
+        self.didFinishPickingMedia(picker)
+    }
+}
+
+// MARK: - UploadHistoryViewControllerDelegate
+
+extension FeedViewController: UploadHistoryViewControllerDelegate {
+    func uploadUploadHistoryViewControllerDidFinishUploadingHistory(_ controller: UploadHistoryViewController) {
+        controller.dismiss(animated: true, completion: nil)
+        fetchStories()
+        fetchStoriesCurrentUser()
+    }
+}

@@ -5,7 +5,7 @@
 //  Created by Eddy Donald Chinchay Lujan on 17/1/23.
 //
 
-import Foundation
+import UIKit
 import Firebase
 
 class UploadPostViewModel {
@@ -23,12 +23,7 @@ class UploadPostViewModel {
     
     // MARK: - Helper
     
-    func uploadPost(
-        caption: String,
-        image: UIImage,
-        user: User,
-        completion: @escaping (Error?) -> Void
-    ) {
+    func uploadPost( caption: String, image: UIImage, user: User, completion: @escaping ( Error? ) -> Void ) {
         postService.uploadPost(caption: caption, image: image, user: user) { error in
             completion(error)
         }

@@ -10,6 +10,7 @@ import Firebase
 
 struct History {
     var imageURL: String
+    let ownerImageURL: String
     let ownerUsername: String
     var storieId: String
     var ownerUid: String
@@ -20,6 +21,7 @@ struct History {
         self.ownerUsername = dictionary["ownerUsername"] as? String ?? ""
         self.timestamp = dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
         self.ownerUid = dictionary["ownerUid"] as? String ?? ""
+        self.ownerImageURL = dictionary["ownerImageURL"] as? String ?? ""
         self.storieId = storieId
     }
 }

@@ -1,17 +1,17 @@
 //
-//  StoriesCollectionViewCell.swift
+//  StoryCurrentUserCollectionViewCell.swift
 //  Instagram
 //
-//  Created by Eddy Donald Chinchay Lujan on 8/2/23.
+//  Created by Eddy Donald Chinchay Lujan on 9/2/23.
 //
 
 import UIKit
 
-class StoryCollectionViewCell: UICollectionViewCell {
+class StoryCurrentUserCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Properties
     
-    static let identifier = "StoryCollectionViewCell"
+    static let identifier = "StoryCurrentUserCollectionViewCell"
     
     var viewModel: StoryCollectionViewCellViewModel? {
         didSet {
@@ -31,6 +31,7 @@ class StoryCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 10, weight: .regular)
         label.textColor = .lightGray
+        label.text = "Tu historia"
         return label
     }()
     
@@ -53,7 +54,7 @@ class StoryCollectionViewCell: UICollectionViewCell {
         imageURL.layer.cornerRadius = 60/2.0
         imageURL.backgroundColor = .secondarySystemBackground
         
-        nameLabel.anchor(top: imageURL.bottomAnchor, left: leftAnchor, paddingTop: 12, paddingLeft: 20)
+        nameLabel.anchor(top: imageURL.bottomAnchor, left: leftAnchor, paddingTop: 12, paddingLeft: 14)
     }
     
     override func prepareForReuse() {
@@ -66,7 +67,6 @@ class StoryCollectionViewCell: UICollectionViewCell {
         guard let viewModel = self.viewModel else {
             return
         }
-        nameLabel.text = viewModel.username
         imageURL.sd_setImage(with: viewModel.imageURL)
     }
     

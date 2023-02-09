@@ -57,12 +57,16 @@
 		B34F9D4629781B26002956BE /* FeedCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D4529781B26002956BE /* FeedCollectionViewCellViewModel.swift */; };
 		B34F9D4829786366002956BE /* PostsSettingViewControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34F9D4729786365002956BE /* PostsSettingViewControllerViewModel.swift */; };
 		B35C7F782994106500B6BED3 /* CreateStoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35C7F772994106400B6BED3 /* CreateStoryCollectionViewCell.swift */; };
+		B35C7F7A299441E800B6BED3 /* CreateStoryCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35C7F79299441E800B6BED3 /* CreateStoryCollectionViewCellViewModel.swift */; };
 		B385C1202979ADB4005158E0 /* CommentInputAccesoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C11F2979ADB4005158E0 /* CommentInputAccesoryView.swift */; };
 		B385C1232979EAA4005158E0 /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C1222979EAA4005158E0 /* CommentService.swift */; };
 		B385C1252979EC6A005158E0 /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C1242979EC6A005158E0 /* CommentViewModel.swift */; };
 		B385C1272979F3A4005158E0 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C1262979F3A4005158E0 /* Comment.swift */; };
 		B385C129297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */; };
 		B385C12B297AA361005158E0 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B385C12A297AA361005158E0 /* CommentsViewController.swift */; };
+		B3862B922995023F00250AE7 /* UploadHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3862B912995023F00250AE7 /* UploadHistoryViewController.swift */; };
+		B3862B9429950E3000250AE7 /* UploadHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3862B9329950E3000250AE7 /* UploadHistoryViewModel.swift */; };
+		B3862B9629952D2D00250AE7 /* StoryCurrentUserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3862B9529952D2D00250AE7 /* StoryCurrentUserCollectionViewCell.swift */; };
 		B3874F692971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */; };
 		B39E0A54298BCCB2004C323A /* EditTextFieldViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */; };
 		B3A342F9298A6EFD00E4D6C9 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A342F8298A6EFD00E4D6C9 /* EditProfileViewController.swift */; };
@@ -152,12 +156,16 @@
 		B34F9D4529781B26002956BE /* FeedCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B34F9D4729786365002956BE /* PostsSettingViewControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsSettingViewControllerViewModel.swift; sourceTree = "<group>"; };
 		B35C7F772994106400B6BED3 /* CreateStoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		B35C7F79299441E800B6BED3 /* CreateStoryCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStoryCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B385C11F2979ADB4005158E0 /* CommentInputAccesoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputAccesoryView.swift; sourceTree = "<group>"; };
 		B385C1222979EAA4005158E0 /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
 		B385C1242979EC6A005158E0 /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		B385C1262979F3A4005158E0 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		B385C128297A8F70005158E0 /* ListCommentsCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommentsCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		B385C12A297AA361005158E0 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		B3862B912995023F00250AE7 /* UploadHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadHistoryViewController.swift; sourceTree = "<group>"; };
+		B3862B9329950E3000250AE7 /* UploadHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadHistoryViewModel.swift; sourceTree = "<group>"; };
+		B3862B9529952D2D00250AE7 /* StoryCurrentUserCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryCurrentUserCollectionViewCell.swift; sourceTree = "<group>"; };
 		B3874F682971FD3A004F6D17 /* UsersFollowsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersFollowsCollectionViewCell.swift; sourceTree = "<group>"; };
 		B39E0A53298BCCB1004C323A /* EditTextFieldViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTextFieldViewController.swift; sourceTree = "<group>"; };
 		B3A342F8298A6EFD00E4D6C9 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
@@ -265,6 +273,7 @@
 				B31C245529801FEE00764474 /* NotificationsDefaultTableViewCellViewModel.swift */,
 				B31C24632981E41000764474 /* UsersFollowsCollectionViewCellViewModel.swift */,
 				B3CD01542993CE45004C2103 /* StoryCollectionViewCellViewModel.swift */,
+				B35C7F79299441E800B6BED3 /* CreateStoryCollectionViewCellViewModel.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -277,13 +286,14 @@
 			path = SearchResultDefaultTableViewCells;
 			sourceTree = "<group>";
 		};
-		B34F9D352976DC31002956BE /* UploadPost */ = {
+		B34F9D352976DC31002956BE /* Upload */ = {
 			isa = PBXGroup;
 			children = (
-				B34F9D2F2976C60F002956BE /* UploadPostViewController.swift */,
 				B34F9D3A2976DFB0002956BE /* ImageUploader.swift */,
+				B34F9D2F2976C60F002956BE /* UploadPostViewController.swift */,
+				B3862B912995023F00250AE7 /* UploadHistoryViewController.swift */,
 			);
-			path = UploadPost;
+			path = Upload;
 			sourceTree = "<group>";
 		};
 		B385C1212979EA81005158E0 /* API */ = {
@@ -381,6 +391,7 @@
 				B34A1A332982A5CE001329DE /* FollowSettingViewModel.swift */,
 				B3BABDFA2987D4A1009D44B5 /* SheePostViewModel.swift */,
 				B3A342FA298A6F9B00E4D6C9 /* EditProfileViewModel.swift */,
+				B3862B9329950E3000250AE7 /* UploadHistoryViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -454,6 +465,7 @@
 				B3CD01562993EEA8004C2103 /* StoriesCollectionViewCell.swift */,
 				B335AFFA296F701100AE9999 /* StoriesCollectionReusableView.swift */,
 				B35C7F772994106400B6BED3 /* CreateStoryCollectionViewCell.swift */,
+				B3862B9529952D2D00250AE7 /* StoryCurrentUserCollectionViewCell.swift */,
 			);
 			path = FeedCells;
 			sourceTree = "<group>";
@@ -469,7 +481,7 @@
 		B3BD8D082966FF3900606150 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				B34F9D352976DC31002956BE /* UploadPost */,
+				B34F9D352976DC31002956BE /* Upload */,
 				B301929529717330002A0335 /* Follows */,
 				B3BD8D1029672F7900606150 /* ProfileTabs */,
 				B3BD8D092966FF6000606150 /* SettingsViewController.swift */,
@@ -634,6 +646,7 @@
 				B3BD8CF82965EC4000606150 /* AuthenticationViewModel.swift in Sources */,
 				B335AFF3296D9AD700AE9999 /* SearchResultsViewController.swift in Sources */,
 				B301928929707509002A0335 /* NotificationsDefaultTableViewCell.swift in Sources */,
+				B3862B9429950E3000250AE7 /* UploadHistoryViewModel.swift in Sources */,
 				B385C12B297AA361005158E0 /* CommentsViewController.swift in Sources */,
 				B3BABDF52987B56C009D44B5 /* SheePostViewController.swift in Sources */,
 				B335AFEB296C15E200AE9999 /* Constants.swift in Sources */,
@@ -695,9 +708,11 @@
 				B3CD01512993BF11004C2103 /* History.swift in Sources */,
 				B31C245429800B2100764474 /* NotificationViewModel.swift in Sources */,
 				B335AFFB296F701200AE9999 /* StoriesCollectionReusableView.swift in Sources */,
+				B3862B9629952D2D00250AE7 /* StoryCurrentUserCollectionViewCell.swift in Sources */,
 				B3BD8D1429672FC100606150 /* ProfileTabsTagViewController.swift in Sources */,
 				B3BD8CF62965E7AF00606150 /* CustomTextField.swift in Sources */,
 				B335AFEF296C269300AE9999 /* User.swift in Sources */,
+				B3862B922995023F00250AE7 /* UploadHistoryViewController.swift in Sources */,
 				B3BD8CF12965A59800606150 /* FeedCollectionViewCell.swift in Sources */,
 				B34A1A3C29848E4F001329DE /* FeedEmptyLabelView.swift in Sources */,
 				B335AFFF29704AE900AE9999 /* Notification.swift in Sources */,
@@ -709,6 +724,7 @@
 				B34F9D40297712F3002956BE /* FeedViewModel.swift in Sources */,
 				B3BD8CF42965D9E500606150 /* LoginViewController.swift in Sources */,
 				B3A342FB298A6F9B00E4D6C9 /* EditProfileViewModel.swift in Sources */,
+				B35C7F7A299441E800B6BED3 /* CreateStoryCollectionViewCellViewModel.swift in Sources */,
 				B301928B2970A852002A0335 /* PostsSettingViewController.swift in Sources */,
 				B34A1A342982A5CE001329DE /* FollowSettingViewModel.swift in Sources */,
 				B31C2450297FE5B800764474 /* ProfilePresenter.swift in Sources */,
