@@ -58,7 +58,8 @@ class HistoryService: HistoryServiceDelegate {
         let query = Constants.Collections.COLLECTION_STORIES.whereField("ownerUid", isEqualTo: uid)
         query.getDocuments { snapshot, err in
             guard let documents = snapshot?.documents else { return }
-            let stories = documents.compactMap( { History( storieId: $0.documentID, dictionary: $0.data() ) } )
+            var stories = documents.compactMap( { History( storieId: $0.documentID, dictionary: $0.data() ) } )
+            stories.sort( by: { $0.timestamp.seconds > $1.timestamp.seconds } )
             /**
              posts.sort( by: { $0.timestamp.seconds > $1.timestamp.seconds } )
              posts.sort { (post1, post2) -> Bool in

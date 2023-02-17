@@ -112,14 +112,14 @@ class PostService: PostServiceDelegate {
     func deletePost(withPostId postId: String, completion: @escaping ( Result<Bool, Error> ) -> Void ) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        /****
+        /*
          * HAY QUE COMPROBAR SI EXISTEN USUARIOS QUE ME SIGUEN
          * DEPENDIENDO DE REALIZARA EL CORRESPONDIENTO BORRADO
          * DE LA PUBLICACIÓN.
          */
         followService.fetchFollowers( uid: uid ) { followers in
             if followers.count > 0 {
-                /****
+                /*
                  * BORRAR LA COLECCION DE PULICACIONES
                  * Y DE LO QUE HAY DENTRO (USER-FEED) DE LA COLECCIÓN DE USUARIOS
                  */

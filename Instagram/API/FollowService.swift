@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
 protocol FollowServiceDelegate: AnyObject {
     func fetchFollowings(uid: String, completion: @escaping([User]) -> Void)

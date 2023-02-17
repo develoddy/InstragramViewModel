@@ -113,7 +113,7 @@ class ProfileViewController: UICollectionViewController {
 }
 
 
-// MARK: - UIColletionViewDasource
+// MARK: - UIColletionViewDataSource
 
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -152,7 +152,7 @@ extension ProfileViewController {
 
 extension ProfileViewController {
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    override func collectionView( _ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath ) {
         collectionView.deselectItem(at: indexPath, animated: true)
         FeedPresenter.shared.startFeed(
             from: self,
@@ -161,7 +161,7 @@ extension ProfileViewController {
         )
     }
     
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    override func collectionView( _ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath ) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier,
             for: indexPath
@@ -198,37 +198,21 @@ extension ProfileViewController {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        minimumInteritemSpacingForSectionAt section: Int
-    ) -> CGFloat {
+    func collectionView( _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int ) -> CGFloat {
         return 1
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        minimumLineSpacingForSectionAt section: Int
-    ) -> CGFloat {
+    func collectionView( _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int ) -> CGFloat {
         return 1
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        let width = (view.frame.width - 2)/3
-        return CGSize(width: width, height: width)
+    func collectionView( _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath ) -> CGSize {
+        let width = ( view.frame.width - 2 ) / 3
+        return CGSize( width: width, height: width )
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        referenceSizeForHeaderInSection section: Int
-    ) -> CGSize {
-        return CGSize(width: view.frame.width, height: 240)
+    func collectionView( _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int ) -> CGSize {
+        return CGSize( width: view.frame.width, height: 240 )
     }
 }
 
@@ -238,10 +222,7 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
    
     // Button Follow / Following
-    func header(
-        _ profileHeader: ProfileHeaderCollectionReusableView,
-        didTapActionButtonFor user: User
-    ) {
+    func header( _ profileHeader: ProfileHeaderCollectionReusableView, didTapActionButtonFor user: User ) {
         guard let tab = tabBarController as? TabBarViewController  else { return }
         guard let currentUser = tab.user else { return }
         
@@ -288,10 +269,7 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     }
     
     // Count followings
-    func header(
-        _ profileHeader: ProfileHeaderCollectionReusableView,
-        wantsToFollowing uid: String
-    ) {
+    func header( _ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollowing uid: String ) {
         FollowSettingPresenter.shared.startFollwSetting(
             from: self,
             uid: uid,
@@ -300,10 +278,7 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     }
     
     // Count followers
-    func header(
-        _ profileHeader: ProfileHeaderCollectionReusableView,
-        wantsToFollower uid: String
-    ) {
+    func header( _ profileHeader: ProfileHeaderCollectionReusableView, wantsToFollower uid: String ) {
         FollowSettingPresenter.shared.startFollwSetting(
             from: self,
             uid: uid,

@@ -70,7 +70,7 @@ class FollowSettingViewController: UIViewController {
     // MARK: - ViewModels
     
     private func bind() {
-        self.viewModel.refreshData = { [weak self] () in
+        self.viewModel.refreshData = { () in
             DispatchQueue.main.async {
                 //self?.collectionView.reloadData()
             }

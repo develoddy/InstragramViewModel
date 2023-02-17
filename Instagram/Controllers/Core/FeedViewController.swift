@@ -15,7 +15,9 @@ class FeedViewController: UIViewController {
 
     // MARK: - Properties
     
-    var viewModel = FeedViewModel()
+    private var viewModel = FeedViewModel()
+    
+    private var viewModelStories: IGHomeViewModel = IGHomeViewModel()
     
     var post: Post?
     
@@ -85,7 +87,7 @@ class FeedViewController: UIViewController {
     }
     
     func fetchStories() {
-        viewModel.fetchStories()
+        viewModelStories.fetchStories()
     }
     
     func fetchStoriesCurrentUser() {
@@ -363,11 +365,10 @@ extension FeedViewController: UICollectionViewDelegate {
         ) as? StoriesCollectionReusableView else {
             return UICollectionReusableView()
         }
-        if let user = self.user {
-            //header.configure(stories: viewModel.stories, user: user)
-            header.configure(stories: viewModel.stories, storiesCurrentUser: viewModel.storiesCurrentUser, user: user)
+        if let stories = viewModelStories.getStories()?.stories, let iGStories = viewModelStories.getStories() {
+            header.configure(viewModel: stories, getStories: iGStories)
+            header.delegate = self
         }
-        header.delegate = self
         header.backgroundColor = .systemBackground
         return header
    }
@@ -416,10 +417,7 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
         }
     }
     
-    func feedCollectionDidTapComment(
-        _ cell: FeedCollectionViewCell,
-        wantsShowCommentFor post: Post
-    ) {
+    func feedCollectionDidTapComment(_ cell: FeedCollectionViewCell,wantsShowCommentFor post: Post) {
         PostCommentPresenter.shared.startComment(from: self, post: post)
     }
        
@@ -431,10 +429,7 @@ extension FeedViewController: FeedCollectionViewCellDelegate {
         // More Comment
     }
     
-    func cell(
-        _ cell: FeedCollectionViewCell,
-        wantsToPost post: Post
-    ) {
+    func cell(_ cell: FeedCollectionViewCell,wantsToPost post: Post) {
         guard let tab = tabBarController as? TabBarViewController  else { return }
         guard let currentUser = tab.user else { return }
         let vcShee = SheePostViewController()
@@ -504,8 +499,30 @@ extension FeedViewController: UploadPostViewControllerDelegate {
 // MARK: - StoriesCollectionReusableViewDelegate
 
 extension FeedViewController: StoriesCollectionReusableViewDelegate {
+    func cell(_ viewStory: StoriesCollectionReusableView, wantToStoriesCopy storiesCopy: IGStories, wantToIndexPath indexPath: Int) {
+        let storyPreviewScene = IGStoryPreviewController.init(stories: storiesCopy, handPickedStoryIndex:  indexPath)
+        self.present(storyPreviewScene, animated: true, completion: nil)
+    }
     
-    func cell(_ createStoryCell: StoriesCollectionReusableView, didTapActionButtonFor user: User) {
+    
+    func cell(_ createStoryCell: StoriesCollectionReusableView) {
+        let alertController = UIAlertController.init(title: "Coming Soon...", message: nil, preferredStyle: .alert)
+        present(alertController, animated: true) {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.3){
+                alertController.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
+    /*func cell(_ viewUserStory: StoriesCollectionReusableView, wantsToHistory stories: [History]) {
+        let vc = SettingViewStoryViewController(stories: stories)
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        self.present(navVC, animated: true, completion: nil)
+    }*/
+    
+    
+    /*func cell(_ createStoryCell: StoriesCollectionReusableView, didTapActionButtonFor user: User) {
         var config = YPImagePickerConfiguration()
         config.library.mediaType = .photo
         config.shouldSaveNewPicturesToAlbum = false
@@ -519,7 +536,7 @@ extension FeedViewController: StoriesCollectionReusableViewDelegate {
         picker.modalPresentationStyle = .fullScreen
         present(picker, animated: true, completion: nil)
         self.didFinishPickingMedia(picker)
-    }
+    }*/
 }
 
 // MARK: - UploadHistoryViewControllerDelegate

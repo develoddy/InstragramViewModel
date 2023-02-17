@@ -7,6 +7,7 @@
 
 import Firebase
 
+
 protocol ProfileServiceDelegate: AnyObject {
     func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void)
     func follow(uid: String, completion: @escaping(FirestoreCompletion))

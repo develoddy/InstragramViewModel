@@ -7,8 +7,11 @@ target 'Instagram' do
 	
   pod 'SDWebImage'
   pod 'Appirater'
+  pod 'ActiveLabel'
+  pod 'YPImagePicker'
+  pod 'JGProgressHUD'
+  pod 'FirebaseFirestoreSwift'
   pod 'Firebase/Analytics'
-  
   pod 'Firebase/Core'
   pod 'Firebase/Database'
   pod 'Firebase/Firestore'
@@ -18,5 +21,6 @@ target 'Instagram' do
   pod 'ActiveLabel'
   pod 'YPImagePicker'
   pod 'JGProgressHUD'
+  pod 'CodableFirebase'
 
 end

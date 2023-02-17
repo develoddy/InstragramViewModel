@@ -13,10 +13,6 @@ protocol UploadPostViewControllerDelegate: AnyObject {
     func updatePostViewControllerDidFinishUploadingPost(_ controller: UploadPostViewController, wantsToPost post: Post)
 }
 
-extension UploadPostViewController: CommentInputAccesoryViewDelegate {
-    func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {}
-}
-
 class UploadPostViewController: UIViewController {
     
     // MARK: - Properties
@@ -73,6 +69,7 @@ class UploadPostViewController: UIViewController {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
@@ -257,6 +254,13 @@ class UploadPostViewController: UIViewController {
             strongSelf.delegate?.uploadPostViewControllerDidFinishUploadingPost(strongSelf)
         }
     }
+}
+
+
+// MARK: CommentInputAccesoryViewDelegate
+
+extension UploadPostViewController: CommentInputAccesoryViewDelegate {
+    func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {}
 }
 
 
