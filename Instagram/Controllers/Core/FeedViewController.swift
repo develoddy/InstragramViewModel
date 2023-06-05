@@ -87,7 +87,8 @@ class FeedViewController: UIViewController {
     }
     
     func fetchStories() {
-        viewModelStories.fetchStories()
+        //viewModelStories.fetchStories()
+        viewModelStories.getStories()
     }
     
     func fetchStoriesCurrentUser() {
@@ -365,10 +366,11 @@ extension FeedViewController: UICollectionViewDelegate {
         ) as? StoriesCollectionReusableView else {
             return UICollectionReusableView()
         }
-        if let stories = viewModelStories.getStories()?.stories, let iGStories = viewModelStories.getStories() {
+        /*if let stories = viewModelStories.getStories()?.stories, let iGStories = viewModelStories.getStories() {
             header.configure(viewModel: stories, getStories: iGStories)
             header.delegate = self
-        }
+        }*/
+        print(viewModelStories.cellForItemAt(indexPath: indexPath))
         header.backgroundColor = .systemBackground
         return header
    }
@@ -500,8 +502,8 @@ extension FeedViewController: UploadPostViewControllerDelegate {
 
 extension FeedViewController: StoriesCollectionReusableViewDelegate {
     func cell(_ viewStory: StoriesCollectionReusableView, wantToStoriesCopy storiesCopy: IGStories, wantToIndexPath indexPath: Int) {
-        let storyPreviewScene = IGStoryPreviewController.init(stories: storiesCopy, handPickedStoryIndex:  indexPath)
-        self.present(storyPreviewScene, animated: true, completion: nil)
+        //let storyPreviewScene = IGStoryPreviewController.init(stories: storiesCopy, handPickedStoryIndex:  indexPath)
+        //self.present(storyPreviewScene, animated: true, completion: nil)
     }
     
     

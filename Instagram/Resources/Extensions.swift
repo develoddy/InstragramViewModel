@@ -73,6 +73,46 @@ extension UIButton {
 
 extension UIView {
     
+    // Extension de stories start
+    var igLeftAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.leftAnchor
+        }
+        return self.leftAnchor
+    }
+    var igRightAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.rightAnchor
+        }
+        return self.rightAnchor
+    }
+    var igTopAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.topAnchor
+        }
+        return self.topAnchor
+    }
+    var igBottomAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.bottomAnchor
+        }
+        return self.bottomAnchor
+    }
+    var igCenterXAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.centerXAnchor
+        }
+        return self.centerXAnchor
+    }
+    var igCenterYAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.centerYAnchor
+        }
+        return self.centerYAnchor
+    }
+    
+    // End extension Stories
+    
     var width: CGFloat {
         return frame.size.width
     }
