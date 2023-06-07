@@ -26,6 +26,11 @@ class StoriesCollectionReusableView: UICollectionReusableView {
     private let collectionView: UICollectionView
     
     var viewModel = [IGStory]()
+    /*public var viewModel: IGStory? {
+        didSet {
+            configure()
+        }
+    }*/
     
     var getStories: IGStories?
     
@@ -62,6 +67,8 @@ class StoriesCollectionReusableView: UICollectionReusableView {
     func configure(viewModel: [IGStory], getStories: IGStories) {
         self.viewModel = viewModel
         self.getStories = getStories
+        print("debugg: Stories Collection Cell")
+        print(viewModel)
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
@@ -74,7 +81,14 @@ class StoriesCollectionReusableView: UICollectionReusableView {
 
 extension StoriesCollectionReusableView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.count != 0 ? viewModel.count + 1 : 1
+        //return viewModel.count != 0 ? viewModel.count + 1 : 1
+        //getStories?.otherStories
+        /*if let count = getStories?.otherStoriesCount {
+            return count + 1
+        }
+        return 1*/
+        
+        return viewModel.count == 0 ? 1 : viewModel.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -94,6 +108,7 @@ extension StoriesCollectionReusableView: UICollectionViewDataSource {
             ) as? IGStoryListCell else {
                 fatalError()
             }
+            //let story = viewModel[indexPath.row-1]
             let story = viewModel[indexPath.row-1]
             cell.story = story
             return cell
@@ -111,6 +126,7 @@ extension StoriesCollectionReusableView: UICollectionViewDelegate {
         } else {
             // PRESENT STORIES
             DispatchQueue.main.async {
+                //if let stories = self.getStories, let stories_copy = try? stories.copy() {
                 if let stories = self.getStories, let stories_copy = try? stories.copy() {
                     self.delegate?.cell( self, wantToStoriesCopy: stories_copy, wantToIndexPath: indexPath.row-1 )
                 }
