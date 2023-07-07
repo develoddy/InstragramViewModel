@@ -95,9 +95,13 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) {
     SDWebImageDownloaderMatchAnimatedImageClass = 1 << 12,
 };
 
+/// Posed when URLSessionTask started (`resume` called))
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadStartNotification;
+/// Posed when URLSessionTask get HTTP response (`didReceiveResponse:completionHandler:` called)
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadReceiveResponseNotification;
+/// Posed when URLSessionTask stoped (`didCompleteWithError:` with error or `cancel` called)
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadStopNotification;
+/// Posed when URLSessionTask finished with success  (`didCompleteWithError:` without error)
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadFinishNotification;
 
 typedef SDImageLoaderProgressBlock SDWebImageDownloaderProgressBlock;
@@ -157,7 +161,7 @@ typedef SDImageLoaderCompletedBlock SDWebImageDownloaderCompletedBlock;
 
 /**
  * Set the response modifier to modify the original download response during image load.
- * This request modifier method will be called for each downloading image response. Return the original response means no modification. Return nil will mark current download as cancelled.
+ * This response modifier method will be called for each downloading image response. Return the original response means no modification. Return nil will mark current download as cancelled.
  * Defaults to nil, means does not modify the original download response.
  * @note If you want to modify single response, consider using `SDWebImageContextDownloadResponseModifier` context option.
  */

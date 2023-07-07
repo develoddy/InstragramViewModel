@@ -17,7 +17,7 @@ class FeedViewController: UIViewController {
     
     private var viewModel = FeedViewModel()
     
-    private var viewModelStories: IGHomeViewModel = IGHomeViewModel()
+    //private var viewModelStories: IGHomeViewModel = IGHomeViewModel()
     
     var post: Post?
     
@@ -46,7 +46,7 @@ class FeedViewController: UIViewController {
         setUpNoCommentsView()
         bind()
         fetchPosts()
-        fetchStories()
+        //fetchStories()
         fetchStoriesCurrentUser()
     }
     
@@ -86,10 +86,10 @@ class FeedViewController: UIViewController {
         }
     }
     
-    func fetchStories() {
+    //func fetchStories() {
         //viewModelStories.fetchStories()
-        viewModelStories.getStories()
-    }
+        //viewModelStories.getStories()
+    //}
     
     func fetchStoriesCurrentUser() {
         guard let tab = tabBarController as? TabBarViewController  else { return }
@@ -147,11 +147,11 @@ class FeedViewController: UIViewController {
         )
         
         //collectionView.register(StoriesCollectionViewCell.self, forCellWithReuseIdentifier: StoriesCollectionViewCell.identifier)
-        collectionView.register(
+        /*collectionView.register(
             StoriesCollectionReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: StoriesCollectionReusableView.identifier
-        )
+        )*/
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -359,26 +359,22 @@ extension FeedViewController: UICollectionViewDelegate {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    /**func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind, withReuseIdentifier: StoriesCollectionReusableView.identifier,
             for: indexPath
         ) as? StoriesCollectionReusableView else {
             return UICollectionReusableView()
         }
-        /*if let stories = viewModelStories.getStories()?.myStory, let iGStories = viewModelStories.getStories() {
+        if let stories = viewModelStories.getStories()?.myStory, let iGStories = viewModelStories.getStories() {
             header.configure(viewModel: stories, getStories: iGStories)
             header.delegate = self
-        }*/
-        
-        //let story = viewModelStories.cellForItemAt(indexPath: indexPath)
-        
-        if let story = viewModelStories.getStories()?.myStory, let iGStories = viewModelStories.getStories() {
-            header.configure(viewModel: story, getStories: iGStories)
         }
-        header.backgroundColor = .systemBackground
+        
+        let story = viewModelStories.cellForItemAt(indexPath: indexPath)
+        
         return header
-   }
+   }*/
 }
 
 
@@ -503,55 +499,11 @@ extension FeedViewController: UploadPostViewControllerDelegate {
 }
 
 
-// MARK: - StoriesCollectionReusableViewDelegate
-
-extension FeedViewController: StoriesCollectionReusableViewDelegate {
-    func cell(_ viewStory: StoriesCollectionReusableView, wantToStoriesCopy storiesCopy: IGStories, wantToIndexPath indexPath: Int) {
-        let storyPreviewScene = IGStoryPreviewController.init(stories: storiesCopy.myStory, handPickedStoryIndex:  indexPath)
-        self.present(storyPreviewScene, animated: true, completion: nil)
-    }
-    
-    
-    func cell(_ createStoryCell: StoriesCollectionReusableView) {
-        let alertController = UIAlertController.init(title: "Coming Soon...", message: nil, preferredStyle: .alert)
-        present(alertController, animated: true) {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.3){
-                alertController.dismiss(animated: true, completion: nil)
-            }
-        }
-    }
-    
-    /*func cell(_ viewUserStory: StoriesCollectionReusableView, wantsToHistory stories: [History]) {
-        let vc = SettingViewStoryViewController(stories: stories)
-        let navVC = UINavigationController(rootViewController: vc)
-        navVC.modalPresentationStyle = .fullScreen
-        self.present(navVC, animated: true, completion: nil)
-    }*/
-    
-    
-    /*func cell(_ createStoryCell: StoriesCollectionReusableView, didTapActionButtonFor user: User) {
-        var config = YPImagePickerConfiguration()
-        config.library.mediaType = .photo
-        config.shouldSaveNewPicturesToAlbum = false
-        config.startOnScreen = .library
-        config.screens = [.library]
-        config.hidesStatusBar = false
-        config.hidesBottomBar = false
-        config.library.maxNumberOfItems = 1
-        
-        let picker = YPImagePicker(configuration: config)
-        picker.modalPresentationStyle = .fullScreen
-        present(picker, animated: true, completion: nil)
-        self.didFinishPickingMedia(picker)
-    }*/
-}
-
 // MARK: - UploadHistoryViewControllerDelegate
 
 extension FeedViewController: UploadHistoryViewControllerDelegate {
     func uploadUploadHistoryViewControllerDidFinishUploadingHistory(_ controller: UploadHistoryViewController) {
         controller.dismiss(animated: true, completion: nil)
-        fetchStories()
         fetchStoriesCurrentUser()
     }
 }
