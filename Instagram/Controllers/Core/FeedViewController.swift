@@ -293,7 +293,7 @@ extension FeedViewController: UICollectionViewDataSource {
             NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(120)
+                    heightDimension: .absolute(10)
                 ),
                 elementKind: UICollectionView.elementKindSectionHeader,
                 alignment: .top)
@@ -355,11 +355,11 @@ extension FeedViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 
 extension FeedViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    /**func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
     
-    /**func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind, withReuseIdentifier: StoriesCollectionReusableView.identifier,
             for: indexPath
